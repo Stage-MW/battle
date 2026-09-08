@@ -21,7 +21,7 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: url('https://via.placeholder.com/1920x1080/03070b/00e5ff?text=СЮДА+МОЖНО+ДОБАВИТЬ+ФОН');
+            background-image: url('bg-ocean.jpg'); /* ПУТЬ К ВАШЕМУ ФОНУ */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -120,12 +120,14 @@
 
     <div id="toast-container"></div>
 
+    <!-- НАВИГАЦИЯ -->
     <nav>
         <button class="nav-btn" onclick="switchMainPage('page-compare')">ТЕРМИНАЛ СРАВНЕНИЯ</button>
+        <!-- База данных активна по умолчанию -->
         <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА ДАННЫХ ФЛОТА</button>
     </nav>
 
-    <!-- СТРАНИЦА 1: СРАВНЕНИЕ -->
+    <!-- СТРАНИЦА 1: СРАВНЕНИЕ (Скрыта при загрузке) -->
     <main id="page-compare" class="page">
         <div class="compare-grid">
             <div class="ship-card">
@@ -149,7 +151,7 @@
         </div>
     </main>
 
-    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ -->
+    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ (Открыта при загрузке) -->
     <main id="page-catalog" class="page active">
         <div class="categories-bar" id="category-bar"></div>
         <div class="catalog-grid" id="catalog-content"></div>
