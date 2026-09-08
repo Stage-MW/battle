@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТАКТИЧЕСКИЙ ТЕРМИНАЛ | СИСТЕМА АНАЛИЗА</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-color: #03070b;
+            --primary: #00e5ff;
+            --primary-dim: rgba(0, 229, 255, 0.2);
+            --danger: #ff2a5f;
+            --dark-glass: rgba(6, 11, 18, 0.75);
+            --border-glow: 0 0 15px rgba(0, 229, 255, 0.4);
+            --text-main: #e0f2f1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: url('https://via.placeholder.com/1920x1080/03070b/00e5ff?text=СЮДА+МОЖНО+ДОБАВИТЬ+ФОН');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Jura', sans-serif;
+            text-transform: uppercase;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
+            pointer-events: none; z-index: 9999;
+        }
+
+        nav {
+            display: flex; justify-content: center; gap: 25px; padding: 25px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%);
+            position: relative; z-index: 10;
+        }
+
+        .nav-btn {
+            background: var(--dark-glass); border: 1px solid var(--primary-dim);
+            color: var(--primary); padding: 12px 35px; font-family: 'Share Tech Mono'; font-size: 1.1rem;
+            cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            transition: 0.3s; backdrop-filter: blur(10px);
+        }
+        .nav-btn:hover, .nav-btn.active { background: rgba(0, 229, 255, 0.1); border-color: var(--primary); box-shadow: var(--border-glow); }
+
+        .page { display: none; animation: fadeIn 0.4s ease-out forwards; max-width: 1500px; margin: 0 auto; padding: 20px; position: relative; z-index: 5;}
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* СЕТКА СРАВНЕНИЯ */
+        .compare-grid { display: grid; grid-template-columns: 1fr 500px 1fr; gap: 25px; align-items: start; }
+        
+        .ship-card {
+            background: var(--dark-glass); border: 1px solid var(--primary-dim); backdrop-filter: blur(15px);
+            padding: 25px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .ship-img-container { width: 100%; height: 220px; background: #000; margin-bottom: 25px; background-size: cover; background-position: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stats-table { width: 100%; border-collapse: collapse; }
+        .stats-table td { padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.95rem; }
+        .stat-name { color: #8892b0; }
+        .stat-value { text-align: right; font-weight: bold; font-size: 1.1rem; }
+        .win { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .lose { color: var(--danger); opacity: 0.7; }
+        .neutral { color: #aaa; }
+
+        /* АНАЛИТИЧЕСКИЙ ЦЕНТР */
+        .analytics-core {
+            display: flex; flex-direction: column;
+            background: var(--dark-glass); border: 1px solid var(--primary-dim); padding: 30px; backdrop-filter: blur(15px);
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            min-height: 200px;
+        }
+        
+        .verdict-header { text-align: center; font-size: 1.5rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; }
+        
+        .tactic-block { margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.5); border-left: 3px solid #fff; font-family: 'Jura'; text-transform: none; line-height: 1.5; font-size: 0.95rem;}
+        .tactic-block.assault { border-color: var(--danger); }
+        .tactic-block.tactical { border-color: var(--primary); }
+        .tactic-title { font-family: 'Share Tech Mono'; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+
+        .final-winner-block {
+            margin-top: 15px; padding: 20px; text-align: center; border: 2px solid var(--primary); background: rgba(0, 229, 255, 0.1);
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.2); animation: pulseGlow 2s infinite alternate;
+        }
+        .final-draw-block {
+            margin-top: 15px; padding: 20px; text-align: center; border: 2px solid #aaa; background: rgba(255, 255, 255, 0.05);
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        }
+        @keyframes pulseGlow { from { box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1); } to { box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.4); } }
+
+        /* КАТАЛОГ (БАЗА ДАННЫХ) */
+        .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
+        .cat-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #8892b0; padding: 8px 20px; font-family: 'Jura'; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 4px; }
+        .cat-btn:hover, .cat-btn.active { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); box-shadow: var(--border-glow); }
+
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .catalog-item { background: var(--dark-glass); border: 1px solid rgba(255,255,255,0.05); padding: 15px; cursor: pointer; position: relative; backdrop-filter: blur(8px); transition: 0.3s; }
+        .catalog-item:hover { border-color: var(--primary-dim); transform: translateY(-5px); }
+        .catalog-item.selected { border-color: var(--primary); box-shadow: var(--border-glow); background: rgba(0, 229, 255, 0.05); }
+        .catalog-item.selected::after { content: "ВЫБРАН (1)"; position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; font-family: 'Share Tech Mono'; padding: 2px 8px; font-weight: bold; }
+        .catalog-item-img { height: 160px; background: #111; margin-bottom: 15px; background-size: cover; background-position: center; border-bottom: 2px solid var(--primary-dim); }
+        
+        /* УВЕДОМЛЕНИЯ */
+        #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: rgba(0,0,0,0.85); border: 1px solid var(--primary); color: var(--primary); padding: 15px 30px; font-family: 'Share Tech Mono'; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: var(--border-glow); backdrop-filter: blur(10px); }
+        .toast.error { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(255, 42, 95, 0.5); }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <nav>
+        <button class="nav-btn" onclick="switchMainPage('page-compare')">ТЕРМИНАЛ СРАВНЕНИЯ</button>
+        <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА ДАННЫХ ФЛОТА</button>
+    </nav>
+
+    <!-- СТРАНИЦА 1: СРАВНЕНИЕ -->
+    <main id="page-compare" class="page">
+        <div class="compare-grid">
+            <div class="ship-card">
+                <div class="ship-img-container" id="img-ship-1"></div>
+                <h3 id="name-ship-1" style="margin-bottom:15px; color:var(--primary); text-align:center; font-size:1.4rem;"></h3>
+                <table class="stats-table" id="stats-ship-1"></table>
+            </div>
+
+            <div class="analytics-core">
+                <div class="verdict-header">СВОДКА АНАЛИЗАТОРА</div>
+                <div id="verdict-screen" style="font-family: 'Share Tech Mono'; text-align: center; color: #8892b0; margin-top: 20px;">
+                    [ ОЖИДАНИЕ ВВОДА ДАННЫХ ДЛЯ АНАЛИЗА ]
+                </div>
+            </div>
+
+            <div class="ship-card">
+                <div class="ship-img-container" id="img-ship-2"></div>
+                <h3 id="name-ship-2" style="margin-bottom:15px; color:var(--primary); text-align:center; font-size:1.4rem;"></h3>
+                <table class="stats-table" id="stats-ship-2"></table>
+            </div>
+        </div>
+    </main>
+
+    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ -->
+    <main id="page-catalog" class="page active">
+        <div class="categories-bar" id="category-bar"></div>
+        <div class="catalog-grid" id="catalog-content"></div>
+    </main>
+
+    <script>
+        const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
+        
+        const STAT_LABELS = {
+            burst: "Общий залп",
+            dpm: "Урон в минуту (DPM)",
+            hp: "Прочность (HP)",
+            speed: "Скорость (Узлы)",
+            maneuverability: "Маневренность",
+            radar: "Радиус обзора (КМ)",
+            conc_air: "Заметность (Воздух)",
+            conc_surf: "Заметность (Поверхность)",
+            conc_depth: "Заметность (Глубина)",
+            penalty: "Штраф движения (%)"
+        };
+
+        const DB = {
+            "ship_1": { name: "HMS TYPE 32", category: "Фрегат", burst: 545682, dpm: 3134716, hp: 435500, speed: 26.0, maneuverability: 10.40, radar: 10.80, conc_air: 4.65, conc_surf: 4.08, conc_depth: 3.23, penalty: 5.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=HMS+TYPE+32" },
+            "ship_2": { name: "FGS F124", category: "Фрегат", burst: 538171, dpm: 4247340, hp: 429000, speed: 27.0, maneuverability: 8.32, radar: 10.40, conc_air: 4.96, conc_surf: 4.11, conc_depth: 2.98, penalty: 6.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" },
+            "ship_3": { name: "Проект 1144 «Орлан»", category: "Крейсер", burst: 600000, dpm: 3800000, hp: 480000, speed: 24.0, maneuverability: 6.5, radar: 12.0, conc_air: 6.5, conc_surf: 5.5, conc_depth: 4.5, penalty: 8.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=CRUISER" }
+        };
+
+        let currentCategory = "Фрегат";
+        let compareQueue = [];
+
+        function checkCompatibility(cat1, cat2) {
+            const special = ["Субмарина", "Авианосец"];
+            if (cat1 === cat2) return true;
+            if (special.includes(cat1) || special.includes(cat2)) return false;
+            return true;
+        }
+
+        function showToast(msg, isErr = false) {
+            const c = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = `toast ${isErr ? 'error' : ''}`; t.innerText = msg;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; }, 10);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        function switchMainPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            if(pageId === 'page-compare') document.querySelectorAll('.nav-btn')[0].classList.add('active');
+            if(pageId === 'page-catalog') {
+                document.querySelectorAll('.nav-btn')[1].classList.add('active');
+                compareQueue = []; 
+                renderCatalog();
+            }
+        }
+
+        function initApp() {
+            const catBar = document.getElementById('category-bar');
+            CATEGORIES.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `cat-btn ${cat === currentCategory ? 'active' : ''}`;
+                btn.innerText = cat;
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active'); currentCategory = cat; renderCatalog();
+                };
+                catBar.appendChild(btn);
+            });
+            renderCatalog();
+        }
+
+        function handleCatalogClick(shipId) {
+            const ship = DB[shipId];
+            if (compareQueue.length === 0) {
+                compareQueue.push(shipId); 
+                renderCatalog(); 
+                showToast(`ВЫБРАНА ЦЕЛЬ 1: ${ship.name}. Выберите вторую цель.`);
+            } else if (compareQueue.length === 1) {
+                if (compareQueue[0] === shipId) { compareQueue = []; renderCatalog(); return; }
+                
+                const id1 = compareQueue[0];
+                const id2 = shipId;
+                const firstShip = DB[id1];
+                
+                if (checkCompatibility(firstShip.category, ship.category)) {
+                    updateShipView(1, id1);
+                    updateShipView(2, id2);
+                    
+                    // Запуск математического анализа ДО переключения страницы
+                    runAnalysis(id1, id2);
+                    
+                    switchMainPage('page-compare');
+                    showToast("ДАННЫЕ ПЕРЕДАНЫ В ТЕРМИНАЛ АНАЛИЗА");
+                    compareQueue = [];
+                } else {
+                    showToast(`ОШИБКА: Несовместимые классы (${firstShip.category} и ${ship.category})`, true);
+                    compareQueue = [];
+                    renderCatalog();
+                }
+            }
+        }
+
+        function renderCatalog() {
+            const c = document.getElementById('catalog-content'); c.innerHTML = ''; 
+            let found = false;
+            for (let key in DB) {
+                if (DB[key].category === currentCategory) {
+                    found = true; const s = DB[key]; const sel = compareQueue.includes(key) ? 'selected' : '';
+                    c.innerHTML += `
+                        <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
+                            <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
+                            <div style="color:var(--primary); font-size:1.3rem; font-weight:bold; margin-bottom:8px;">${s.name}</div>
+                            <div style="color:#8892b0; font-family:'Share Tech Mono'; font-size: 0.95rem; line-height: 1.4;">
+                                ЗАЛП: <span style="color:#fff">${s.burst.toLocaleString('ru')}</span><br>
+                                УВС: <span style="color:#fff">${s.dpm.toLocaleString('ru')}</span>
+                            </div>
+                        </div>`;
+                }
+            }
+            if (!found) c.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #555; padding: 40px; font-family:'Share Tech Mono'; font-size: 1.2rem;">БАЗА ДАННЫХ ПУСТА</div>`;
+        }
+
+        function updateShipView(side, shipId) {
+            const ship = DB[shipId];
+            document.getElementById(`name-ship-${side}`).innerText = ship.name;
+            document.getElementById(`img-ship-${side}`).style.backgroundImage = `url('${ship.img}')`;
+            
+            let html = '';
+            for (let key in STAT_LABELS) {
+                let val = ship[key];
+                if (key === 'dpm' || key === 'burst') val = val.toLocaleString('ru');
+                html += `<tr><td class="stat-name">${STAT_LABELS[key]}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
+            }
+            document.getElementById(`stats-ship-${side}`).innerHTML = html;
+        }
+
+        function runAnalysis(id1, id2) {
+            const s1 = DB[id1]; const s2 = DB[id2];
+            
+            // СИСТЕМА ВЕСОВЫХ КОЭФФИЦИЕНТОВ (ИБЭ)
+            const WEIGHTS = {
+                dpm: 0.35, hp: 0.20, maneuverability: 0.15, burst: 0.10, 
+                radar: 0.08, conc_surf: 0.03, conc_air: 0.03, conc_depth: 0.02, penalty: 0.04
+            };
+
+            const reverseLogic = ['conc_air', 'conc_surf', 'conc_depth', 'penalty'];
+            
+            let score1 = 0; let score2 = 0;
+
+            for (let key in STAT_LABELS) {
+                if (!WEIGHTS[key] && key !== 'speed') continue; 
+                
+                const v1 = parseFloat(s1[key]); const v2 = parseFloat(s2[key]);
+                const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
+                
+                el1.className = "stat-value"; el2.className = "stat-value";
+
+                if (v1 === v2) {
+                    el1.classList.add('neutral'); el2.classList.add('neutral');
+                    if (WEIGHTS[key]) { score1 += 1 * WEIGHTS[key]; score2 += 1 * WEIGHTS[key]; }
+                    continue;
+                }
+
+                const isInverse = reverseLogic.includes(key);
+                const isV1Better = isInverse ? v1 < v2 : v1 > v2;
+
+                if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } 
+                else { el2.classList.add('win'); el1.classList.add('lose'); }
+
+                if (WEIGHTS[key]) {
+                    if (!isInverse) {
+                        const maxVal = Math.max(v1, v2);
+                        score1 += (v1 / maxVal) * WEIGHTS[key];
+                        score2 += (v2 / maxVal) * WEIGHTS[key];
+                    } else {
+                        const minVal = Math.min(v1, v2);
+                        score1 += (minVal / v1) * WEIGHTS[key];
+                        score2 += (minVal / v2) * WEIGHTS[key];
+                    }
+                }
+            }
+
+            const finalScore1 = Math.round(score1 * 10000);
+            const finalScore2 = Math.round(score2 * 10000);
+
+            let analysisHTML = "";
+
+            const dpmDiff = Math.abs(s1.dpm - s2.dpm) / Math.min(s1.dpm, s2.dpm);
+            if (dpmDiff > 0.15) {
+                const dpmWinner = s1.dpm > s2.dpm ? s1 : s2;
+                analysisHTML += `
+                    <div class="tactic-block assault">
+                        <div class="tactic-title" style="color:var(--danger)">► Роль: Штурм и Открытая вода</div>
+                        <b>${dpmWinner.name}</b> демонстрирует подавляющее доминирование в УВС (+${(dpmDiff*100).toFixed(0)}%). Ультимативный инструмент для лобовых столкновений.
+                    </div>`;
+            }
+
+            const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
+            if (manDiff > 1.5) {
+                const tacticalWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
+                analysisHTML += `
+                    <div class="tactic-block tactical">
+                        <div class="tactic-title" style="color:var(--primary)">► Роль: Тактическая игра</div>
+                        <b>${tacticalWinner.name}</b> обладает серьезным преимуществом в динамике. Эффективнее гасит инерцию при маневрах, что критически важно для уклонения.
+                    </div>`;
+            }
+
+            let intelHTML = `<div class="tactic-block" style="border-color: #aaa;"><div class="tactic-title" style="color:#fff">► Системы разведки</div>`;
+            if (s1.radar > s2.radar) intelHTML += `${s1.name} получает преимущество первого обнаружения (Радар ${s1.radar}км). `;
+            else if (s2.radar > s1.radar) intelHTML += `${s2.name} получает преимущество первого обнаружения (Радар ${s2.radar}км). `;
+            intelHTML += `</div>`;
+            analysisHTML += intelHTML;
+
+            let finalVerdictHTML = "";
+            const scoreDiff = Math.abs(finalScore1 - finalScore2);
+            
+            if (scoreDiff < 200) {
+                finalVerdictHTML = `
+                <div class="final-draw-block">
+                    <div style="color:#aaa; font-size:1.5rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.2rem;">Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2}</div>
+                </div>`;
+            } else if (finalScore1 > finalScore2) {
+                finalVerdictHTML = `
+                <div class="final-winner-block">
+                    <div style="color:var(--primary); font-size:1.5rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ИБ-ПРЕВОСХОДСТВО: ${s1.name}</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.2rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore1}</span> vs ${finalScore2}</div>
+                </div>`;
+            } else {
+                finalVerdictHTML = `
+                <div class="final-winner-block">
+                    <div style="color:var(--primary); font-size:1.5rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ИБ-ПРЕВОСХОДСТВО: ${s2.name}</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.2rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore2}</span> vs ${finalScore1}</div>
+                </div>`;
+            }
+
+            document.getElementById('verdict-screen').innerHTML = analysisHTML + finalVerdictHTML;
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
