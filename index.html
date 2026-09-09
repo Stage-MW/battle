@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ТАКТИЧЕСКИЙ ТЕРМИНАЛ | СИСТЕМА АНАЛИЗА</title>
+    <title>BATTLE MW | ТАКТИЧЕСКИЙ ТЕРМИНАЛ</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700;800&family=Share+Tech+Mono&display=swap');
 
         :root {
             --bg-color: #03070b;
@@ -49,6 +49,98 @@
             background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px);
             pointer-events: none; z-index: 9999;
         }
+
+        /* ==================== АНИМАЦИЯ ИНТРО (BATTLE MW) ==================== */
+        #intro-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+            overflow: hidden;
+        }
+
+        .shutter {
+            position: absolute;
+            top: 0;
+            width: 50vw;
+            height: 100vh;
+            background-image: url('bg-ocean.jpg');
+            background-size: 100vw 100vh;
+            background-repeat: no-repeat;
+            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .shutter::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 12, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .shutter-left {
+            left: 0;
+            background-position: left center;
+            border-right: 2px solid var(--primary);
+            box-shadow: 10px 0 30px rgba(0, 229, 255, 0.3);
+        }
+
+        .shutter-right {
+            right: 0;
+            background-position: right center;
+            border-left: 2px solid var(--primary);
+            box-shadow: -10px 0 30px rgba(0, 229, 255, 0.3);
+        }
+
+        #intro-title-box {
+            position: relative;
+            z-index: 10001;
+            text-align: center;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            background: rgba(6, 11, 18, 0.85);
+            padding: 30px 60px;
+            border: 2px solid var(--primary);
+            clip-path: polygon(25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%, 0 25px);
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.5), inset 0 0 20px rgba(0, 229, 255, 0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        #intro-title-box h1 {
+            font-size: 3.5rem;
+            letter-spacing: 12px;
+            color: #fff;
+            font-weight: 800;
+            text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+            margin-bottom: 8px;
+        }
+
+        #intro-title-box p {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            letter-spacing: 4px;
+        }
+
+        /* Запуск открытия створок */
+        #intro-overlay.open .shutter-left {
+            transform: translateX(-100%);
+        }
+
+        #intro-overlay.open .shutter-right {
+            transform: translateX(100%);
+        }
+
+        #intro-overlay.open #intro-title-box {
+            opacity: 0;
+            transform: scale(1.15);
+            pointer-events: none;
+        }
+        /* ==================================================================== */
 
         nav {
             display: flex; justify-content: center; gap: 25px; padding: 25px;
@@ -169,6 +261,16 @@
 </head>
 <body>
 
+    <!-- ВСТУПИТЕЛЬНАЯ АНИМАЦИЯ РАЗДВИГАЮЩИХСЯ СТВОРОК -->
+    <div id="intro-overlay">
+        <div class="shutter shutter-left"></div>
+        <div class="shutter shutter-right"></div>
+        <div id="intro-title-box">
+            <h1>BATTLE MW</h1>
+            <p>[ ИНИЦИАЛИЗАЦИЯ ТАКТИЧЕСКИХ СИСТЕМ ]</p>
+        </div>
+    </div>
+
     <div id="toast-container"></div>
 
     <!-- НАВИГАЦИЯ -->
@@ -276,7 +378,7 @@
                 img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" 
             },
 
-            // ЭСМИНЦЫ (НОВЫЕ)
+            // ЭСМИНЦЫ
             "ushakov": { 
                 name: "RF Admiral Ushakov", 
                 category: "Эсминец", 
@@ -323,6 +425,19 @@
         let currentCategory = "Фрегат";
         let compareQueue = [];
 
+        // Инициализация вступительной анимации
+        function runIntroAnimation() {
+            setTimeout(() => {
+                const overlay = document.getElementById('intro-overlay');
+                overlay.classList.add('open');
+                
+                // Полностью отключаем overlay через 1.2 секунды после завершения анимации
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 1200);
+            }, 1000); // 1 секунда демонстрации логотипа перед открытием
+        }
+
         function checkCompatibility(cat1, cat2) {
             const special = ["Субмарина", "Авианосец"];
             if (cat1 === cat2) return true;
@@ -353,6 +468,8 @@
         }
 
         function initApp() {
+            runIntroAnimation();
+
             const catBar = document.getElementById('category-bar');
             CATEGORIES.forEach(cat => {
                 const btn = document.createElement('button');
@@ -435,15 +552,16 @@
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
             
+            // ВЕСОВЫЕ КОЭФФИЦИЕНТЫ ПЛАТФОРМЫ
             const WEIGHTS = {
-                hp: 0.30,              // Базовый пул жизни
-                maneuverability: 0.25,  // Динамика разворота и гашение инерции
-                speed: 0.20,           // Скорость хода
-                radar: 0.10,           // Дальность первого засвета
-                conc_surf: 0.05,       // Скрытность по воде
-                conc_air: 0.04,        // Скрытность от авиации
-                conc_depth: 0.03,      // Скрытность от сонаров ПЛ
-                penalty: 0.03          // Штраф разброса на ходу
+                hp: 0.30,
+                maneuverability: 0.25,
+                speed: 0.20,
+                radar: 0.10,
+                conc_surf: 0.05,
+                conc_air: 0.04,
+                conc_depth: 0.03,
+                penalty: 0.03
             };
 
             const reverseLogic = ['conc_air', 'conc_surf', 'conc_depth', 'penalty'];
@@ -451,6 +569,8 @@
             let score1 = 0; let score2 = 0;
 
             for (let key in STAT_LABELS) {
+                if (!WEIGHTS[key] && key !== 'speed') continue; 
+                
                 const v1 = parseFloat(s1[key]); const v2 = parseFloat(s2[key]);
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
                 
@@ -486,7 +606,6 @@
 
             let analysisHTML = "";
 
-            // Блок 1: КИНЕТИКА, СКОРОСТЬ И ИНЕРЦИЯ
             const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
             const speedDiff = Math.abs(s1.speed - s2.speed);
 
@@ -508,7 +627,6 @@
                     </div>`;
             }
 
-            // Блок 2: РАЗВЕДКА И СТЕЛС-ХАРАКТЕРИСТИКИ
             let stealthText = "";
             if (s1.radar !== s2.radar) {
                 const radWinner = s1.radar > s2.radar ? s1 : s2;
@@ -527,7 +645,6 @@
                     </div>`;
             }
 
-            // Блок 3: ИТОГОВЫЙ РЕЙТИНГ ИБЭ
             let finalVerdictHTML = "";
             const scoreDiff = Math.abs(finalScore1 - finalScore2);
             
