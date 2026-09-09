@@ -23,7 +23,7 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: url('bg-ocean.jpg'); /* ВАШ ФОН */
+            background-image: url('bg-ocean.jpg'); /* ФОН */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -34,19 +34,19 @@
             position: relative;
         }
 
-        /* 1 СЛОЙ: МАТОВОЕ СТЕКЛО НАД ФОНОМ (Эффект стола) */
+        /* 1 СЛОЙ: МАТОВОЕ СТЕКЛО НАД ФОНОМ */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(3, 7, 12, 0.4); 
-            backdrop-filter: blur(12px) saturate(120%);
-            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            background: rgba(3, 7, 12, 0.45); 
+            backdrop-filter: blur(14px) saturate(120%);
+            -webkit-backdrop-filter: blur(14px) saturate(120%);
             z-index: -1;
         }
 
-        /* 3 СЛОЙ: СКАНЛАЙНЫ (Сетка радара поверх всего) */
+        /* 2 СЛОЙ: СКАНЛАЙНЫ РАДАРА */
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px);
             pointer-events: none; z-index: 9999;
         }
 
@@ -59,7 +59,7 @@
         .nav-btn {
             background: var(--glass-bg); 
             border: 1px solid var(--primary-dim);
-            border-top: 1px solid var(--glass-reflection); /* Блик на верхней грани стекла */
+            border-top: 1px solid var(--glass-reflection);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(20px);
@@ -95,7 +95,7 @@
 
         .ship-img-container { width: 100%; height: 220px; background: rgba(0,0,0,0.5); margin-bottom: 25px; background-size: cover; background-position: center; border: 1px solid rgba(0, 229, 255, 0.2); box-shadow: inset 0 0 20px #000; }
         .stats-table { width: 100%; border-collapse: collapse; }
-        .stats-table td { padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.95rem; }
+        .stats-table td { padding: 9px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.95rem; }
         .stat-name { color: #8892b0; }
         .stat-value { text-align: right; font-weight: bold; font-size: 1.1rem; }
         .win { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
@@ -116,11 +116,11 @@
             min-height: 200px;
         }
         
-        .verdict-header { text-align: center; font-size: 1.5rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; }
+        .verdict-header { text-align: center; font-size: 1.4rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 700; letter-spacing: 1px; }
         
         .tactic-block { margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.4); border-left: 3px solid #fff; font-family: 'Jura'; text-transform: none; line-height: 1.5; font-size: 0.95rem; backdrop-filter: blur(5px);}
-        .tactic-block.assault { border-color: var(--danger); }
-        .tactic-block.tactical { border-color: var(--primary); }
+        .tactic-block.mobility { border-color: var(--primary); }
+        .tactic-block.intel { border-color: #ffd700; }
         .tactic-title { font-family: 'Share Tech Mono'; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
 
         .final-winner-block {
@@ -187,9 +187,9 @@
             </div>
 
             <div class="analytics-core">
-                <div class="verdict-header">СВОДКА АНАЛИЗАТОРА</div>
+                <div class="verdict-header">АНАЛИЗ БОЕВОЙ ПЛАТФОРМЫ</div>
                 <div id="verdict-screen" style="font-family: 'Share Tech Mono'; text-align: center; color: #8892b0; margin-top: 20px;">
-                    [ ОЖИДАНИЕ ВВОДА ДАННЫХ ДЛЯ АНАЛИЗА ]
+                    [ ОЖИДАНИЕ ВЫБОРА ЕДИНИЦ ДЛЯ АНАЛИЗА ]
                 </div>
             </div>
 
@@ -210,9 +210,8 @@
     <script>
         const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
         
+        // Характеристики чистой платформы (корпуса) без учета DPM
         const STAT_LABELS = {
-            burst: "Общий залп",
-            dpm: "Урон в минуту (DPM)",
             hp: "Прочность (HP)",
             speed: "Скорость (Узлы)",
             maneuverability: "Маневренность",
@@ -224,9 +223,71 @@
         };
 
         const DB = {
-            "ship_1": { name: "HMS TYPE 32", category: "Фрегат", burst: 545682, dpm: 3134716, hp: 435500, speed: 26.0, maneuverability: 10.40, radar: 10.80, conc_air: 4.65, conc_surf: 4.08, conc_depth: 3.23, penalty: 5.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=HMS+TYPE+32" },
-            "ship_2": { name: "FGS F124", category: "Фрегат", burst: 538171, dpm: 4247340, hp: 429000, speed: 27.0, maneuverability: 8.32, radar: 10.40, conc_air: 4.96, conc_surf: 4.11, conc_depth: 2.98, penalty: 6.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" },
-            "ship_3": { name: "Проект 1144 «Орлан»", category: "Крейсер", burst: 600000, dpm: 3800000, hp: 480000, speed: 24.0, maneuverability: 6.5, radar: 12.0, conc_air: 6.5, conc_surf: 5.5, conc_depth: 4.5, penalty: 8.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=CRUISER" }
+            "aquitaine": { 
+                name: "FS Aquitaine (D650)", 
+                category: "Фрегат", 
+                hp: 429000, 
+                speed: 30.3, 
+                maneuverability: 8.45, 
+                radar: 11.20, 
+                conc_air: 4.25, 
+                conc_surf: 3.83, 
+                conc_depth: 2.98, 
+                penalty: 6.0, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+AQUITAINE" 
+            },
+            "forbin": { 
+                name: "FS Forbin", 
+                category: "Фрегат", 
+                hp: 429000, 
+                speed: 29.1, 
+                maneuverability: 10.14, 
+                radar: 10.00, 
+                conc_air: 4.53, 
+                conc_surf: 3.97, 
+                conc_depth: 3.12, 
+                penalty: 6.0, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+FORBIN" 
+            },
+            "type32": { 
+                name: "HMS TYPE 32", 
+                category: "Фрегат", 
+                hp: 435500, 
+                speed: 26.0, 
+                maneuverability: 10.40, 
+                radar: 10.80, 
+                conc_air: 4.65, 
+                conc_surf: 4.08, 
+                conc_depth: 3.23, 
+                penalty: 5.5, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=HMS+TYPE+32" 
+            },
+            "f124": { 
+                name: "FGS F124", 
+                category: "Фрегат", 
+                hp: 429000, 
+                speed: 27.0, 
+                maneuverability: 8.32, 
+                radar: 10.40, 
+                conc_air: 4.96, 
+                conc_surf: 4.11, 
+                conc_depth: 2.98, 
+                penalty: 6.5, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" 
+            },
+            "orlan": { 
+                name: "Проект 1144 «Орлан»", 
+                category: "Крейсер", 
+                hp: 480000, 
+                speed: 24.0, 
+                maneuverability: 6.5, 
+                radar: 12.0, 
+                conc_air: 6.5, 
+                conc_surf: 5.5, 
+                conc_depth: 4.5, 
+                penalty: 8.0, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=CRUISER" 
+            }
         };
 
         let currentCategory = "Фрегат";
@@ -315,10 +376,11 @@
                     c.innerHTML += `
                         <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
                             <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
-                            <div style="color:var(--primary); font-size:1.3rem; font-weight:bold; margin-bottom:8px;">${s.name}</div>
-                            <div style="color:#8892b0; font-family:'Share Tech Mono'; font-size: 0.95rem; line-height: 1.4;">
-                                ЗАЛП: <span style="color:#fff">${s.burst.toLocaleString('ru')}</span><br>
-                                УВС: <span style="color:#fff">${s.dpm.toLocaleString('ru')}</span>
+                            <div style="color:var(--primary); font-size:1.2rem; font-weight:bold; margin-bottom:8px;">${s.name}</div>
+                            <div style="color:#8892b0; font-family:'Share Tech Mono'; font-size: 0.9rem; line-height: 1.5;">
+                                СКОРОСТЬ: <span style="color:#fff">${s.speed} уз.</span><br>
+                                МАНЕВРЕННОСТЬ: <span style="color:#fff">${s.maneuverability}</span><br>
+                                ПРОЧНОСТЬ: <span style="color:#fff">${s.hp.toLocaleString('ru')}</span>
                             </div>
                         </div>`;
                 }
@@ -334,7 +396,7 @@
             let html = '';
             for (let key in STAT_LABELS) {
                 let val = ship[key];
-                if (key === 'dpm' || key === 'burst') val = val.toLocaleString('ru');
+                if (key === 'hp') val = val.toLocaleString('ru');
                 html += `<tr><td class="stat-name">${STAT_LABELS[key]}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
             }
             document.getElementById(`stats-ship-${side}`).innerHTML = html;
@@ -343,9 +405,16 @@
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
             
+            // ВЕСОВЫЕ КОЭФФИЦИЕНТЫ ЧИСТОЙ ПЛАТФОРМЫ (Сумма = 1.0)
             const WEIGHTS = {
-                dpm: 0.35, hp: 0.20, maneuverability: 0.15, burst: 0.10, 
-                radar: 0.08, conc_surf: 0.03, conc_air: 0.03, conc_depth: 0.02, penalty: 0.04
+                hp: 0.30,              // Базовый пул жизни
+                maneuverability: 0.25,  // Динамика разворота и гашение инерции
+                speed: 0.20,           // Скорость хода
+                radar: 0.10,           // Дальность первого засвета
+                conc_surf: 0.05,       // Скрытность по воде
+                conc_air: 0.04,        // Скрытность от авиации
+                conc_depth: 0.03,      // Скрытность от сонаров ПЛ
+                penalty: 0.03          // Штраф разброса на ходу
             };
 
             const reverseLogic = ['conc_air', 'conc_surf', 'conc_depth', 'penalty'];
@@ -353,8 +422,6 @@
             let score1 = 0; let score2 = 0;
 
             for (let key in STAT_LABELS) {
-                if (!WEIGHTS[key] && key !== 'speed') continue; 
-                
                 const v1 = parseFloat(s1[key]); const v2 = parseFloat(s2[key]);
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
                 
@@ -372,6 +439,7 @@
                 if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } 
                 else { el2.classList.add('win'); el1.classList.add('lose'); }
 
+                // Расчет коэффициентов
                 if (WEIGHTS[key]) {
                     if (!isInverse) {
                         const maxVal = Math.max(v1, v2);
@@ -390,52 +458,68 @@
 
             let analysisHTML = "";
 
-            const dpmDiff = Math.abs(s1.dpm - s2.dpm) / Math.min(s1.dpm, s2.dpm);
-            if (dpmDiff > 0.15) {
-                const dpmWinner = s1.dpm > s2.dpm ? s1 : s2;
-                analysisHTML += `
-                    <div class="tactic-block assault">
-                        <div class="tactic-title" style="color:var(--danger)">► Роль: Штурм и Открытая вода</div>
-                        <b>${dpmWinner.name}</b> демонстрирует подавляющее доминирование в УВС (+${(dpmDiff*100).toFixed(0)}%). Ультимативный инструмент для лобовых столкновений.
-                    </div>`;
-            }
-
+            // Блок 1: КИНЕТИКА, СКОРОСТЬ И ИНЕРЦИЯ
             const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
-            if (manDiff > 1.5) {
-                const tacticalWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
+            const speedDiff = Math.abs(s1.speed - s2.speed);
+
+            let kineticText = "";
+            if (manDiff >= 1.0) {
+                const manWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
+                kineticText += `<b>${manWinner.name}</b> значительно превосходит оппонента в скорости перекладки руля и динамике (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты между островами. `;
+            }
+            if (speedDiff >= 1.0) {
+                const speedWinner = s1.speed > s2.speed ? s1 : s2;
+                kineticText += `При этом <b>${speedWinner.name}</b> быстрее на прямой (+${speedDiff.toFixed(1)} уз.), что позволяет диктовать дистанцию боя.`;
+            }
+
+            if (kineticText) {
                 analysisHTML += `
-                    <div class="tactic-block tactical">
-                        <div class="tactic-title" style="color:var(--primary)">► Роль: Тактическая игра</div>
-                        <b>${tacticalWinner.name}</b> обладает серьезным преимуществом в динамике. Эффективнее гасит инерцию при маневрах, что критически важно для уклонения.
+                    <div class="tactic-block mobility">
+                        <div class="tactic-title" style="color:var(--primary)">► Динамика и Кинетика платформы</div>
+                        ${kineticText}
                     </div>`;
             }
 
-            let intelHTML = `<div class="tactic-block" style="border-color: #aaa;"><div class="tactic-title" style="color:#fff">► Системы разведки</div>`;
-            if (s1.radar > s2.radar) intelHTML += `${s1.name} получает преимущество первого обнаружения (Радар ${s1.radar}км). `;
-            else if (s2.radar > s1.radar) intelHTML += `${s2.name} получает преимущество первого обнаружения (Радар ${s2.radar}км). `;
-            intelHTML += `</div>`;
-            analysisHTML += intelHTML;
+            // Блок 2: РАЗВЕДКА И СТЕЛС-ХАРАКТЕРИСТИКИ
+            let stealthText = "";
+            if (s1.radar !== s2.radar) {
+                const radWinner = s1.radar > s2.radar ? s1 : s2;
+                stealthText += `Преимущество дальнего обнаружения за <b>${radWinner.name}</b> (Радар ${radWinner.radar} км). `;
+            }
+            if (s1.conc_surf !== s2.conc_surf) {
+                const stWinner = s1.conc_surf < s2.conc_surf ? s1 : s2;
+                stealthText += `Корпус <b>${stWinner.name}</b> имеет меньшую эффективную площадь рассеяния, делая его труднее обнаруживаемым с поверхности.`;
+            }
 
+            if (stealthText) {
+                analysisHTML += `
+                    <div class="tactic-block intel">
+                        <div class="tactic-title" style="color:#ffd700">► Радиоэлектронная борьба и Скрытность</div>
+                        ${stealthText}
+                    </div>`;
+            }
+
+            // Блок 3: ИТОГОВЫЙ РЕЙТИНГ ИБЭ
             let finalVerdictHTML = "";
             const scoreDiff = Math.abs(finalScore1 - finalScore2);
             
-            if (scoreDiff < 200) {
+            if (scoreDiff < 150) {
                 finalVerdictHTML = `
                 <div class="final-draw-block">
-                    <div style="color:#aaa; font-size:1.5rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.2rem;">Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2}</div>
+                    <div style="color:#aaa; font-size:1.4rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ ПЛАТФОРМ</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2}</div>
                 </div>`;
             } else if (finalScore1 > finalScore2) {
                 finalVerdictHTML = `
                 <div class="final-winner-block">
-                    <div style="color:var(--primary); font-size:1.5rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ИБ-ПРЕВОСХОДСТВО: ${s1.name}</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.2rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore1}</span> vs ${finalScore2}</div>
+                    <div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s1.name}</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore1}</span> vs ${finalScore2}</div>
                 </div>`;
             } else {
                 finalVerdictHTML = `
                 <div class="final-winner-block">
-                    <div style="color:var(--primary); font-size:1.5rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ИБ-ПРЕВОСХОДСТВО: ${s2.name}</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.2rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore2}</span> vs ${finalScore1}</div>
+                    <div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s2.name}</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore2}</span> vs ${finalScore1}</div>
                 </div>`;
             }
 
