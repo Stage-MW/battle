@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BATTLE MW | ТАКТИЧЕСКИЙ ТЕРМИНАЛ</title>
+    <title>BATTLE MW | СИСТЕМА АНАЛИЗА</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
 
@@ -50,81 +50,91 @@
             pointer-events: none; z-index: 999;
         }
 
-        /* === ИНТРО-АНИМАЦИЯ (СТВОРКИ ШЛЮЗА) === */
+        /* --- СТАРТОВАЯ АНИМАЦИЯ: РАЗДВИЖНЫЕ СТВОРКИ БЕЗ БЛЮРА --- */
         #intro-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 10000;
             display: flex;
             pointer-events: all;
+            animation: removeOverlay 0.1s forwards 2.5s;
         }
 
-        .gate-door {
-            width: 50vw;
-            height: 100vh;
+        .door {
+            position: absolute;
+            top: 0; width: 50vw; height: 100vh;
             background-image: url('bg-ocean.jpg');
             background-size: 100vw 100vh;
             background-repeat: no-repeat;
-            position: absolute;
-            top: 0;
             transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
         }
 
-        .gate-left {
+        .door-left {
             left: 0;
             background-position: left center;
             border-right: 2px solid var(--primary);
-            box-shadow: inset -10px 0 30px rgba(0,0,0,0.8);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.9);
+            animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.2s;
         }
 
-        .gate-right {
+        .door-right {
             right: 0;
             background-position: right center;
             border-left: 2px solid var(--primary);
-            box-shadow: inset 10px 0 30px rgba(0,0,0,0.8);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.9);
+            animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.2s;
         }
 
-        #intro-overlay.open .gate-left {
-            transform: translateX(-100%);
-        }
-
-        #intro-overlay.open .gate-right {
-            transform: translateX(100%);
-        }
-
-        .intro-title-box {
+        .intro-title-wrapper {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10001;
-            text-align: center;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            pointer-events: none;
+            z-index: 10002;
+            animation: fadeTitle 0.6s ease-out forwards 1.2s;
         }
 
-        .intro-title-box h1 {
-            font-family: 'Jura', sans-serif;
-            font-size: 4rem;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 12px;
-            text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
-            margin-bottom: 10px;
+        .intro-title-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--primary);
+            border-top: 2px solid var(--glass-reflection);
+            padding: 25px 60px;
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--border-glow);
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
         }
 
-        .intro-title-box p {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.1rem;
+        .intro-text {
             color: var(--primary);
-            letter-spacing: 4px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 12px;
+            text-shadow: 0 0 20px var(--primary);
+            white-space: nowrap;
+            font-family: 'Jura', sans-serif;
         }
 
-        #intro-overlay.open .intro-title-box {
-            opacity: 0;
-            transform: translate(-50%, -60%) scale(1.1);
+        @keyframes slideLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
 
-        /* НАВИГАЦИЯ */
+        @keyframes slideRight {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes fadeTitle {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; }
+        }
+
+        @keyframes removeOverlay {
+            to { visibility: hidden; pointer-events: none; }
+        }
+
+        /* --- ОСНОВНОЙ ИНТЕРФЕЙС --- */
         nav {
             display: flex; justify-content: center; gap: 25px; padding: 25px;
             background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
@@ -244,13 +254,14 @@
 </head>
 <body>
 
-    <!-- ИНТРО-ЗАСЛОНКА (СТВОРКИ) -->
+    <!-- СТАРТОВЫЙ ИНТРО-ЭКРАН -->
     <div id="intro-overlay">
-        <div class="gate-door gate-left"></div>
-        <div class="gate-door gate-right"></div>
-        <div class="intro-title-box">
-            <h1>BATTLE MW</h1>
-            <p>[ ТАКТИЧЕСКИЙ АНАЛИЗАТОР ФЛОТА ]</p>
+        <div class="door door-left"></div>
+        <div class="door door-right"></div>
+        <div class="intro-title-wrapper">
+            <div class="intro-title-box">
+                <div class="intro-text">BATTLE MW</div>
+            </div>
         </div>
     </div>
 
@@ -262,7 +273,7 @@
         <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА ДАННЫХ ФЛОТА</button>
     </nav>
 
-    <!-- СТРАНИЦА 1: СРАВНЕНИЕ (Скрыта при загрузке) -->
+    <!-- СТРАНИЦА 1: СРАВНЕНИЕ -->
     <main id="page-compare" class="page">
         <div class="compare-grid">
             <div class="ship-card">
@@ -286,7 +297,7 @@
         </div>
     </main>
 
-    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ (Открыта при загрузке) -->
+    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ -->
     <main id="page-catalog" class="page active">
         <div class="categories-bar" id="category-bar"></div>
         <div class="catalog-grid" id="catalog-content"></div>
@@ -408,17 +419,6 @@
         let currentCategory = "Фрегат";
         let compareQueue = [];
 
-        // Инициализация интро-анимации
-        function runIntro() {
-            setTimeout(() => {
-                const overlay = document.getElementById('intro-overlay');
-                overlay.classList.add('open');
-                setTimeout(() => {
-                    overlay.style.display = 'none'; // Полностью убираем со страницы после открытия
-                }, 1200);
-            }, 1800); // 1.8 секунды показ цельного логотипа
-        }
-
         function checkCompatibility(cat1, cat2) {
             const special = ["Субмарина", "Авианосец"];
             if (cat1 === cat2) return true;
@@ -449,8 +449,6 @@
         }
 
         function initApp() {
-            runIntro();
-
             const catBar = document.getElementById('category-bar');
             CATEGORIES.forEach(cat => {
                 const btn = document.createElement('button');
@@ -586,7 +584,6 @@
 
             let analysisHTML = "";
 
-            // Блок 1: КИНЕТИКА, СКОРОСТЬ И ИНЕРЦИЯ
             const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
             const speedDiff = Math.abs(s1.speed - s2.speed);
 
@@ -608,7 +605,6 @@
                     </div>`;
             }
 
-            // Блок 2: РАЗВЕДКА И СТЕЛС-ХАРАКТЕРИСТИКИ
             let stealthText = "";
             if (s1.radar !== s2.radar) {
                 const radWinner = s1.radar > s2.radar ? s1 : s2;
@@ -627,7 +623,6 @@
                     </div>`;
             }
 
-            // Блок 3: ИТОГОВЫЙ РЕЙТИНГ ИБЭ
             let finalVerdictHTML = "";
             const scoreDiff = Math.abs(finalScore1 - finalScore2);
             
