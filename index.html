@@ -34,7 +34,6 @@
             position: relative;
         }
 
-        /* 1 СЛОЙ: МАТОВОЕ СТЕКЛО НАД ФОНОМ */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(3, 7, 12, 0.45); 
@@ -43,21 +42,20 @@
             z-index: -1;
         }
 
-        /* 2 СЛОЙ: СКАНЛАЙНЫ РАДАРА */
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px);
             pointer-events: none; z-index: 999;
         }
 
-        /* --- СТАРТОВЫЙ ИНТРО-ЭКРАН С АНИМАЦИЕЙ РАМКИ И ГЛИТЧ-ТЕКСТА --- */
+        /* --- СТАРТОВАЯ АНИМАЦИЯ --- */
         #intro-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 10000;
             display: flex;
             pointer-events: all;
-            animation: removeOverlay 0.1s forwards 2.7s;
+            animation: removeOverlay 0.1s forwards 3.5s;
         }
 
         .door {
@@ -71,118 +69,57 @@
         }
 
         .door-left {
-            left: 0;
-            background-position: left center;
-            border-right: 2px solid var(--primary);
+            left: 0; background-position: left center; border-right: 2px solid var(--primary);
             box-shadow: 10px 0 30px rgba(0,0,0,0.9);
-            animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.4s;
+            animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s;
         }
 
         .door-right {
-            right: 0;
-            background-position: right center;
-            border-left: 2px solid var(--primary);
+            right: 0; background-position: right center; border-left: 2px solid var(--primary);
             box-shadow: -10px 0 30px rgba(0,0,0,0.9);
-            animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.4s;
+            animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s;
         }
 
         .intro-title-wrapper {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 10002;
-            animation: fadeTitle 0.6s ease-out forwards 1.4s;
+            animation: fadeTitle 0.6s ease-out forwards 1.8s;
         }
 
-        /* АНИМИРОВАННАЯ РАМКА */
         .intro-title-box {
             background: var(--glass-bg);
-            border: 2px solid var(--primary);
+            border: 1px solid var(--primary);
             border-top: 2px solid var(--glass-reflection);
             padding: 25px 60px;
             backdrop-filter: blur(25px) saturate(150%);
             -webkit-backdrop-filter: blur(25px) saturate(150%);
             clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            animation: frameInit 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, framePulse 1.5s infinite alternate 0.8s;
-            position: relative;
+            opacity: 0;
+            transform: scale(0.7) scaleX(2.5);
+            animation: boxDeploy 1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.2s;
         }
 
-        /* АНИМИРОВАННЫЙ ТЕКСТ С ГЛИТЧ-ЭФФЕКТОМ */
         .intro-text {
-            color: var(--primary);
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 6px;
-            text-shadow: 0 0 20px var(--primary);
-            white-space: nowrap;
-            font-family: 'Jura', sans-serif;
-            position: relative;
-            display: inline-block;
-            animation: textGlitchInit 1.4s steps(2, start) infinite, trackingExpand 1.2s ease-out forwards;
+            color: var(--primary); font-size: 3.5rem; font-weight: 700; white-space: nowrap; font-family: 'Jura', sans-serif;
+            opacity: 0; filter: blur(10px); letter-spacing: 40px;
+            animation: textFocus 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.4s;
         }
 
-        /* Псевдоэлементы для двойного радарного сдвига (RGB/HUD Glitch) */
-        .intro-text::before,
-        .intro-text::after {
-            content: 'BATTLE MW';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: transparent;
+        @keyframes boxDeploy {
+            0% { transform: scale(0.6) scaleX(3); opacity: 0; box-shadow: inset 0 0 0 transparent; }
+            40% { transform: scale(1.05) scaleX(0.9); opacity: 1; box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.5); }
+            100% { transform: scale(1) scaleX(1); opacity: 1; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--border-glow); }
         }
 
-        .intro-text::before {
-            color: var(--danger);
-            z-index: -1;
-            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-            animation: glitchShiftRed 0.4s infinite alternate;
-        }
-
-        .intro-text::after {
-            color: #fff;
-            z-index: -2;
-            clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
-            animation: glitchShiftCyan 0.3s infinite alternate;
-        }
-
-        @keyframes frameInit {
-            0% { opacity: 0; transform: scale(0.6); box-shadow: 0 0 0 rgba(0, 229, 255, 0); }
-            60% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.6); }
-        }
-
-        @keyframes framePulse {
-            from { box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.3); border-color: rgba(0, 229, 255, 0.6); }
-            to { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 229, 255, 0.8); border-color: #00e5ff; }
-        }
-
-        @keyframes trackingExpand {
-            0% { letter-spacing: 4px; opacity: 0; }
-            50% { opacity: 1; }
-            100% { letter-spacing: 12px; opacity: 1; }
-        }
-
-        @keyframes textGlitchInit {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 1px); }
-            40% { transform: translate(2px, -1px); }
-            60% { transform: translate(-1px, -1px); }
-            80% { transform: translate(1px, 2px); }
-        }
-
-        @keyframes glitchShiftRed {
-            0% { transform: translate(0); opacity: 0.8; }
-            100% { transform: translate(-3px, -1px); opacity: 0.3; }
-        }
-
-        @keyframes glitchShiftCyan {
-            0% { transform: translate(0); opacity: 0.8; }
-            100% { transform: translate(3px, 1px); opacity: 0.3; }
+        @keyframes textFocus {
+            0% { letter-spacing: 40px; opacity: 0; filter: blur(15px); color: #fff; text-shadow: none; }
+            50% { letter-spacing: -2px; opacity: 0.9; filter: blur(2px); color: var(--primary); text-shadow: 0 0 30px var(--primary); }
+            100% { letter-spacing: 12px; opacity: 1; filter: blur(0); text-shadow: 0 0 20px var(--primary); }
         }
 
         @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         @keyframes slideRight { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
-        @keyframes fadeTitle { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); pointer-events: none; } }
+        @keyframes fadeTitle { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; } }
         @keyframes removeOverlay { to { visibility: hidden; pointer-events: none; } }
 
         /* --- ОСНОВНОЙ ИНТЕРФЕЙС --- */
@@ -193,15 +130,10 @@
         }
 
         .nav-btn {
-            background: var(--glass-bg); 
-            border: 1px solid var(--primary-dim);
-            border-top: 1px solid var(--glass-reflection);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             color: var(--primary); padding: 12px 35px; font-family: 'Share Tech Mono'; font-size: 1.1rem;
-            cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-            transition: all 0.3s ease; 
+            cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; 
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(0, 229, 255, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); }
 
@@ -215,7 +147,7 @@
         }
         .info-btn:hover { background: var(--primary-dim); box-shadow: var(--border-glow); color: #fff; }
 
-        /* МОДАЛЬНОЕ ОКНО */
+        /* --- МОДАЛЬНОЕ ОКНО --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -225,22 +157,16 @@
         .modal-overlay.active { opacity: 1; visibility: visible; }
         
         .modal-content {
-            background: var(--glass-bg); border: 1px solid var(--primary);
-            border-top: 1px solid var(--glass-reflection);
+            background: var(--glass-bg); border: 1px solid var(--primary); border-top: 1px solid var(--glass-reflection);
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 229, 255, 0.1);
             padding: 35px; max-width: 700px; width: 90%; position: relative;
             clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
             color: var(--text-main); transform: scale(0.95); transition: 0.3s ease;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
-
         .modal-title { color: #fff; font-family: 'Jura', sans-serif; font-size: 1.6rem; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; letter-spacing: 1px; }
-        .modal-close {
-            position: absolute; top: 15px; right: 20px; background: transparent; border: none;
-            color: var(--danger); font-size: 1.8rem; font-family: 'Jura', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
+        .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--danger); font-size: 1.8rem; font-family: 'Jura', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .modal-close:hover { text-shadow: 0 0 15px var(--danger); transform: scale(1.1); }
-        
         .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.7; font-size: 1.05rem; }
         .modal-body p { margin-bottom: 15px; }
         .modal-body ul { margin: 15px 0 15px 25px; color: #8892b0; }
@@ -272,7 +198,6 @@
         .tactic-title { font-family: 'Share Tech Mono'; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         .final-winner-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid var(--primary); background: rgba(0, 229, 255, 0.1); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.2); animation: pulseGlow 2s infinite alternate; backdrop-filter: blur(10px); }
         .final-draw-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid #aaa; background: rgba(255, 255, 255, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); backdrop-filter: blur(10px); }
-        @keyframes pulseGlow { from { box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1); } to { box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.4); } }
 
         /* КАТАЛОГ (БАЗА ДАННЫХ) */
         .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
@@ -285,7 +210,6 @@
         .catalog-item.selected::after { content: "ВЫБРАН (1)"; position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; font-family: 'Share Tech Mono'; padding: 2px 8px; font-weight: bold; box-shadow: 0 0 10px var(--primary);}
         .catalog-item-img { height: 160px; background: rgba(0,0,0,0.5); margin-bottom: 15px; background-size: cover; background-position: center; border-bottom: 2px solid var(--primary-dim); }
         
-        /* УВЕДОМЛЕНИЯ */
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: rgba(6, 11, 18, 0.85); border: 1px solid var(--primary); color: var(--primary); padding: 15px 30px; font-family: 'Share Tech Mono'; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: var(--border-glow); backdrop-filter: blur(15px); border-top: 1px solid var(--glass-reflection); }
         .toast.error { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(255, 42, 95, 0.5); }
@@ -293,7 +217,7 @@
 </head>
 <body>
 
-    <!-- СТАРТОВЫЙ ИНТРО-ЭКРАН С АНИМАЦИЕЙ -->
+    <!-- СТАРТОВЫЙ ИНТРО-ЭКРАН -->
     <div id="intro-overlay">
         <div class="door door-left"></div>
         <div class="door door-right"></div>
@@ -311,13 +235,13 @@
             <div class="modal-title">СПРАВКА: ИНДЕКС ИБЭ</div>
             <div class="modal-body">
                 <p><b>ИБЭ (Индекс Боевой Эффективности)</b> — это аналитический алгоритм, оценивающий чистый потенциал корпуса боевого корабля по 10,000-балльной шкале.</p>
-                <p>При расчете <b>намеренно исключены</b> показатели урона (DPM) и базового залпа, так как вооружение в Modern Warships является сменяемым. Сравниваются фундаментальные константы платформы:</p>
+                <p>При расчете <b>намеренно исключены</b> показатели урона (DPM) и базового залпа, так как вооружение в игре является сменяемым. Сравниваются фундаментальные константы платформы:</p>
                 <ul>
                     <li><b>Прочность (30%):</b> Базовый запас живучести корпуса.</li>
                     <li><b>Маневренность (25%):</b> Динамика рулей и способность гасить инерцию при маневрировании (уклонение от торпед).</li>
                     <li><b>Скорость (20%):</b> Тактическая мобильность на карте.</li>
                     <li><b>Радар (10%):</b> Право первого удара и контроль дистанции.</li>
-                    <li><b>Скрытность (12%):</b> Суммарная незаметность с воздуха, поверхности и от сонаров подводных лодок.</li>
+                    <li><b>Скрытность (12%):</b> Суммарная незаметность с воздуха, поверхности и от сонаров ПЛ.</li>
                     <li><b>Стабилизация (3%):</b> Штраф разброса орудий при стрельбе на ходу.</li>
                 </ul>
                 <p>Алгоритм нормализует разрыв между характеристиками двух кораблей и формирует итоговый взвешенный рейтинг.</p>
@@ -327,7 +251,6 @@
 
     <div id="toast-container"></div>
 
-    <!-- НАВИГАЦИЯ -->
     <nav>
         <button class="nav-btn" onclick="switchMainPage('page-compare')">ТЕРМИНАЛ СРАВНЕНИЯ</button>
         <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА ДАННЫХ ФЛОТА</button>
@@ -368,14 +291,9 @@
         const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
         
         const STAT_LABELS = {
-            hp: "Прочность (HP)",
-            speed: "Скорость (Узлы)",
-            maneuverability: "Маневренность",
-            radar: "Радиус обзора (КМ)",
-            conc_air: "Заметность (Воздух)",
-            conc_surf: "Заметность (Поверхность)",
-            conc_depth: "Заметность (Глубина)",
-            penalty: "Штраф движения (%)"
+            hp: "Прочность (HP)", speed: "Скорость (Узлы)", maneuverability: "Маневренность",
+            radar: "Радиус обзора (КМ)", conc_air: "Заметность (Воздух)", conc_surf: "Заметность (Поверхность)",
+            conc_depth: "Заметность (Глубина)", penalty: "Штраф движения (%)"
         };
 
         const DB = {
@@ -393,11 +311,7 @@
 
         function openModal() { document.getElementById('ibe-modal').classList.add('active'); }
         function closeModal() { document.getElementById('ibe-modal').classList.remove('active'); }
-        
-        window.onclick = function(event) {
-            const modal = document.getElementById('ibe-modal');
-            if (event.target === modal) { closeModal(); }
-        }
+        window.onclick = function(event) { const modal = document.getElementById('ibe-modal'); if (event.target === modal) { closeModal(); } }
 
         function checkCompatibility(cat1, cat2) {
             const special = ["Субмарина", "Авианосец"];
@@ -423,8 +337,7 @@
             if(pageId === 'page-compare') document.querySelectorAll('.nav-btn')[0].classList.add('active');
             if(pageId === 'page-catalog') {
                 document.querySelectorAll('.nav-btn')[1].classList.add('active');
-                compareQueue = []; 
-                renderCatalog();
+                compareQueue = []; renderCatalog();
             }
         }
 
@@ -459,16 +372,13 @@
                 if (checkCompatibility(firstShip.category, ship.category)) {
                     updateShipView(1, id1);
                     updateShipView(2, id2);
-                    
                     runAnalysis(id1, id2);
-                    
                     switchMainPage('page-compare');
                     showToast("ДАННЫЕ ПЕРЕДАНЫ В ТЕРМИНАЛ АНАЛИЗА");
                     compareQueue = [];
                 } else {
                     showToast(`ОШИБКА: Несовместимые классы (${firstShip.category} и ${ship.category})`, true);
-                    compareQueue = [];
-                    renderCatalog();
+                    compareQueue = []; renderCatalog();
                 }
             }
         }
@@ -498,7 +408,6 @@
             const ship = DB[shipId];
             document.getElementById(`name-ship-${side}`).innerText = ship.name;
             document.getElementById(`img-ship-${side}`).style.backgroundImage = `url('${ship.img}')`;
-            
             let html = '';
             for (let key in STAT_LABELS) {
                 let val = ship[key];
@@ -510,20 +419,16 @@
 
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
-            
-            const WEIGHTS = {
-                hp: 0.30, maneuverability: 0.25, speed: 0.20, radar: 0.10,
-                conc_surf: 0.05, conc_air: 0.04, conc_depth: 0.03, penalty: 0.03
-            };
-
+            const WEIGHTS = { hp: 0.30, maneuverability: 0.25, speed: 0.20, radar: 0.10, conc_surf: 0.05, conc_air: 0.04, conc_depth: 0.03, penalty: 0.03 };
             const reverseLogic = ['conc_air', 'conc_surf', 'conc_depth', 'penalty'];
             
             let score1 = 0; let score2 = 0;
 
             for (let key in STAT_LABELS) {
+                if (!WEIGHTS[key] && key !== 'speed') continue; 
+                
                 const v1 = parseFloat(s1[key]); const v2 = parseFloat(s2[key]);
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
-                
                 el1.className = "stat-value"; el2.className = "stat-value";
 
                 if (v1 === v2) {
@@ -555,11 +460,10 @@
             const finalScore2 = Math.round(score2 * 10000);
 
             let analysisHTML = "";
-
             const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
             const speedDiff = Math.abs(s1.speed - s2.speed);
-
             let kineticText = "";
+            
             if (manDiff >= 0.5) {
                 const manWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
                 kineticText += `<b>${manWinner.name}</b> превосходит оппонента в скорости перекладки руля (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты между островами. `;
@@ -570,11 +474,7 @@
             }
 
             if (kineticText) {
-                analysisHTML += `
-                    <div class="tactic-block mobility">
-                        <div class="tactic-title" style="color:var(--primary)">► Динамика и Кинетика платформы</div>
-                        ${kineticText}
-                    </div>`;
+                analysisHTML += `<div class="tactic-block mobility"><div class="tactic-title" style="color:var(--primary)">► Динамика и Кинетика платформы</div>${kineticText}</div>`;
             }
 
             let stealthText = "";
@@ -588,34 +488,18 @@
             }
 
             if (stealthText) {
-                analysisHTML += `
-                    <div class="tactic-block intel">
-                        <div class="tactic-title" style="color:#ffd700">► Радиоэлектронная борьба и Скрытность</div>
-                        ${stealthText}
-                    </div>`;
+                analysisHTML += `<div class="tactic-block intel"><div class="tactic-title" style="color:#ffd700">► Радиоэлектронная борьба и Скрытность</div>${stealthText}</div>`;
             }
 
             let finalVerdictHTML = "";
             const scoreDiff = Math.abs(finalScore1 - finalScore2);
             
             if (scoreDiff < 150) {
-                finalVerdictHTML = `
-                <div class="final-draw-block">
-                    <div style="color:#aaa; font-size:1.4rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ ПЛАТФОРМ</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2}</div>
-                </div>`;
+                finalVerdictHTML = `<div class="final-draw-block"><div style="color:#aaa; font-size:1.4rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ ПЛАТФОРМ</div><div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2}</div></div>`;
             } else if (finalScore1 > finalScore2) {
-                finalVerdictHTML = `
-                <div class="final-winner-block">
-                    <div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s1.name}</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore1}</span> vs ${finalScore2}</div>
-                </div>`;
+                finalVerdictHTML = `<div class="final-winner-block"><div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s1.name}</div><div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore1}</span> vs ${finalScore2}</div></div>`;
             } else {
-                finalVerdictHTML = `
-                <div class="final-winner-block">
-                    <div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s2.name}</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore2}</span> vs ${finalScore1}</div>
-                </div>`;
+                finalVerdictHTML = `<div class="final-winner-block"><div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s2.name}</div><div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore2}</span> vs ${finalScore1}</div></div>`;
             }
 
             document.getElementById('verdict-screen').innerHTML = analysisHTML + finalVerdictHTML;
