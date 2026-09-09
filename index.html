@@ -102,7 +102,7 @@
         .modal-title { color: #fff; font-family: 'Jura', sans-serif; font-size: 1.6rem; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; letter-spacing: 1px; }
         .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--danger); font-size: 1.8rem; font-family: 'Jura', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .modal-close:hover { text-shadow: 0 0 15px var(--danger); transform: scale(1.1); }
-        .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.7; font-size: 1rem; }
+        .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.6; font-size: 1rem; }
         .modal-body p { margin-bottom: 10px; }
         .modal-body ul { margin: 10px 0 10px 25px; color: #8892b0; font-size: 0.95rem; }
         .modal-body li { margin-bottom: 5px; }
@@ -177,11 +177,19 @@
                     <li><b>Маневренность (20%):</b> Динамика рулей и способность уклоняться от торпед.</li>
                     <li><b>Скорость (18%):</b> Тактическая мобильность на карте.</li>
                     <li><b>Радар (8%):</b> Право первого удара.</li>
-                    <li><b>Стелс-модуль (6%):</b> Защита от автозахвата систем наведения (Малозаметность).</li>
+                    <li><b>Стелс-модуль (6%):</b> Снижает радиус обнаружения корабля на радарах противника (Малозаметность).</li>
                     <li><b>Скрытность среды (13%):</b> Суммарная незаметность с воздуха, поверхности и от ПЛ.</li>
                     <li><b>Разведданные (4%):</b> Длительность удержания противника в засвете.</li>
                     <li><b>Стабилизация (3%):</b> Штраф разброса орудий при стрельбе на ходу.</li>
                 </ul>
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--primary-dim);">
+                    <p style="color: #fff; margin-bottom: 5px;"><b>ШКАЛА ПРЕВОСХОДСТВА:</b></p>
+                    <ul style="list-style: none; margin-left: 0;">
+                        <li><span style="color:#aaa;">Разрыв 0 – 149:</span> Боевой паритет (разница в рамках погрешности).</li>
+                        <li><span style="color:var(--primary);">Разрыв 150 – 299:</span> Тактическое превосходство одной из платформ.</li>
+                        <li><span style="color:#ffaa00;">Разрыв 300 и более:</span> Абсолютное доминирование (корпус на поколение выше).</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -227,7 +235,6 @@
     <script>
         const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
         
-        // Добавлены Малозаметность (Stealth) и Разведданные (Recon)
         const STAT_LABELS = {
             hp: "Прочность (HP)", speed: "Скорость (Узлы)", maneuverability: "Маневренность",
             radar: "Радиус обзора (КМ)", stealth: "Малозаметность", conc_air: "Заметность (Воздух)", 
@@ -360,7 +367,6 @@
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
             
-            // НОВЫЕ ВЕСА (Сумма = 1.0)
             const WEIGHTS = { 
                 hp: 0.28, maneuverability: 0.20, speed: 0.18, radar: 0.08, 
                 stealth: 0.06, conc_surf: 0.05, conc_air: 0.04, conc_depth: 0.04, 
@@ -431,7 +437,7 @@
             }
             if (s1.stealth !== s2.stealth) {
                 const stealthWinner = s1.stealth === 1 ? s1 : s2;
-                stealthText += `<br><b>${stealthWinner.name}</b> оборудован системой <b>"Малозаметность"</b> (Stealth), что блокирует автозахват орудий противника на дистанции. `;
+                stealthText += `<br><b>${stealthWinner.name}</b> оборудован технологией <b>"Малозаметность"</b> (Stealth), что позволяет ему дольше оставаться невидимым для радаров противника. `;
             }
             if (s1.conc_surf !== s2.conc_surf) {
                 const stWinner = s1.conc_surf < s2.conc_surf ? s1 : s2;
@@ -450,11 +456,31 @@
             const scoreDiff = Math.abs(finalScore1 - finalScore2);
             
             if (scoreDiff < 150) {
-                finalVerdictHTML = `<div class="final-draw-block"><div style="color:#aaa; font-size:1.4rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ ПЛАТФОРМ</div><div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2}</div></div>`;
-            } else if (finalScore1 > finalScore2) {
-                finalVerdictHTML = `<div class="final-winner-block"><div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s1.name}</div><div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore1}</span> vs ${finalScore2}</div></div>`;
+                finalVerdictHTML = `
+                <div class="final-draw-block">
+                    <div style="color:#aaa; font-size:1.4rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ ПЛАТФОРМ</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">
+                        Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2} 
+                        <span style="color:#8892b0; font-size:0.9rem;">(Разрыв менее 150)</span>
+                    </div>
+                </div>`;
             } else {
-                finalVerdictHTML = `<div class="final-winner-block"><div style="color:var(--primary); font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px var(--primary);">ЛУЧШАЯ ПЛАТФОРМА: ${s2.name}</div><div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">Рейтинг ИБЭ: <span style="color:var(--primary)">${finalScore2}</span> vs ${finalScore1}</div></div>`;
+                const winner = finalScore1 > finalScore2 ? s1 : s2;
+                const winScore = finalScore1 > finalScore2 ? finalScore1 : finalScore2;
+                const loseScore = finalScore1 > finalScore2 ? finalScore2 : finalScore1;
+                
+                const isDomination = scoreDiff >= 300;
+                const color = isDomination ? "#ffaa00" : "var(--primary)";
+                const title = isDomination ? "АБСОЛЮТНОЕ ДОМИНИРОВАНИЕ" : "ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО";
+                
+                finalVerdictHTML = `
+                <div class="final-winner-block" style="border-color: ${color}; box-shadow: inset 0 0 20px ${isDomination ? 'rgba(255, 170, 0, 0.2)' : 'rgba(0, 229, 255, 0.2)'};">
+                    <div style="color:${color}; font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px ${color};">${title}: ${winner.name}</div>
+                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">
+                        Рейтинг ИБЭ: <span style="color:${color}">${winScore}</span> vs ${loseScore} 
+                        <span style="color:#8892b0; font-size:0.9rem;">(Разрыв: +${scoreDiff})</span>
+                    </div>
+                </div>`;
             }
 
             document.getElementById('verdict-screen').innerHTML = analysisHTML + finalVerdictHTML;
