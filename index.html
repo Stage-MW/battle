@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BATTLE MW | ТАКТИЧЕСКИЙ ТЕРМИНАЛ</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700;800&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
 
         :root {
             --bg-color: #03070b;
@@ -47,101 +47,84 @@
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px);
-            pointer-events: none; z-index: 9999;
+            pointer-events: none; z-index: 999;
         }
 
-        /* ==================== АНИМАЦИЯ ИНТРО (BATTLE MW) ==================== */
+        /* === ИНТРО-АНИМАЦИЯ (СТВОРКИ ШЛЮЗА) === */
         #intro-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 10000;
             display: flex;
-            align-items: center;
-            justify-content: center;
             pointer-events: all;
-            overflow: hidden;
         }
 
-        .shutter {
-            position: absolute;
-            top: 0;
+        .gate-door {
             width: 50vw;
             height: 100vh;
             background-image: url('bg-ocean.jpg');
             background-size: 100vw 100vh;
             background-repeat: no-repeat;
-            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-
-        .shutter::before {
-            content: "";
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 12, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            top: 0;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        .shutter-left {
+        .gate-left {
             left: 0;
             background-position: left center;
             border-right: 2px solid var(--primary);
-            box-shadow: 10px 0 30px rgba(0, 229, 255, 0.3);
+            box-shadow: inset -10px 0 30px rgba(0,0,0,0.8);
         }
 
-        .shutter-right {
+        .gate-right {
             right: 0;
             background-position: right center;
             border-left: 2px solid var(--primary);
-            box-shadow: -10px 0 30px rgba(0, 229, 255, 0.3);
+            box-shadow: inset 10px 0 30px rgba(0,0,0,0.8);
         }
 
-        #intro-title-box {
-            position: relative;
+        #intro-overlay.open .gate-left {
+            transform: translateX(-100%);
+        }
+
+        #intro-overlay.open .gate-right {
+            transform: translateX(100%);
+        }
+
+        .intro-title-box {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 10001;
             text-align: center;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            background: rgba(6, 11, 18, 0.85);
-            padding: 30px 60px;
-            border: 2px solid var(--primary);
-            clip-path: polygon(25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%, 0 25px);
-            box-shadow: 0 0 40px rgba(0, 229, 255, 0.5), inset 0 0 20px rgba(0, 229, 255, 0.3);
-            backdrop-filter: blur(15px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            pointer-events: none;
         }
 
-        #intro-title-box h1 {
-            font-size: 3.5rem;
-            letter-spacing: 12px;
+        .intro-title-box h1 {
+            font-family: 'Jura', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
             color: #fff;
-            font-weight: 800;
+            letter-spacing: 12px;
             text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        #intro-title-box p {
+        .intro-title-box p {
             font-family: 'Share Tech Mono', monospace;
             font-size: 1.1rem;
             color: var(--primary);
             letter-spacing: 4px;
         }
 
-        /* Запуск открытия створок */
-        #intro-overlay.open .shutter-left {
-            transform: translateX(-100%);
-        }
-
-        #intro-overlay.open .shutter-right {
-            transform: translateX(100%);
-        }
-
-        #intro-overlay.open #intro-title-box {
+        #intro-overlay.open .intro-title-box {
             opacity: 0;
-            transform: scale(1.15);
-            pointer-events: none;
+            transform: translate(-50%, -60%) scale(1.1);
         }
-        /* ==================================================================== */
 
+        /* НАВИГАЦИЯ */
         nav {
             display: flex; justify-content: center; gap: 25px; padding: 25px;
             background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
@@ -261,13 +244,13 @@
 </head>
 <body>
 
-    <!-- ВСТУПИТЕЛЬНАЯ АНИМАЦИЯ РАЗДВИГАЮЩИХСЯ СТВОРОК -->
+    <!-- ИНТРО-ЗАСЛОНКА (СТВОРКИ) -->
     <div id="intro-overlay">
-        <div class="shutter shutter-left"></div>
-        <div class="shutter shutter-right"></div>
-        <div id="intro-title-box">
+        <div class="gate-door gate-left"></div>
+        <div class="gate-door gate-right"></div>
+        <div class="intro-title-box">
             <h1>BATTLE MW</h1>
-            <p>[ ИНИЦИАЛИЗАЦИЯ ТАКТИЧЕСКИХ СИСТЕМ ]</p>
+            <p>[ ТАКТИЧЕСКИЙ АНАЛИЗАТОР ФЛОТА ]</p>
         </div>
     </div>
 
@@ -425,17 +408,15 @@
         let currentCategory = "Фрегат";
         let compareQueue = [];
 
-        // Инициализация вступительной анимации
-        function runIntroAnimation() {
+        // Инициализация интро-анимации
+        function runIntro() {
             setTimeout(() => {
                 const overlay = document.getElementById('intro-overlay');
                 overlay.classList.add('open');
-                
-                // Полностью отключаем overlay через 1.2 секунды после завершения анимации
                 setTimeout(() => {
-                    overlay.style.display = 'none';
+                    overlay.style.display = 'none'; // Полностью убираем со страницы после открытия
                 }, 1200);
-            }, 1000); // 1 секунда демонстрации логотипа перед открытием
+            }, 1800); // 1.8 секунды показ цельного логотипа
         }
 
         function checkCompatibility(cat1, cat2) {
@@ -468,7 +449,7 @@
         }
 
         function initApp() {
-            runIntroAnimation();
+            runIntro();
 
             const catBar = document.getElementById('category-bar');
             CATEGORIES.forEach(cat => {
@@ -552,7 +533,6 @@
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
             
-            // ВЕСОВЫЕ КОЭФФИЦИЕНТЫ ПЛАТФОРМЫ
             const WEIGHTS = {
                 hp: 0.30,
                 maneuverability: 0.25,
@@ -606,6 +586,7 @@
 
             let analysisHTML = "";
 
+            // Блок 1: КИНЕТИКА, СКОРОСТЬ И ИНЕРЦИЯ
             const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
             const speedDiff = Math.abs(s1.speed - s2.speed);
 
@@ -627,6 +608,7 @@
                     </div>`;
             }
 
+            // Блок 2: РАЗВЕДКА И СТЕЛС-ХАРАКТЕРИСТИКИ
             let stealthText = "";
             if (s1.radar !== s2.radar) {
                 const radWinner = s1.radar > s2.radar ? s1 : s2;
@@ -645,6 +627,7 @@
                     </div>`;
             }
 
+            // Блок 3: ИТОГОВЫЙ РЕЙТИНГ ИБЭ
             let finalVerdictHTML = "";
             const scoreDiff = Math.abs(finalScore1 - finalScore2);
             
