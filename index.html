@@ -50,85 +50,37 @@
 
         /* --- СТАРТОВАЯ АНИМАЦИЯ --- */
         #intro-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 10000;
-            display: flex;
-            pointer-events: all;
-            animation: removeOverlay 0.1s forwards 3.5s;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10000;
+            display: flex; pointer-events: all; animation: removeOverlay 0.1s forwards 3.5s;
         }
-
         .door {
-            position: absolute;
-            top: 0; width: 50vw; height: 100vh;
-            background-image: url('bg-ocean.jpg');
-            background-size: 100vw 100vh;
-            background-repeat: no-repeat;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+            position: absolute; top: 0; width: 50vw; height: 100vh;
+            background-image: url('bg-ocean.jpg'); background-size: 100vw 100vh; background-repeat: no-repeat;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
         }
-
-        .door-left {
-            left: 0; background-position: left center; border-right: 2px solid var(--primary);
-            box-shadow: 10px 0 30px rgba(0,0,0,0.9);
-            animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s;
-        }
-
-        .door-right {
-            right: 0; background-position: right center; border-left: 2px solid var(--primary);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.9);
-            animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s;
-        }
-
-        .intro-title-wrapper {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 10002;
-            animation: fadeTitle 0.6s ease-out forwards 1.8s;
-        }
-
+        .door-left { left: 0; background-position: left center; border-right: 2px solid var(--primary); box-shadow: 10px 0 30px rgba(0,0,0,0.9); animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s; }
+        .door-right { right: 0; background-position: right center; border-left: 2px solid var(--primary); box-shadow: -10px 0 30px rgba(0,0,0,0.9); animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s; }
+        .intro-title-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10002; animation: fadeTitle 0.6s ease-out forwards 1.8s; }
         .intro-title-box {
-            background: var(--glass-bg);
-            border: 1px solid var(--primary);
-            border-top: 2px solid var(--glass-reflection);
-            padding: 25px 60px;
-            backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            background: var(--glass-bg); border: 1px solid var(--primary); border-top: 2px solid var(--glass-reflection);
+            padding: 25px 60px; backdrop-filter: blur(25px) saturate(150%); -webkit-backdrop-filter: blur(25px) saturate(150%);
             clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            opacity: 0;
-            transform: scale(0.7) scaleX(2.5);
-            animation: boxDeploy 1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.2s;
+            opacity: 0; transform: scale(0.7) scaleX(2.5); animation: boxDeploy 1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.2s;
         }
-
         .intro-text {
             color: var(--primary); font-size: 3.5rem; font-weight: 700; white-space: nowrap; font-family: 'Jura', sans-serif;
-            opacity: 0; filter: blur(10px); letter-spacing: 40px;
-            animation: textFocus 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.4s;
+            opacity: 0; filter: blur(10px); letter-spacing: 40px; animation: textFocus 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.4s;
         }
 
-        @keyframes boxDeploy {
-            0% { transform: scale(0.6) scaleX(3); opacity: 0; box-shadow: inset 0 0 0 transparent; }
-            40% { transform: scale(1.05) scaleX(0.9); opacity: 1; box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.5); }
-            100% { transform: scale(1) scaleX(1); opacity: 1; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--border-glow); }
-        }
-
-        @keyframes textFocus {
-            0% { letter-spacing: 40px; opacity: 0; filter: blur(15px); color: #fff; text-shadow: none; }
-            50% { letter-spacing: -2px; opacity: 0.9; filter: blur(2px); color: var(--primary); text-shadow: 0 0 30px var(--primary); }
-            100% { letter-spacing: 12px; opacity: 1; filter: blur(0); text-shadow: 0 0 20px var(--primary); }
-        }
-
+        @keyframes boxDeploy { 0% { transform: scale(0.6) scaleX(3); opacity: 0; box-shadow: inset 0 0 0 transparent; } 40% { transform: scale(1.05) scaleX(0.9); opacity: 1; box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.5); } 100% { transform: scale(1) scaleX(1); opacity: 1; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--border-glow); } }
+        @keyframes textFocus { 0% { letter-spacing: 40px; opacity: 0; filter: blur(15px); color: #fff; text-shadow: none; } 50% { letter-spacing: -2px; opacity: 0.9; filter: blur(2px); color: var(--primary); text-shadow: 0 0 30px var(--primary); } 100% { letter-spacing: 12px; opacity: 1; filter: blur(0); text-shadow: 0 0 20px var(--primary); } }
         @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         @keyframes slideRight { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
         @keyframes fadeTitle { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; } }
         @keyframes removeOverlay { to { visibility: hidden; pointer-events: none; } }
 
-        /* --- ОСНОВНОЙ ИНТЕРФЕЙС --- */
-        nav {
-            display: flex; justify-content: center; align-items: center; gap: 25px; padding: 25px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
-            position: relative; z-index: 10;
-        }
-
+        /* --- НАВИГАЦИЯ --- */
+        nav { display: flex; justify-content: center; align-items: center; gap: 25px; padding: 25px; background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%); position: relative; z-index: 10; }
         .nav-btn {
             background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -136,41 +88,24 @@
             cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; 
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(0, 229, 255, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); }
-
         .info-btn {
-            position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
-            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem;
-            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); backdrop-filter: blur(5px);
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            position: absolute; right: 30px; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
+            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
         .info-btn:hover { background: var(--primary-dim); box-shadow: var(--border-glow); color: #fff; }
 
         /* --- МОДАЛЬНОЕ ОКНО --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            z-index: 20000; display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: 0.3s ease;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 20000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        
-        .modal-content {
-            background: var(--glass-bg); border: 1px solid var(--primary); border-top: 1px solid var(--glass-reflection);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 229, 255, 0.1);
-            padding: 35px; max-width: 700px; width: 90%; position: relative;
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            color: var(--text-main); transform: scale(0.95); transition: 0.3s ease;
-        }
+        .modal-content { background: var(--glass-bg); border: 1px solid var(--primary); border-top: 1px solid var(--glass-reflection); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 229, 255, 0.1); padding: 35px; max-width: 700px; width: 90%; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); color: var(--text-main); transform: scale(0.95); transition: 0.3s ease; }
         .modal-overlay.active .modal-content { transform: scale(1); }
         .modal-title { color: #fff; font-family: 'Jura', sans-serif; font-size: 1.6rem; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; letter-spacing: 1px; }
         .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--danger); font-size: 1.8rem; font-family: 'Jura', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .modal-close:hover { text-shadow: 0 0 15px var(--danger); transform: scale(1.1); }
-        .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.7; font-size: 1.05rem; }
-        .modal-body p { margin-bottom: 15px; }
-        .modal-body ul { margin: 15px 0 15px 25px; color: #8892b0; }
-        .modal-body li { margin-bottom: 8px; }
+        .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.7; font-size: 1rem; }
+        .modal-body p { margin-bottom: 10px; }
+        .modal-body ul { margin: 10px 0 10px 25px; color: #8892b0; font-size: 0.95rem; }
+        .modal-body li { margin-bottom: 5px; }
         .modal-body b { color: var(--primary); font-family: 'Jura', sans-serif; }
 
         .page { display: none; animation: fadeIn 0.4s ease-out forwards; max-width: 1500px; margin: 0 auto; padding: 20px; position: relative; z-index: 5;}
@@ -182,9 +117,9 @@
         .ship-card { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px) saturate(150%); -webkit-backdrop-filter: blur(25px) saturate(150%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.05); padding: 25px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
         .ship-img-container { width: 100%; height: 220px; background: rgba(0,0,0,0.5); margin-bottom: 25px; background-size: cover; background-position: center; border: 1px solid rgba(0, 229, 255, 0.2); box-shadow: inset 0 0 20px #000; }
         .stats-table { width: 100%; border-collapse: collapse; }
-        .stats-table td { padding: 9px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.95rem; }
+        .stats-table td { padding: 9px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.9rem; }
         .stat-name { color: #8892b0; }
-        .stat-value { text-align: right; font-weight: bold; font-size: 1.1rem; }
+        .stat-value { text-align: right; font-weight: bold; font-size: 1.05rem; }
         .win { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
         .lose { color: var(--danger); opacity: 0.7; }
         .neutral { color: #aaa; }
@@ -210,6 +145,7 @@
         .catalog-item.selected::after { content: "ВЫБРАН (1)"; position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; font-family: 'Share Tech Mono'; padding: 2px 8px; font-weight: bold; box-shadow: 0 0 10px var(--primary);}
         .catalog-item-img { height: 160px; background: rgba(0,0,0,0.5); margin-bottom: 15px; background-size: cover; background-position: center; border-bottom: 2px solid var(--primary-dim); }
         
+        /* УВЕДОМЛЕНИЯ */
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: rgba(6, 11, 18, 0.85); border: 1px solid var(--primary); color: var(--primary); padding: 15px 30px; font-family: 'Share Tech Mono'; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: var(--border-glow); backdrop-filter: blur(15px); border-top: 1px solid var(--glass-reflection); }
         .toast.error { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(255, 42, 95, 0.5); }
@@ -235,16 +171,17 @@
             <div class="modal-title">СПРАВКА: ИНДЕКС ИБЭ</div>
             <div class="modal-body">
                 <p><b>ИБЭ (Индекс Боевой Эффективности)</b> — это аналитический алгоритм, оценивающий чистый потенциал корпуса боевого корабля по 10,000-балльной шкале.</p>
-                <p>При расчете <b>намеренно исключены</b> показатели урона (DPM) и базового залпа, так как вооружение в игре является сменяемым. Сравниваются фундаментальные константы платформы:</p>
+                <p>При расчете <b>намеренно исключены</b> показатели урона (DPM), так как вооружение в игре является сменяемым. В расчет идут 10 фундаментальных характеристик:</p>
                 <ul>
-                    <li><b>Прочность (30%):</b> Базовый запас живучести корпуса.</li>
-                    <li><b>Маневренность (25%):</b> Динамика рулей и способность гасить инерцию при маневрировании (уклонение от торпед).</li>
-                    <li><b>Скорость (20%):</b> Тактическая мобильность на карте.</li>
-                    <li><b>Радар (10%):</b> Право первого удара и контроль дистанции.</li>
-                    <li><b>Скрытность (12%):</b> Суммарная незаметность с воздуха, поверхности и от сонаров ПЛ.</li>
+                    <li><b>Прочность (28%):</b> Базовый запас живучести корпуса.</li>
+                    <li><b>Маневренность (20%):</b> Динамика рулей и способность уклоняться от торпед.</li>
+                    <li><b>Скорость (18%):</b> Тактическая мобильность на карте.</li>
+                    <li><b>Радар (8%):</b> Право первого удара.</li>
+                    <li><b>Стелс-модуль (6%):</b> Защита от автозахвата систем наведения (Малозаметность).</li>
+                    <li><b>Скрытность среды (13%):</b> Суммарная незаметность с воздуха, поверхности и от ПЛ.</li>
+                    <li><b>Разведданные (4%):</b> Длительность удержания противника в засвете.</li>
                     <li><b>Стабилизация (3%):</b> Штраф разброса орудий при стрельбе на ходу.</li>
                 </ul>
-                <p>Алгоритм нормализует разрыв между характеристиками двух кораблей и формирует итоговый взвешенный рейтинг.</p>
             </div>
         </div>
     </div>
@@ -290,20 +227,22 @@
     <script>
         const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
         
+        // Добавлены Малозаметность (Stealth) и Разведданные (Recon)
         const STAT_LABELS = {
             hp: "Прочность (HP)", speed: "Скорость (Узлы)", maneuverability: "Маневренность",
-            radar: "Радиус обзора (КМ)", conc_air: "Заметность (Воздух)", conc_surf: "Заметность (Поверхность)",
-            conc_depth: "Заметность (Глубина)", penalty: "Штраф движения (%)"
+            radar: "Радиус обзора (КМ)", stealth: "Малозаметность", conc_air: "Заметность (Воздух)", 
+            conc_surf: "Заметность (Поверхность)", conc_depth: "Заметность (Глубина)", 
+            recon: "Разведданные (сек)", penalty: "Штраф движения (%)"
         };
 
         const DB = {
-            "aquitaine": { name: "FS Aquitaine (D650)", category: "Фрегат", hp: 429000, speed: 30.3, maneuverability: 8.45, radar: 11.20, conc_air: 4.25, conc_surf: 3.83, conc_depth: 2.98, penalty: 6.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+AQUITAINE" },
-            "forbin": { name: "FS Forbin", category: "Фрегат", hp: 429000, speed: 29.1, maneuverability: 10.14, radar: 10.00, conc_air: 4.53, conc_surf: 3.97, conc_depth: 3.12, penalty: 6.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+FORBIN" },
-            "type32": { name: "HMS TYPE 32", category: "Фрегат", hp: 435500, speed: 26.0, maneuverability: 10.40, radar: 10.80, conc_air: 4.65, conc_surf: 4.08, conc_depth: 3.23, penalty: 5.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=HMS+TYPE+32" },
-            "f124": { name: "FGS F124", category: "Фрегат", hp: 429000, speed: 27.0, maneuverability: 8.32, radar: 10.40, conc_air: 4.96, conc_surf: 4.11, conc_depth: 2.98, penalty: 6.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" },
-            "ushakov": { name: "RF Admiral Ushakov", category: "Эсминец", hp: 448500, speed: 23.5, maneuverability: 9.10, radar: 10.60, conc_air: 4.82, conc_surf: 4.25, conc_depth: 3.40, penalty: 9.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=ADMIRAL+USHAKOV" },
-            "fletcher": { name: "USS Fletcher (DD-992)", category: "Эсминец", hp: 455000, speed: 25.3, maneuverability: 9.75, radar: 11.60, conc_air: 5.10, conc_surf: 4.53, conc_depth: 3.40, penalty: 9.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=USS+FLETCHER" },
-            "orlan": { name: "Проект 1144 «Орлан»", category: "Крейсер", hp: 480000, speed: 24.0, maneuverability: 6.5, radar: 12.0, conc_air: 6.5, conc_surf: 5.5, conc_depth: 4.5, penalty: 8.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=CRUISER" }
+            "aquitaine": { name: "FS Aquitaine (D650)", category: "Фрегат", hp: 429000, speed: 30.3, maneuverability: 8.45, radar: 11.20, stealth: 1, conc_air: 4.25, conc_surf: 3.83, conc_depth: 2.98, recon: 5, penalty: 6.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+AQUITAINE" },
+            "forbin": { name: "FS Forbin", category: "Фрегат", hp: 429000, speed: 29.1, maneuverability: 10.14, radar: 10.00, stealth: 1, conc_air: 4.53, conc_surf: 3.97, conc_depth: 3.12, recon: 5, penalty: 6.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+FORBIN" },
+            "type32": { name: "HMS TYPE 32", category: "Фрегат", hp: 435500, speed: 26.0, maneuverability: 10.40, radar: 10.80, stealth: 1, conc_air: 4.65, conc_surf: 4.08, conc_depth: 3.23, recon: 5, penalty: 5.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=HMS+TYPE+32" },
+            "f124": { name: "FGS F124", category: "Фрегат", hp: 429000, speed: 27.0, maneuverability: 8.32, radar: 10.40, stealth: 1, conc_air: 4.96, conc_surf: 4.11, conc_depth: 2.98, recon: 5, penalty: 6.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" },
+            "ushakov": { name: "RF Admiral Ushakov", category: "Эсминец", hp: 448500, speed: 23.5, maneuverability: 9.10, radar: 10.60, stealth: 0, conc_air: 4.82, conc_surf: 4.25, conc_depth: 3.40, recon: 4, penalty: 9.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=ADMIRAL+USHAKOV" },
+            "fletcher": { name: "USS Fletcher (DD-992)", category: "Эсминец", hp: 455000, speed: 25.3, maneuverability: 9.75, radar: 11.60, stealth: 0, conc_air: 5.10, conc_surf: 4.53, conc_depth: 3.40, recon: 4, penalty: 9.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=USS+FLETCHER" },
+            "orlan": { name: "Проект 1144 «Орлан»", category: "Крейсер", hp: 480000, speed: 24.0, maneuverability: 6.5, radar: 12.0, stealth: 0, conc_air: 6.5, conc_surf: 5.5, conc_depth: 4.5, recon: 4, penalty: 8.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=CRUISER" }
         };
 
         let currentCategory = "Фрегат";
@@ -412,6 +351,7 @@
             for (let key in STAT_LABELS) {
                 let val = ship[key];
                 if (key === 'hp') val = val.toLocaleString('ru');
+                if (key === 'stealth') val = val === 1 ? "Да" : "Нет";
                 html += `<tr><td class="stat-name">${STAT_LABELS[key]}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
             }
             document.getElementById(`stats-ship-${side}`).innerHTML = html;
@@ -419,7 +359,14 @@
 
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
-            const WEIGHTS = { hp: 0.30, maneuverability: 0.25, speed: 0.20, radar: 0.10, conc_surf: 0.05, conc_air: 0.04, conc_depth: 0.03, penalty: 0.03 };
+            
+            // НОВЫЕ ВЕСА (Сумма = 1.0)
+            const WEIGHTS = { 
+                hp: 0.28, maneuverability: 0.20, speed: 0.18, radar: 0.08, 
+                stealth: 0.06, conc_surf: 0.05, conc_air: 0.04, conc_depth: 0.04, 
+                recon: 0.04, penalty: 0.03 
+            };
+            
             const reverseLogic = ['conc_air', 'conc_surf', 'conc_depth', 'penalty'];
             
             let score1 = 0; let score2 = 0;
@@ -466,7 +413,7 @@
             
             if (manDiff >= 0.5) {
                 const manWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
-                kineticText += `<b>${manWinner.name}</b> превосходит оппонента в скорости перекладки руля (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты между островами. `;
+                kineticText += `<b>${manWinner.name}</b> превосходит оппонента в скорости перекладки руля (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты. `;
             }
             if (speedDiff >= 0.8) {
                 const speedWinner = s1.speed > s2.speed ? s1 : s2;
@@ -474,7 +421,7 @@
             }
 
             if (kineticText) {
-                analysisHTML += `<div class="tactic-block mobility"><div class="tactic-title" style="color:var(--primary)">► Динамика и Кинетика платформы</div>${kineticText}</div>`;
+                analysisHTML += `<div class="tactic-block mobility"><div class="tactic-title" style="color:var(--primary)">► Динамика и Кинетика</div>${kineticText}</div>`;
             }
 
             let stealthText = "";
@@ -482,13 +429,21 @@
                 const radWinner = s1.radar > s2.radar ? s1 : s2;
                 stealthText += `Преимущество дальнего обнаружения за <b>${radWinner.name}</b> (Радар ${radWinner.radar} км). `;
             }
+            if (s1.stealth !== s2.stealth) {
+                const stealthWinner = s1.stealth === 1 ? s1 : s2;
+                stealthText += `<br><b>${stealthWinner.name}</b> оборудован системой <b>"Малозаметность"</b> (Stealth), что блокирует автозахват орудий противника на дистанции. `;
+            }
             if (s1.conc_surf !== s2.conc_surf) {
                 const stWinner = s1.conc_surf < s2.conc_surf ? s1 : s2;
-                stealthText += `Корпус <b>${stWinner.name}</b> обладает меньшей заметностью с поверхности (${stWinner.conc_surf} км).`;
+                stealthText += `<br>Корпус <b>${stWinner.name}</b> обладает меньшей физической заметностью с поверхности (${stWinner.conc_surf} км). `;
+            }
+            if (s1.recon !== s2.recon) {
+                const reconWinner = s1.recon > s2.recon ? s1 : s2;
+                stealthText += `<br>Длительность удержания разведданных у <b>${reconWinner.name}</b> выше (${reconWinner.recon} сек).`;
             }
 
             if (stealthText) {
-                analysisHTML += `<div class="tactic-block intel"><div class="tactic-title" style="color:#ffd700">► Радиоэлектронная борьба и Скрытность</div>${stealthText}</div>`;
+                analysisHTML += `<div class="tactic-block intel"><div class="tactic-title" style="color:#ffd700">► Радиоэлектронная борьба</div>${stealthText}</div>`;
             }
 
             let finalVerdictHTML = "";
