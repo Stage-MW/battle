@@ -50,14 +50,14 @@
             pointer-events: none; z-index: 999;
         }
 
-        /* --- СТАРТОВАЯ АНИМАЦИЯ: РАЗДВИЖНЫЕ СТВОРКИ --- */
+        /* --- СТАРТОВЫЙ ИНТРО-ЭКРАН С АНИМАЦИЕЙ РАМКИ И ГЛИТЧ-ТЕКСТА --- */
         #intro-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 10000;
             display: flex;
             pointer-events: all;
-            animation: removeOverlay 0.1s forwards 2.5s;
+            animation: removeOverlay 0.1s forwards 2.7s;
         }
 
         .door {
@@ -75,7 +75,7 @@
             background-position: left center;
             border-right: 2px solid var(--primary);
             box-shadow: 10px 0 30px rgba(0,0,0,0.9);
-            animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.2s;
+            animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.4s;
         }
 
         .door-right {
@@ -83,7 +83,7 @@
             background-position: right center;
             border-left: 2px solid var(--primary);
             box-shadow: -10px 0 30px rgba(0,0,0,0.9);
-            animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.2s;
+            animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.4s;
         }
 
         .intro-title-wrapper {
@@ -91,33 +91,98 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10002;
-            animation: fadeTitle 0.6s ease-out forwards 1.2s;
+            animation: fadeTitle 0.6s ease-out forwards 1.4s;
         }
 
+        /* АНИМИРОВАННАЯ РАМКА */
         .intro-title-box {
             background: var(--glass-bg);
-            border: 1px solid var(--primary);
+            border: 2px solid var(--primary);
             border-top: 2px solid var(--glass-reflection);
             padding: 25px 60px;
             backdrop-filter: blur(25px) saturate(150%);
             -webkit-backdrop-filter: blur(25px) saturate(150%);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--border-glow);
             clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            animation: frameInit 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, framePulse 1.5s infinite alternate 0.8s;
+            position: relative;
         }
 
+        /* АНИМИРОВАННЫЙ ТЕКСТ С ГЛИТЧ-ЭФФЕКТОМ */
         .intro-text {
             color: var(--primary);
             font-size: 3.5rem;
             font-weight: 700;
-            letter-spacing: 12px;
+            letter-spacing: 6px;
             text-shadow: 0 0 20px var(--primary);
             white-space: nowrap;
             font-family: 'Jura', sans-serif;
+            position: relative;
+            display: inline-block;
+            animation: textGlitchInit 1.4s steps(2, start) infinite, trackingExpand 1.2s ease-out forwards;
+        }
+
+        /* Псевдоэлементы для двойного радарного сдвига (RGB/HUD Glitch) */
+        .intro-text::before,
+        .intro-text::after {
+            content: 'BATTLE MW';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: transparent;
+        }
+
+        .intro-text::before {
+            color: var(--danger);
+            z-index: -1;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            animation: glitchShiftRed 0.4s infinite alternate;
+        }
+
+        .intro-text::after {
+            color: #fff;
+            z-index: -2;
+            clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+            animation: glitchShiftCyan 0.3s infinite alternate;
+        }
+
+        @keyframes frameInit {
+            0% { opacity: 0; transform: scale(0.6); box-shadow: 0 0 0 rgba(0, 229, 255, 0); }
+            60% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.6); }
+        }
+
+        @keyframes framePulse {
+            from { box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.3); border-color: rgba(0, 229, 255, 0.6); }
+            to { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 229, 255, 0.8); border-color: #00e5ff; }
+        }
+
+        @keyframes trackingExpand {
+            0% { letter-spacing: 4px; opacity: 0; }
+            50% { opacity: 1; }
+            100% { letter-spacing: 12px; opacity: 1; }
+        }
+
+        @keyframes textGlitchInit {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 1px); }
+            40% { transform: translate(2px, -1px); }
+            60% { transform: translate(-1px, -1px); }
+            80% { transform: translate(1px, 2px); }
+        }
+
+        @keyframes glitchShiftRed {
+            0% { transform: translate(0); opacity: 0.8; }
+            100% { transform: translate(-3px, -1px); opacity: 0.3; }
+        }
+
+        @keyframes glitchShiftCyan {
+            0% { transform: translate(0); opacity: 0.8; }
+            100% { transform: translate(3px, 1px); opacity: 0.3; }
         }
 
         @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         @keyframes slideRight { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
-        @keyframes fadeTitle { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; } }
+        @keyframes fadeTitle { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); pointer-events: none; } }
         @keyframes removeOverlay { to { visibility: hidden; pointer-events: none; } }
 
         /* --- ОСНОВНОЙ ИНТЕРФЕЙС --- */
@@ -140,7 +205,6 @@
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(0, 229, 255, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); }
 
-        /* КНОПКА ИНФО (СПРАВКА) */
         .info-btn {
             position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
             background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
@@ -151,7 +215,7 @@
         }
         .info-btn:hover { background: var(--primary-dim); box-shadow: var(--border-glow); color: #fff; }
 
-        /* --- МОДАЛЬНОЕ ОКНО ИБЭ --- */
+        /* МОДАЛЬНОЕ ОКНО */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -229,7 +293,7 @@
 </head>
 <body>
 
-    <!-- СТАРТОВЫЙ ИНТРО-ЭКРАН -->
+    <!-- СТАРТОВЫЙ ИНТРО-ЭКРАН С АНИМАЦИЕЙ -->
     <div id="intro-overlay">
         <div class="door door-left"></div>
         <div class="door door-right"></div>
@@ -267,8 +331,6 @@
     <nav>
         <button class="nav-btn" onclick="switchMainPage('page-compare')">ТЕРМИНАЛ СРАВНЕНИЯ</button>
         <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА ДАННЫХ ФЛОТА</button>
-        
-        <!-- КНОПКА СПРАВКИ -->
         <button class="info-btn" onclick="openModal()" title="Справка по ИБЭ">?</button>
     </nav>
 
@@ -329,11 +391,9 @@
         let currentCategory = "Фрегат";
         let compareQueue = [];
 
-        // Управление модальным окном
         function openModal() { document.getElementById('ibe-modal').classList.add('active'); }
         function closeModal() { document.getElementById('ibe-modal').classList.remove('active'); }
         
-        // Закрытие при клике по фону
         window.onclick = function(event) {
             const modal = document.getElementById('ibe-modal');
             if (event.target === modal) { closeModal(); }
