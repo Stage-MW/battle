@@ -23,7 +23,7 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: url('bg-ocean.jpg'); /* ФОН */
+            background-image: url('bg-ocean.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -210,7 +210,6 @@
     <script>
         const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
         
-        // Характеристики чистой платформы (корпуса) без учета DPM
         const STAT_LABELS = {
             hp: "Прочность (HP)",
             speed: "Скорость (Узлы)",
@@ -223,6 +222,7 @@
         };
 
         const DB = {
+            // ФРЕГАТЫ
             "aquitaine": { 
                 name: "FS Aquitaine (D650)", 
                 category: "Фрегат", 
@@ -275,6 +275,36 @@
                 penalty: 6.5, 
                 img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" 
             },
+
+            // ЭСМИНЦЫ (НОВЫЕ)
+            "ushakov": { 
+                name: "RF Admiral Ushakov", 
+                category: "Эсминец", 
+                hp: 448500, 
+                speed: 23.5, 
+                maneuverability: 9.10, 
+                radar: 10.60, 
+                conc_air: 4.82, 
+                conc_surf: 4.25, 
+                conc_depth: 3.40, 
+                penalty: 9.5, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=ADMIRAL+USHAKOV" 
+            },
+            "fletcher": { 
+                name: "USS Fletcher (DD-992)", 
+                category: "Эсминец", 
+                hp: 455000, 
+                speed: 25.3, 
+                maneuverability: 9.75, 
+                radar: 11.60, 
+                conc_air: 5.10, 
+                conc_surf: 4.53, 
+                conc_depth: 3.40, 
+                penalty: 9.0, 
+                img: "https://via.placeholder.com/600x400/111/00e5ff?text=USS+FLETCHER" 
+            },
+
+            // КРЕЙСЕРЫ
             "orlan": { 
                 name: "Проект 1144 «Орлан»", 
                 category: "Крейсер", 
@@ -405,7 +435,6 @@
         function runAnalysis(id1, id2) {
             const s1 = DB[id1]; const s2 = DB[id2];
             
-            // ВЕСОВЫЕ КОЭФФИЦИЕНТЫ ЧИСТОЙ ПЛАТФОРМЫ (Сумма = 1.0)
             const WEIGHTS = {
                 hp: 0.30,              // Базовый пул жизни
                 maneuverability: 0.25,  // Динамика разворота и гашение инерции
@@ -439,7 +468,6 @@
                 if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } 
                 else { el2.classList.add('win'); el1.classList.add('lose'); }
 
-                // Расчет коэффициентов
                 if (WEIGHTS[key]) {
                     if (!isInverse) {
                         const maxVal = Math.max(v1, v2);
@@ -463,13 +491,13 @@
             const speedDiff = Math.abs(s1.speed - s2.speed);
 
             let kineticText = "";
-            if (manDiff >= 1.0) {
+            if (manDiff >= 0.5) {
                 const manWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
-                kineticText += `<b>${manWinner.name}</b> значительно превосходит оппонента в скорости перекладки руля и динамике (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты между островами. `;
+                kineticText += `<b>${manWinner.name}</b> превосходит оппонента в скорости перекладки руля (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты между островами. `;
             }
-            if (speedDiff >= 1.0) {
+            if (speedDiff >= 0.8) {
                 const speedWinner = s1.speed > s2.speed ? s1 : s2;
-                kineticText += `При этом <b>${speedWinner.name}</b> быстрее на прямой (+${speedDiff.toFixed(1)} уз.), что позволяет диктовать дистанцию боя.`;
+                kineticText += `При этом <b>${speedWinner.name}</b> быстрее на прямой (+${speedDiff.toFixed(1)} уз.), что позволяет эффективнее занимать тактические позиции.`;
             }
 
             if (kineticText) {
@@ -488,7 +516,7 @@
             }
             if (s1.conc_surf !== s2.conc_surf) {
                 const stWinner = s1.conc_surf < s2.conc_surf ? s1 : s2;
-                stealthText += `Корпус <b>${stWinner.name}</b> имеет меньшую эффективную площадь рассеяния, делая его труднее обнаруживаемым с поверхности.`;
+                stealthText += `Корпус <b>${stWinner.name}</b> обладает меньшей заметностью с поверхности (${stWinner.conc_surf} км).`;
             }
 
             if (stealthText) {
