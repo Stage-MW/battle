@@ -61,7 +61,7 @@
         .controls-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
         .search-input, .filter-select { 
             background: rgba(0,0,0,0.6); border: 1px solid var(--primary-dim); color: var(--secondary); 
-            padding: 12px 20px; width: 100%; max-width: 300px; font-family: 'Share Tech Mono'; 
+            padding: 12px 20px; width: 100%; max-width: 280px; font-family: 'Share Tech Mono'; 
             font-size: 1rem; border-radius: 4px; outline: none; transition: 0.3s;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.9); text-transform: uppercase;
         }
@@ -159,7 +159,7 @@
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 350 баллов):</b> Чистый DPM и разовый альфа-страйк.</li>
                     <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная боеголовка (+150).</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Количество ракет за пуск (перегруз ПВО) и запас HP.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная скорость и штраф за долгое время разгона (медленный разгон утяжеляет перехват ПВО).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная скорость, максимальная скорость и штраф за медленное время разгона.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Наличие мертвой зоны отнимает по 50 баллов за каждый километр.</li>
                 </ul>
             </div>
@@ -203,9 +203,41 @@
             <input type="text" class="search-input" id="search-input-catalog" placeholder="ПОИСК ПО НАЗВАНИЮ..." oninput="handleSearch(this.value)">
             <select class="filter-select" id="filter-country-catalog" onchange="handleFilter()">
                 <option value="">ВСЕ СТРАНЫ</option>
-                <option value="Россия">Россия</option>
-                <option value="Китай">Китай</option>
                 <option value="США">США</option>
+                <option value="Пакистан">Пакистан</option>
+                <option value="Австрия">Австрия</option>
+                <option value="Испания">Испания</option>
+                <option value="Франция">Франция</option>
+                <option value="Южная Корея">Южная Корея</option>
+                <option value="Италия">Италия</option>
+                <option value="Мексика">Мексика</option>
+                <option value="Россия">Россия</option>
+                <option value="Турция">Турция</option>
+                <option value="Германия">Германия</option>
+                <option value="Чешская Республика">Чешская Республика</option>
+                <option value="Индия">Индия</option>
+                <option value="Pan Spatial">Pan Spatial</option>
+                <option value="Швейцария">Швейцария</option>
+                <option value="Словакия">Словакия</option>
+                <option value="Швеция">Швеция</option>
+                <option value="Иран">Иран</option>
+                <option value="Индонезия">Индонезия</option>
+                <option value="Египет">Египет</option>
+                <option value="Великобритания">Великобритания</option>
+                <option value="Перу">Перу</option>
+                <option value="Северная Корея">Северная Корея</option>
+                <option value="Польша">Польша</option>
+                <option value="Бразилия">Бразилия</option>
+                <option value="Израиль">Израиль</option>
+                <option value="Китай">Китай</option>
+                <option value="Европейский Союз">Европейский Союз</option>
+                <option value="Австралия">Австралия</option>
+                <option value="Япония">Япония</option>
+                <option value="Южная Африка">Южная Африка</option>
+                <option value="Норвегия">Норвегия</option>
+                <option value="Rodrigo Avella">Rodrigo Avella</option>
+                <option value="Объединенные Арабские Эмираты">Объединенные Арабские Эмираты</option>
+                <option value="Нидерланды">Нидерланды</option>
             </select>
             <select class="filter-select" id="filter-rarity-catalog" onchange="handleFilter()">
                 <option value="">ВСЯ РЕДКОСТЬ</option>
@@ -223,9 +255,41 @@
             <input type="text" class="search-input" id="search-input-rating" placeholder="ПОИСК В ТИР-ЛИСТЕ..." oninput="handleSearch(this.value)">
             <select class="filter-select" id="filter-country-rating" onchange="handleFilter()">
                 <option value="">ВСЕ СТРАНЫ</option>
-                <option value="Россия">Россия</option>
-                <option value="Китай">Китай</option>
                 <option value="США">США</option>
+                <option value="Пакистан">Пакистан</option>
+                <option value="Австрия">Австрия</option>
+                <option value="Испания">Испания</option>
+                <option value="Франция">Франция</option>
+                <option value="Южная Корея">Южная Корея</option>
+                <option value="Италия">Италия</option>
+                <option value="Мексика">Мексика</option>
+                <option value="Россия">Россия</option>
+                <option value="Турция">Турция</option>
+                <option value="Германия">Германия</option>
+                <option value="Чешская Республика">Чешская Республика</option>
+                <option value="Индия">Индия</option>
+                <option value="Pan Spatial">Pan Spatial</option>
+                <option value="Швейцария">Швейцария</option>
+                <option value="Словакия">Словакия</option>
+                <option value="Швеция">Швеция</option>
+                <option value="Иран">Иран</option>
+                <option value="Индонезия">Индонезия</option>
+                <option value="Египет">Египет</option>
+                <option value="Великобритания">Великобритания</option>
+                <option value="Перу">Перу</option>
+                <option value="Северная Корея">Северная Корея</option>
+                <option value="Польша">Польша</option>
+                <option value="Бразилия">Бразилия</option>
+                <option value="Израиль">Израиль</option>
+                <option value="Китай">Китай</option>
+                <option value="Европейский Союз">Европейский Союз</option>
+                <option value="Австралия">Австралия</option>
+                <option value="Япония">Япония</option>
+                <option value="Южная Африка">Южная Африка</option>
+                <option value="Норвегия">Норвегия</option>
+                <option value="Rodrigo Avella">Rodrigo Avella</option>
+                <option value="Объединенные Арабские Эмираты">Объединенные Арабские Эмираты</option>
+                <option value="Нидерланды">Нидерланды</option>
             </select>
             <select class="filter-select" id="filter-rarity-rating" onchange="handleFilter()">
                 <option value="">ВСЯ РЕДКОСТЬ</option>
@@ -308,21 +372,21 @@
             "kh90": { name: "KH-90 (ОЖИДАНИЕ ДАННЫХ)", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 1, trajectory: "Средняя", min_range: 3.0, damage_burst: 45000, dpm: 270000, reload: 10.00, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 250, start_speed: 200, max_speed: 450, accel_time: 2.00, range: 14.00, img: "https://via.placeholder.com/400x150/111/ffaa00?text=KH-90+CLUSTER" }
         };
 
-        // СИСТЕМА БАЛЛОВ НА 1000 ЕДИНИЦ С УЧЕТОМ ЗАЛПА И ВРЕМЕНИ РАЗГОНА
+        // АЛГОРИТМ БАЛЛОВ НА 1000 С УЧЕТОМ ЗАЛПА И ВРЕМЕНИ РАЗГОНА
         function calculateRating(item) {
-            let score = 100; // База
+            let score = 100; 
             
-            score += (item.dpm / 300000) * 250; // До 250 баллов за DPM
-            score += (item.damage_burst / 60000) * 150; // До 150 баллов за альфа-страйк
-            score += item.anti_jamming === 1 ? 200 : 0; // 200 за помехозащиту
-            score += item.cluster === 1 ? 150 : 0; // 150 за кластерную БЧ
-            score += (item.projectiles * 25); // Бонус за количество ракет в залпе (перегруз ПВО)
-            score += (item.hp / 400) * 80; // Живучесть
-            score += (item.start_speed / 400) * 50; // Кинетика старта
-            score += (item.max_speed / 600) * 30; // Максималка
+            score += (item.dpm / 300000) * 250; 
+            score += (item.damage_burst / 60000) * 150; 
+            score += item.anti_jamming === 1 ? 200 : 0; 
+            score += item.cluster === 1 ? 150 : 0;
+            score += (item.projectiles * 30); // Бонус за залповый потенциал
+            score += (item.hp / 400) * 80; 
+            score += (item.start_speed / 400) * 50; 
+            score += (item.max_speed / 600) * 30; 
             
-            // Штраф за долгое время разгона (чем дольше разгоняется, тем проще сбить ПВО)
-            score -= (item.accel_time * 15);
+            // Штраф за долгое время разгона (медленный разгон упрощает перехват ПВО)
+            score -= (item.accel_time * 20);
             
             // Штраф за мертвую зону (50 баллов за каждый км)
             if (item.min_range > 0) {
@@ -560,7 +624,7 @@
             let analysisCols = `<div class="analysis-cols">${generateTactics(e1)}${generateTactics(e2)}</div>`;
             
             let summaryText = "";
-            if (Math.abs(e1.rating - e2.rating) < 15) {
+            if (Math.abs(e1.rating - e2.rating) < 30) {
                 summaryText = `Обе ракеты показывают схожую боевую эффективность (Паритет: ${e1.rating} vs ${e2.rating}). Выбор зависит исключительно от дистанции ведения боя вашего корпуса.`;
             } else {
                 const winner = e1.rating > e2.rating ? e1 : e2;
