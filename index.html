@@ -57,16 +57,17 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* ПОИСКОВАЯ СТРОКА */
-        .search-container { text-align: center; margin-bottom: 25px; }
-        .search-input { 
+        /* ПАНЕЛЬ ФИЛЬТРОВ И ПОИСКА */
+        .controls-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .search-input, .filter-select { 
             background: rgba(0,0,0,0.6); border: 1px solid var(--primary-dim); color: var(--secondary); 
-            padding: 12px 25px; width: 100%; max-width: 500px; font-family: 'Share Tech Mono'; 
-            font-size: 1.1rem; border-radius: 4px; outline: none; transition: 0.3s;
+            padding: 12px 20px; width: 100%; max-width: 300px; font-family: 'Share Tech Mono'; 
+            font-size: 1rem; border-radius: 4px; outline: none; transition: 0.3s;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.9); text-transform: uppercase;
         }
         .search-input::placeholder { color: rgba(0, 229, 255, 0.3); }
-        .search-input:focus { border-color: var(--secondary); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0,0,0,0.8); color: #fff; }
+        .search-input:focus, .filter-select:focus { border-color: var(--secondary); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); color: #fff; }
+        .filter-select option { background: #03070b; color: #fff; }
 
         /* СЕТКА СРАВНЕНИЯ */
         .compare-grid { display: grid; grid-template-columns: 1fr 600px 1fr; gap: 20px; align-items: start; }
@@ -119,7 +120,7 @@
         .rating-info { flex-grow: 1; }
         .rating-bar-bg { width: 100%; height: 6px; background: #111; margin-top: 12px; border-radius: 3px; overflow: hidden; position: relative; }
         .rating-bar-fill { height: 100%; transition: width 1s ease-out; box-shadow: 0 0 10px currentColor; }
-        .rating-score { font-size: 1.8rem; font-family: 'Share Tech Mono'; font-weight: bold; min-width: 80px; text-align: right; margin-left: 20px; }
+        .rating-score { font-size: 1.8rem; font-family: 'Share Tech Mono'; font-weight: bold; min-width: 100px; text-align: right; margin-left: 20px; }
 
         /* УВЕДОМЛЕНИЯ И МОДАЛЬНОЕ ОКНО */
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 400px; }
@@ -150,17 +151,16 @@
     <div id="ibe-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('ibe-modal')">×</button>
-            <div style="color: #fff; font-family: 'Jura'; font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px;">СИСТЕМА РЕЙТИНГА И АНАЛИЗА</div>
+            <div style="color: #fff; font-family: 'Jura'; font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px;">СИСТЕМА РЕЙТИНГА И АНАЛИЗА (0 - 1000 БАЛЛОВ)</div>
             <div style="font-family: 'Share Tech Mono'; line-height: 1.6; font-size: 0.95rem; text-transform: none; color: #a09095;">
-                <p><b>АНАЛИЗАТОР:</b> Сравнивает две единицы вооружения, находя их уникальные тактические преимущества и определяя доминирующую ракету.</p>
-                <p style="margin-top: 15px;"><b>КАК РАССЧИТЫВАЕТСЯ ТИР-ЛИСТ (0-100 БАЛЛОВ):</b></p>
-                <p>Система автоматически оценивает потенциал оборудования в текущей "мете". Баллы начисляются по следующим критериям:</p>
+                <p><b>АНАЛИЗАТОР:</b> Сравнивает две единицы вооружения, находя их уникальные тактические преимущества.</p>
+                <p style="margin-top: 15px;"><b>КАК РАССЧИТЫВАЕТСЯ ТИР-ЛИСТ:</b></p>
                 <ul style="margin-left: 20px; margin-top: 10px; color: #e0f2f1; padding-left: 10px;">
-                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 35 баллов):</b> Учитывается чистый DPM (до 20) и разрушительность разового залпа (до 15).</li>
-                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 40 баллов):</b> Абсолютная помехозащита дает +25 баллов. Наличие кластерной БЧ добавляет +15 баллов.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Выживаемость (до 10 баллов):</b> Зависит от базовой прочности (HP) — способности пробить заградительный огонь ПВО.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика и захват (до 20 баллов):</b> Оценивается резкий старт (до 10), максимальная скорость в узлах (до 5) и скорость сведения на цель (до 5).</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Наличие "мертвой зоны" штрафуется на 5 баллов за каждый километр неспособности ракеты оборонять корабль в ближнем бою.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 350 баллов):</b> Чистый DPM и разовый альфа-страйк.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная боеголовка (+150).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Количество ракет за пуск (перегруз ПВО) и запас HP.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная скорость и штраф за долгое время разгона (медленный разгон утяжеляет перехват ПВО).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Наличие мертвой зоны отнимает по 50 баллов за каждый километр.</li>
                 </ul>
             </div>
         </div>
@@ -199,21 +199,45 @@
 
     <main id="page-catalog" class="page active">
         <div class="categories-bar" id="category-bar"></div>
-        <div class="search-container">
-            <input type="text" class="search-input" id="search-input-catalog" placeholder="ПОИСК ВООРУЖЕНИЯ..." oninput="handleSearch(this.value)">
+        <div class="controls-container">
+            <input type="text" class="search-input" id="search-input-catalog" placeholder="ПОИСК ПО НАЗВАНИЮ..." oninput="handleSearch(this.value)">
+            <select class="filter-select" id="filter-country-catalog" onchange="handleFilter()">
+                <option value="">ВСЕ СТРАНЫ</option>
+                <option value="Россия">Россия</option>
+                <option value="Китай">Китай</option>
+                <option value="США">США</option>
+            </select>
+            <select class="filter-select" id="filter-rarity-catalog" onchange="handleFilter()">
+                <option value="">ВСЯ РЕДКОСТЬ</option>
+                <option value="Легендарный">Легендарный</option>
+                <option value="Эпический">Эпический</option>
+                <option value="Редкий">Редкий</option>
+            </select>
         </div>
         <div class="catalog-grid" id="catalog-content"></div>
     </main>
 
     <main id="page-rating" class="page">
         <div class="categories-bar" id="rating-category-bar"></div>
-        <div class="search-container">
+        <div class="controls-container">
             <input type="text" class="search-input" id="search-input-rating" placeholder="ПОИСК В ТИР-ЛИСТЕ..." oninput="handleSearch(this.value)">
+            <select class="filter-select" id="filter-country-rating" onchange="handleFilter()">
+                <option value="">ВСЕ СТРАНЫ</option>
+                <option value="Россия">Россия</option>
+                <option value="Китай">Китай</option>
+                <option value="США">США</option>
+            </select>
+            <select class="filter-select" id="filter-rarity-rating" onchange="handleFilter()">
+                <option value="">ВСЯ РЕДКОСТЬ</option>
+                <option value="Легендарный">Легендарный</option>
+                <option value="Эпический">Эпический</option>
+                <option value="Редкий">Редкий</option>
+            </select>
         </div>
         <div class="rating-container" id="rating-content"></div>
     </main>
 
-    <!-- ЛИЧНЫЙ КАБИНЕТ (АДМИН-ПАНЕЛЬ) -->
+    <!-- ЛИЧНЫЙ КАБИНЕТ -->
     <main id="page-admin" class="page">
         <div class="analytics-core" style="max-width: 600px; margin: 0 auto; text-align: center;">
             <div class="verdict-header">ПАНЕЛЬ АДМИНИСТРАТОРА</div>
@@ -228,16 +252,11 @@
                     ПОСЕЩЕНИЯ САЙТА (Локально): <br>
                     <span id="visit-counter" style="color: #fff; font-size: 2.5rem; font-weight: bold;">0</span>
                 </div>
-                <div style="color: #a09095; font-size: 0.9rem; margin-top: 25px; font-family: 'Share Tech Mono'; text-transform: none; text-align: left; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
-                    <span style="color: var(--primary);">ВНИМАНИЕ:</span> Этот счетчик отображает локальные заходы на сайт.<br><br>
-                    Для сбора глобальной статистики всех уникальных пользователей в сети потребуется подключить базу данных. Вы можете легко интегрировать данный счетчик с вашим Telegram-ботом STAGE или настроить триггер записи в Supabase.
-                </div>
             </div>
         </div>
     </main>
 
     <script>
-        // СИСТЕМА ПОСЕЩЕНИЙ
         let siteVisits = localStorage.getItem('mw_site_visits') || 0;
         siteVisits++;
         localStorage.setItem('mw_site_visits', siteVisits);
@@ -256,6 +275,8 @@
 
         const CATEGORIES = ["Ракеты"];
         let searchQuery = "";
+        let selectedCountry = "";
+        let selectedRarity = "";
         
         const STATS_LOGIC = {
             damage_burst: { label: "Урон за залп", higherIsBetter: true },
@@ -275,34 +296,40 @@
         };
 
         const DB = {
-            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
-            "yj15": { name: "YJ-15", category: "Ракеты", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
-            "yj17": { name: "YJ-17", category: "Ракеты", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
-            "granit": { name: "P-700 GRANIT", category: "Ракеты", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
-            "kh35": { name: "KH-35", category: "Ракеты", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
-            "yj18": { name: "YJ-18", category: "Ракеты", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
-            "champ": { name: "CHAMP", category: "Ракеты", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
-            "gtx690": { name: "GTX 690", category: "Ракеты", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
-            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" },
-            "kh90": { name: "KH-90 (ОЖИДАНИЕ ДАННЫХ)", category: "Ракеты", cluster: 1, trajectory: "Средняя", min_range: 3.0, damage_burst: 45000, dpm: 270000, reload: 10.00, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 250, start_speed: 200, max_speed: 450, accel_time: 2.00, range: 14.00, img: "https://via.placeholder.com/400x150/111/ffaa00?text=KH-90+CLUSTER" }
+            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
+            "yj15": { name: "YJ-15", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
+            "yj17": { name: "YJ-17", category: "Ракеты", country: "Китай", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
+            "granit": { name: "P-700 GRANIT", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
+            "kh35": { name: "KH-35", category: "Ракеты", country: "Россия", rarity: "Редкий", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
+            "yj18": { name: "YJ-18", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
+            "champ": { name: "CHAMP", category: "Ракеты", country: "США", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
+            "gtx690": { name: "GTX 690", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
+            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" },
+            "kh90": { name: "KH-90 (ОЖИДАНИЕ ДАННЫХ)", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 1, trajectory: "Средняя", min_range: 3.0, damage_burst: 45000, dpm: 270000, reload: 10.00, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 250, start_speed: 200, max_speed: 450, accel_time: 2.00, range: 14.00, img: "https://via.placeholder.com/400x150/111/ffaa00?text=KH-90+CLUSTER" }
         };
 
+        // СИСТЕМА БАЛЛОВ НА 1000 ЕДИНИЦ С УЧЕТОМ ЗАЛПА И ВРЕМЕНИ РАЗГОНА
         function calculateRating(item) {
-            let score = 10; 
-            score += (item.dpm / 300000) * 20; 
-            score += (item.damage_burst / 60000) * 15; 
-            score += item.anti_jamming === 1 ? 25 : 0; 
-            score += item.cluster === 1 ? 15 : 0;
-            score += (item.hp / 400) * 10; 
-            score += (item.start_speed / 400) * 5; 
-            score += (item.max_speed / 600) * 5; 
-            score += Math.max(0, (2.0 - item.lock_time) * 5); 
+            let score = 100; // База
             
+            score += (item.dpm / 300000) * 250; // До 250 баллов за DPM
+            score += (item.damage_burst / 60000) * 150; // До 150 баллов за альфа-страйк
+            score += item.anti_jamming === 1 ? 200 : 0; // 200 за помехозащиту
+            score += item.cluster === 1 ? 150 : 0; // 150 за кластерную БЧ
+            score += (item.projectiles * 25); // Бонус за количество ракет в залпе (перегруз ПВО)
+            score += (item.hp / 400) * 80; // Живучесть
+            score += (item.start_speed / 400) * 50; // Кинетика старта
+            score += (item.max_speed / 600) * 30; // Максималка
+            
+            // Штраф за долгое время разгона (чем дольше разгоняется, тем проще сбить ПВО)
+            score -= (item.accel_time * 15);
+            
+            // Штраф за мертвую зону (50 баллов за каждый км)
             if (item.min_range > 0) {
-                score -= (item.min_range * 5);
+                score -= (item.min_range * 50);
             }
             
-            return Math.min(100, Math.round(score));
+            return Math.min(1000, Math.max(50, Math.round(score)));
         }
 
         for (let key in DB) {
@@ -326,10 +353,26 @@
 
         function handleSearch(val) {
             searchQuery = val.toLowerCase();
-            document.getElementById('search-input-catalog').value = val;
-            document.getElementById('search-input-rating').value = val;
+            syncFilters();
             renderCatalog();
             renderRatingList();
+        }
+
+        function handleFilter() {
+            selectedCountry = document.getElementById('filter-country-catalog').value || document.getElementById('filter-country-rating').value;
+            selectedRarity = document.getElementById('filter-rarity-catalog').value || document.getElementById('filter-rarity-rating').value;
+            syncFilters();
+            renderCatalog();
+            renderRatingList();
+        }
+
+        function syncFilters() {
+            document.getElementById('search-input-catalog').value = searchQuery;
+            document.getElementById('search-input-rating').value = searchQuery;
+            document.getElementById('filter-country-catalog').value = selectedCountry;
+            document.getElementById('filter-country-rating').value = selectedCountry;
+            document.getElementById('filter-rarity-catalog').value = selectedRarity;
+            document.getElementById('filter-rarity-rating').value = selectedRarity;
         }
 
         function switchMainPage(pageId) {
@@ -371,26 +414,31 @@
                 switchMainPage('page-compare');
                 showToast("АНАЛИЗ ЗАВЕРШЕН");
                 compareQueue = [];
-                searchQuery = ""; 
-                document.getElementById('search-input-catalog').value = "";
-                document.getElementById('search-input-rating').value = "";
+                searchQuery = ""; selectedCountry = ""; selectedRarity = "";
+                syncFilters();
             }
+        }
+
+        function filterItem(s) {
+            if (searchQuery && !s.name.toLowerCase().includes(searchQuery)) return false;
+            if (selectedCountry && s.country !== selectedCountry) return false;
+            if (selectedRarity && s.rarity !== selectedRarity) return false;
+            return true;
         }
 
         function renderCatalog() {
             const c = document.getElementById('catalog-content'); c.innerHTML = ''; 
             for (let key in DB) {
                 const s = DB[key];
-                if (searchQuery && !s.name.toLowerCase().includes(searchQuery)) continue;
+                if (!filterItem(s)) continue;
                 const sel = compareQueue.includes(key) ? 'selected' : '';
                 c.innerHTML += `
                     <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
                         <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
                         <div style="color:#fff; font-size:1.1rem; font-weight:bold; margin-bottom:8px; font-family:'Jura'">${s.name}</div>
                         <div style="color:#a09095; font-family:'Share Tech Mono'; font-size: 0.9rem; line-height: 1.5;">
-                            DPM: <span style="color:var(--secondary)">${s.dpm.toLocaleString('ru')}</span><br>
-                            УРОН: <span style="color:var(--primary)">${s.damage_burst.toLocaleString('ru')}</span><br>
-                            РЕЙТИНГ МЕТЫ: <span style="color:#ffaa00">${s.rating}/100</span>
+                            СТРАНА: <span style="color:#fff">${s.country}</span><br>
+                            РЕЙТИНГ МЕТЫ: <span style="color:#ffaa00">${s.rating}/1000</span>
                         </div>
                     </div>`;
             }
@@ -399,17 +447,17 @@
         function renderRatingList() {
             const c = document.getElementById('rating-content'); c.innerHTML = '';
             let items = Object.keys(DB).map(key => ({ id: key, ...DB[key] }));
-            if (searchQuery) items = items.filter(item => item.name.toLowerCase().includes(searchQuery));
+            items = items.filter(item => filterItem(item));
             items.sort((a, b) => b.rating - a.rating);
 
             items.forEach((item, index) => {
                 let color = 'var(--secondary)';
-                if (item.rating >= 90) color = '#ffaa00'; 
-                else if (item.rating < 80) color = '#a09095'; 
+                if (item.rating >= 800) color = '#ffaa00'; 
+                else if (item.rating < 500) color = '#a09095'; 
 
                 setTimeout(() => {
                     const bar = document.getElementById(`bar-${item.id}`);
-                    if(bar) bar.style.width = `${item.rating}%`;
+                    if(bar) bar.style.width = `${(item.rating / 1000) * 100}%`;
                 }, 50);
 
                 c.innerHTML += `
@@ -417,7 +465,7 @@
                         <div class="rating-rank" style="color: ${color}">#${index + 1}</div>
                         <div class="rating-img" style="background-image: url('${item.img}')"></div>
                         <div class="rating-info">
-                            <div style="color: #fff; font-family: 'Jura'; font-size: 1.3rem; font-weight: bold;">${item.name}</div>
+                            <div style="color: #fff; font-family: 'Jura'; font-size: 1.3rem; font-weight: bold;">${item.name} <span style="font-size:0.8rem; color:#a09095;">[${item.country}]</span></div>
                             <div class="rating-bar-bg"><div class="rating-bar-fill" id="bar-${item.id}" style="width: 0%; background: ${color}; color: ${color}"></div></div>
                         </div>
                         <div class="rating-score" style="color: ${color}">${item.rating}</div>
@@ -455,24 +503,19 @@
 
             if (item.damage_burst >= 40000) pros.push("Разрушительный альфа-страйк (урон за залп)");
 
+            if (item.projectiles > 1) pros.push(`Залп из ${item.projectiles} ракет (повышенный шанс перегруза ПВО)`);
+
             if (item.start_speed >= 250) pros.push("Резкий старт (ПВО не успевает среагировать)");
             else if (item.start_speed < 50) cons.push("Критически медленный старт (легко сбивается ПВО)");
-            else cons.push("Медленный разгон на старте (уязвима в упор)");
+
+            if (item.accel_time > 3.0) cons.push(`Долгое время разгона (${item.accel_time} сек - уязвима для ПВО на траектории)`);
 
             if (item.trajectory === "Высокая") {
                 pros.push("Навесная траектория (позволяет вести огонь из-за островов)");
                 cons.push("Долго находится в воздухе (уязвима для дальнобойного ПВО)");
             } else if (item.trajectory === "Низкая") {
                 pros.push("Стелется над водой (минимальное время для реакции ПВО)");
-            } else if (item.trajectory === "Средняя") {
-                pros.push("Сбалансированная траектория полета");
             }
-
-            if (item.lock_time <= 1.2) pros.push("Мгновенный захват цели для спама");
-            else if (item.lock_time >= 3.0) cons.push(`Критически долгий захват цели (${item.lock_time} сек)`);
-            
-            if (item.projectiles > 1 && item.cluster === 0) pros.push(`Перегружает ПВО количеством снарядов (${item.projectiles} шт)`);
-            else if (item.hp < 100) cons.push("Крайне низкая прочность (сбивается одним лазером)");
 
             if (item.min_range > 0) {
                 cons.push(`Мертвая зона ${item.min_range} км (невозможно обороняться в упор)`);
@@ -517,33 +560,23 @@
             let analysisCols = `<div class="analysis-cols">${generateTactics(e1)}${generateTactics(e2)}</div>`;
             
             let summaryText = "";
-            if (Math.abs(e1.rating - e2.rating) < 5) {
+            if (Math.abs(e1.rating - e2.rating) < 15) {
                 summaryText = `Обе ракеты показывают схожую боевую эффективность (Паритет: ${e1.rating} vs ${e2.rating}). Выбор зависит исключительно от дистанции ведения боя вашего корпуса.`;
             } else {
                 const winner = e1.rating > e2.rating ? e1 : e2;
                 const loser = e1.rating > e2.rating ? e2 : e1;
                 
                 let reason = "комплексного превосходства характеристик";
-                
-                if (loser.min_range > 0 && winner.min_range === 0) {
-                    reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
-                } else if (winner.cluster === 1 && loser.cluster === 0) {
-                    reason = "наличия кластерной БЧ (разделяющиеся боеголовки эффективнее пробивают ПВО)";
-                } else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) {
-                    reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
-                } else if (winner.damage_burst > loser.damage_burst + 10000) {
-                    reason = "разрушительного разового урона (альфа-страйка)";
-                } else if (winner.dpm > loser.dpm + 20000) {
-                    reason = "подавляющего урона в минуту (DPM)";
-                } else if (winner.start_speed > loser.start_speed + 50) {
-                    reason = "превосходной кинетики (ПВО не успевает среагировать на старте)";
-                }
+                if (loser.min_range > 0 && winner.min_range === 0) reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
+                else if (winner.cluster === 1 && loser.cluster === 0) reason = "наличия кластерной БЧ";
+                else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
+                else if (winner.damage_burst > loser.damage_burst + 10000) reason = "разрушительного разового урона";
+                else if (winner.dpm > loser.dpm + 20000) reason = "подавляющего урона в минуту (DPM)";
 
-                summaryText = `<span style="color:var(--secondary); font-size: 1.2rem;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><br>В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating}).`;
+                summaryText = `<span style="color:var(--secondary); font-size: 1.2rem;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><br>В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating} из 1000).`;
             }
 
             let finalVerdictHTML = `<div class="final-summary-block"><div style="color:#fff; font-family:'Share Tech Mono'; font-size:0.95rem; line-height: 1.6; text-transform: none;">${summaryText}</div></div>`;
-            
             document.getElementById('verdict-screen').innerHTML = analysisCols + finalVerdictHTML;
         }
 
