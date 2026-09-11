@@ -160,7 +160,7 @@
                     <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная БЧ / Осколки (+150), Урон по области и Радиус детонации (+50), Лазерное наведение (+50).</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Выстрелов за атаку (перегруз ПВО) и запас HP.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная и максимальная скорость.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Ограничение зоны пуска (мертвая зона) отнимает по 50 баллов за км. Долгое время набора скорости и высокий штраф при ведении огня также снимают очки.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Ограничение зоны пуска (мертвая зона) отнимает по 50 баллов за км. Долгое время набора скорости (уязвимость к ПВО), штраф за ведение огня и долгий захват цели активно сжигают баллы.</li>
                 </ul>
             </div>
         </div>
@@ -380,7 +380,7 @@
             "m001": { name: "PAN SPATIAL M-001", category: "Ракеты", country: "Pan Spatial", rarity: "Эпический", cluster: 1, trajectory: "Высокая", min_range: 1.60, damage_burst: 31300, dpm: 180399, reload: 10.15, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 325, start_speed: 77, max_speed: 583, accel_time: 2.00, range: 11.27, detonation_radius: 13, fragmentation_damage: 23500, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=M-001" }
         };
 
-        // АЛГОРИТМ БАЛЛОВ НА 1000 С УЧЕТОМ ЗАЛПА, СПЛЕША, ДЕТОНАЦИИ И ШТРАФОВ
+        // АЛГОРИТМ БАЛЛОВ НА 1000 С УЧЕТОМ ЗАЛПА, СПЛЕША, ДЕТОНАЦИИ И ЖЕСТКИХ ШТРАФОВ
         function calculateRating(item) {
             let score = 100; 
             
@@ -393,21 +393,20 @@
             score += (item.start_speed / 400) * 50; 
             score += (item.max_speed / 600) * 30; 
             
-            // Бонусы за урон по области, осколки и радиус детонации
             if (item.splash_damage) score += (item.splash_damage / 5000) * 30; 
             if (item.splash_radius) score += (item.splash_radius / 300) * 20; 
             if (item.detonation_radius) score += (item.detonation_radius / 20) * 15;
             if (item.fragmentation_damage) score += (item.fragmentation_damage / 25000) * 40;
 
-            // Бонус за лазерное наведение или штраф за долгий захват
+            // Лазерное наведение дает бонус, долгое сведение жестко штрафуется
             if (item.lock_time === 0) {
                 score += 50;
-            } else {
-                score += Math.max(0, (2.0 - item.lock_time) * 5); 
+            } else if (item.lock_time > 2.0) {
+                score -= ((item.lock_time - 2.0) * 25);
             }
             
-            // Штраф за долгое время разгона (ПВО легко собьет)
-            score -= (item.accel_time * 20);
+            // Усиленный штраф за долгое время разгона (ракету легко сбить на страте)
+            score -= (item.accel_time * 30);
             
             // Штраф за разброс при движении
             if (item.fire_penalty) score -= (item.fire_penalty * 0.8);
@@ -665,7 +664,7 @@
             let analysisCols = `<div class="analysis-cols">${generateTactics(e1)}${generateTactics(e2)}</div>`;
             
             let summaryText = "";
-            if (Math.abs(e1.rating - e2.rating) < 30) {
+            if (Math.abs(e1.rating - e2.rating) < 15) {
                 summaryText = `Обе ракеты показывают схожую боевую эффективность (Паритет: ${e1.rating} vs ${e2.rating}). Выбор зависит исключительно от дистанции ведения боя вашего корпуса.`;
             } else {
                 const winner = e1.rating > e2.rating ? e1 : e2;
