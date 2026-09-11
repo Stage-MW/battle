@@ -225,7 +225,6 @@
             score += (item.max_speed / 600) * 5; 
             score += Math.max(0, (2.0 - item.lock_time) * 5); 
             
-            // Штраф за мертвую зону (неспособность отбиться в упор)
             if (item.min_range > 0) score -= 10;
             
             return Math.min(100, Math.round(score));
@@ -398,7 +397,6 @@
             if (item.projectiles > 1 && item.cluster === 0) pros.push(`Перегружает ПВО количеством снарядов (${item.projectiles} шт)`);
             else if (item.hp < 100) cons.push("Крайне низкая прочность (сбивается одним лазером)");
 
-            // Логика мертвой зоны и дистанции
             if (item.min_range > 0) {
                 cons.push(`Мертвая зона ${item.min_range} км (невозможно обороняться в упор)`);
                 range = `ДАЛЬНЯЯ (Критически уязвима в ближнем бою из-за мертвой зоны ${item.min_range} км)`;
@@ -447,10 +445,21 @@
             } else {
                 const winner = e1.rating > e2.rating ? e1 : e2;
                 const loser = e1.rating > e2.rating ? e2 : e1;
-                let reason = winner.anti_jamming === 1 || winner.cluster === 1 ? "абсолютной независимости от вражеских ловушек (РЭБ)" : "огневого потенциала (Урон/DPM) и кинетики";
+                
+                let reason = "комплексного превосходства характеристик";
                 
                 if (loser.min_range > 0 && winner.min_range === 0) {
                     reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
+                } else if (winner.cluster === 1 && loser.cluster === 0) {
+                    reason = "наличия кластерной БЧ (пробивает ПВО даже при сбросе ловушек)";
+                } else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) {
+                    reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
+                } else if (winner.damage_burst > loser.damage_burst + 10000) {
+                    reason = "разрушительного разового урона (альфа-страйка)";
+                } else if (winner.dpm > loser.dpm + 20000) {
+                    reason = "подавляющего урона в минуту (DPM)";
+                } else if (winner.start_speed > loser.start_speed + 50) {
+                    reason = "превосходной кинетики (ПВО не успевает среагировать на старте)";
                 }
 
                 summaryText = `<span style="color:var(--secondary); font-size: 1.2rem;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><br>В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating}).`;
