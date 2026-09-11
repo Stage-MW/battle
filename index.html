@@ -147,6 +147,7 @@
 <body>
     <div id="toast-container"></div>
 
+    <!-- МОДАЛЬНОЕ ОКНО СПРАВКИ -->
     <div id="ibe-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">×</button>
@@ -160,7 +161,7 @@
                     <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 40 баллов):</b> Абсолютная помехозащита дает +25 баллов. Наличие кластерной БЧ добавляет +15 баллов.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Выживаемость (до 10 баллов):</b> Зависит от базовой прочности (HP) — способности пробить заградительный огонь ПВО.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика и захват (до 20 баллов):</b> Оценивается резкий старт (до 10), максимальная скорость в узлах (до 5) и скорость сведения на цель (до 5).</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции (-10 баллов):</b> Наличие "мертвой зоны" жестко штрафуется за неспособность ракеты оборонять корабль в ближнем бою.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Наличие "мертвой зоны" штрафуется на 5 баллов за каждый километр неспособности ракеты оборонять корабль в ближнем бою.</li>
                 </ul>
             </div>
         </div>
@@ -257,7 +258,10 @@
             score += (item.max_speed / 600) * 5; 
             score += Math.max(0, (2.0 - item.lock_time) * 5); 
             
-            if (item.min_range > 0) score -= 10;
+            // Динамический штраф за мертвую зону (5 баллов за каждый км)
+            if (item.min_range > 0) {
+                score -= (item.min_range * 5);
+            }
             
             return Math.min(100, Math.round(score));
         }
