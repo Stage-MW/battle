@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BATTLE MW | АНАЛИЗ ВООРУЖЕНИЯ</title>
+    <title>WARDEX | АНАЛИЗ ВООРУЖЕНИЯ</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
 
@@ -233,7 +233,7 @@
     <!-- ИНТРО АНИМАЦИЯ -->
     <div id="intro-screen">
         <div id="intro-explosion"></div>
-        <div id="intro-text">BATTLE</div>
+        <div id="intro-text">WARDEX</div>
     </div>
 
     <!-- ФОНОВЫЕ СЛОИ -->
@@ -256,7 +256,7 @@
                     <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная БЧ / Осколки (+100-150: ПВО не реагирует на мелкие части. Доп. бонус отводимым ракетам за урон при поздних ловушках), Урон по области и Детонация (+50), Лазерное наведение (+50).</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Выстрелов за атаку (перегруз ПВО) и запас HP.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная и максимальная скорость.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Ограничение зоны пуска (мертвая зона) отнимает по 50 баллов за км. Долгое время набора скорости (уязвимость к ПВО), штраф за ведение огня и долгий захват цели активно сжигают баллы.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Ограничение зоны пуска (мертвая зона) отнимает по 50 баллов за км. Долгое время набора скорости (уязвимость к ПВО), штраф обнаружения и долгий захват цели активно сжигают баллы.</li>
                 </ul>
             </div>
         </div>
@@ -521,7 +521,7 @@
             accel_time: { label: "Время набора скорости, сек", higherIsBetter: false },
             range: { label: "Дальность (км)", higherIsBetter: true },
             min_range: { label: "Огран. зоны пуска, км", higherIsBetter: false },
-            fire_penalty: { label: "Штраф при огне (%)", higherIsBetter: false }
+            fire_penalty: { label: "Штраф обнаружения (%)", higherIsBetter: false }
         };
 
         const DB = {
@@ -765,8 +765,8 @@
 
             if (item.accel_time > 3.0) cons.push(`Долгое время разгона (${item.accel_time} сек - уязвима для ПВО на траектории)`);
 
-            if (item.fire_penalty > 35) cons.push("Высокий штраф разброса при ведении огня в движении");
-            else if (item.fire_penalty <= 35) pros.push("Пониженный штраф разброса при стрельбе на ходу");
+            if (item.fire_penalty > 35) cons.push("Высокий штраф обнаружения при пуске");
+            else if (item.fire_penalty <= 35) pros.push("Пониженный штраф обнаружения");
 
             if (item.trajectory === "Высокая") {
                 pros.push("Навесная траектория (позволяет вести огонь из-за островов)");
