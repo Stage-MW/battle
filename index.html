@@ -194,6 +194,7 @@
             projectiles: { label: "Ракет за пуск", higherIsBetter: true },
             anti_jamming: { label: "Помехозащита", higherIsBetter: true },
             hp: { label: "Прочность (HP)", higherIsBetter: true },
+            trajectory: { label: "Высота полёта", isString: true },
             start_speed: { label: "Нач. скорость (уз)", higherIsBetter: true },
             max_speed: { label: "Скорость (уз)", higherIsBetter: true },
             accel_time: { label: "Время разгона (сек)", higherIsBetter: false },
@@ -201,23 +202,22 @@
         };
 
         const DB = {
-            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
-            "yj15": { name: "YJ-15", category: "Ракеты", damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
-            "yj17": { name: "YJ-17", category: "Ракеты", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
-            "granit": { name: "P-700 GRANIT", category: "Ракеты", damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
-            "kh35": { name: "KH-35", category: "Ракеты", damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
-            "yj18": { name: "YJ-18", category: "Ракеты", damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
-            "champ": { name: "CHAMP", category: "Ракеты", damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
-            "gtx690": { name: "GTX 690", category: "Ракеты", damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
-            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" }
+            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", trajectory: "Высокая", damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
+            "yj15": { name: "YJ-15", category: "Ракеты", trajectory: "Высокая", damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
+            "yj17": { name: "YJ-17", category: "Ракеты", trajectory: "Высокая", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
+            "granit": { name: "P-700 GRANIT", category: "Ракеты", trajectory: "Низкая", damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
+            "kh35": { name: "KH-35", category: "Ракеты", trajectory: "Низкая", damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
+            "yj18": { name: "YJ-18", category: "Ракеты", trajectory: "Низкая", damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
+            "champ": { name: "CHAMP", category: "Ракеты", trajectory: "Низкая", damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
+            "gtx690": { name: "GTX 690", category: "Ракеты", trajectory: "Средняя", damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
+            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", trajectory: "Низкая", damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" }
         };
 
-        // УСИЛЕННЫЙ РАСЧЕТ РЕЙТИНГА С УЧЕТОМ УРОНА И DPM
         function calculateRating(item) {
-            let score = 10; // Снижена базовая ставка для большего разброса
-            score += (item.dpm / 300000) * 20; // DPM (макс ~20 баллов)
-            score += (item.damage_burst / 60000) * 15; // Разовый урон (макс ~15 баллов)
-            score += item.anti_jamming === 1 ? 25 : 0; // Мета (игнор ловушек)
+            let score = 10; 
+            score += (item.dpm / 300000) * 20; 
+            score += (item.damage_burst / 60000) * 15; 
+            score += item.anti_jamming === 1 ? 25 : 0; 
             score += (item.hp / 400) * 10; 
             score += (item.start_speed / 400) * 10; 
             score += (item.max_speed / 600) * 5; 
@@ -241,7 +241,6 @@
             setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 2500);
         }
 
-        // ОБРАБОТЧИК ПОИСКА
         function handleSearch(val) {
             searchQuery = val.toLowerCase();
             document.getElementById('search-input-catalog').value = val;
@@ -290,7 +289,7 @@
                 switchMainPage('page-compare');
                 showToast("АНАЛИЗ ЗАВЕРШЕН");
                 compareQueue = [];
-                searchQuery = ""; // Сброс поиска после анализа
+                searchQuery = ""; 
                 document.getElementById('search-input-catalog').value = "";
                 document.getElementById('search-input-rating').value = "";
             }
@@ -300,8 +299,6 @@
             const c = document.getElementById('catalog-content'); c.innerHTML = ''; 
             for (let key in DB) {
                 const s = DB[key];
-                
-                // Фильтрация поиска
                 if (searchQuery && !s.name.toLowerCase().includes(searchQuery)) continue;
                 
                 const sel = compareQueue.includes(key) ? 'selected' : '';
@@ -322,7 +319,6 @@
             const c = document.getElementById('rating-content'); c.innerHTML = '';
             let items = Object.keys(DB).map(key => ({ id: key, ...DB[key] }));
             
-            // Фильтрация поиска
             if (searchQuery) {
                 items = items.filter(item => item.name.toLowerCase().includes(searchQuery));
             }
@@ -382,6 +378,16 @@
             else if (item.start_speed < 50) cons.push("Критически медленный старт (легко сбивается ПВО)");
             else cons.push("Медленный разгон на старте (уязвима в упор)");
 
+            if (item.trajectory === "Высокая") {
+                pros.push("Навесная траектория (позволяет вести огонь из-за островов)");
+                cons.push("Долго находится в воздухе (уязвима для дальнобойного ПВО)");
+            } else if (item.trajectory === "Низкая") {
+                pros.push("Стелется над водой (минимальное время для реакции ПВО)");
+                cons.push("Требует прямой видимости (разбивается об укрытия)");
+            } else if (item.trajectory === "Средняя") {
+                pros.push("Сбалансированная траектория полета");
+            }
+
             if (item.lock_time <= 1.2) pros.push("Мгновенный захват цели для спама");
             else if (item.lock_time >= 3.0) cons.push(`Критически долгий захват цели (${item.lock_time} сек)`);
             
@@ -409,7 +415,11 @@
             const e1 = DB[id1]; const e2 = DB[id2];
 
             for (let key in STATS_LOGIC) {
+                if (e1[key] === undefined || e2[key] === undefined || STATS_LOGIC[key].isString) continue;
+
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
+                if(!el1 || !el2) continue;
+
                 el1.className = "stat-value"; el2.className = "stat-value";
                 const v1 = parseFloat(e1[key]); const v2 = parseFloat(e2[key]);
 
