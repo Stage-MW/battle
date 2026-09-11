@@ -69,7 +69,7 @@
         .analytics-core { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 25px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); min-height: 200px; display: flex; flex-direction: column; }
         .verdict-header { text-align: center; font-size: 1.4rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 700; letter-spacing: 2px; }
         
-        /* ТАКТИЧЕСКИЕ БЛОКИ (ПЛЮСЫ / МИНУСЫ) */
+        /* ТАКТИЧЕСКИЕ БЛОКИ */
         .analysis-cols { display: flex; gap: 15px; margin-bottom: 20px; }
         .analysis-col { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; }
         .col-title { font-family: 'Jura'; font-weight: bold; color: var(--secondary); text-align: center; margin-bottom: 10px; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 5px;}
@@ -117,6 +117,8 @@
             #card-equip-2 { order: 2; }
             .analytics-core { order: 3; width: 100%; margin-top: 10px; }
             .analysis-cols { flex-direction: column; }
+            nav { flex-direction: column; padding: 15px; gap: 10px; }
+            .nav-btn { width: 100%; }
         }
     </style>
 </head>
@@ -182,28 +184,31 @@
             range: { label: "Дальность (км)", higherIsBetter: true }
         };
 
-        // БАЗА ДАННЫХ ОЧИЩЕНА ОТ ПВО И ГРАНАТОМЕТОВ
         const DB = {
             "zircon": { name: "3M22 ZIRCON", category: "Ракеты", damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
             "yj15": { name: "YJ-15", category: "Ракеты", damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
-            "yj17": { name: "YJ-17", category: "Ракеты", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" }
+            "yj17": { name: "YJ-17", category: "Ракеты", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
+            "granit": { name: "P-700 GRANIT", category: "Ракеты", damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
+            "kh35": { name: "KH-35", category: "Ракеты", damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
+            "yj18": { name: "YJ-18", category: "Ракеты", damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
+            "champ": { name: "CHAMP", category: "Ракеты", damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
+            "gtx690": { name: "GTX 690", category: "Ракеты", damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
+            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" }
         };
 
         // АВТОМАТИЧЕСКИЙ РАСЧЕТ РЕЙТИНГА 0-100
         function calculateRating(item) {
-            let score = 20; // Базовый балл
-            score += (item.dpm / 300000) * 15; // До 15 баллов за DPM
-            score += (item.damage_burst / 50000) * 10; // До 10 баллов за разовый урон
-            score += item.anti_jamming === 1 ? 25 : 0; // АБСОЛЮТНАЯ МЕТА: +25 баллов за игнор ловушек
-            score += (item.hp / 400) * 10; // До 10 баллов за живучесть
-            score += (item.start_speed / 400) * 10; // До 10 баллов за рывок
-            score += (item.max_speed / 600) * 5; // До 5 баллов за максималку
-            score += Math.max(0, (2.0 - item.lock_time) * 5); // Бонус за быстрый захват
-            
+            let score = 20; 
+            score += (item.dpm / 300000) * 15; 
+            score += (item.damage_burst / 50000) * 10; 
+            score += item.anti_jamming === 1 ? 25 : 0; 
+            score += (item.hp / 400) * 10; 
+            score += (item.start_speed / 400) * 10; 
+            score += (item.max_speed / 600) * 5; 
+            score += Math.max(0, (2.0 - item.lock_time) * 5); 
             return Math.min(100, Math.round(score));
         }
 
-        // Присваиваем рейтинг при запуске
         for (let key in DB) {
             DB[key].rating = calculateRating(DB[key]);
         }
@@ -322,11 +327,9 @@
             document.getElementById(`stats-equip-${side}`).innerHTML = html;
         }
 
-        // ГЕНЕРАТОР ТАКТИЧЕСКОГО РАЗБОРА (+ / - / Дистанция / Итог)
         function generateTactics(item) {
             let pros = []; let cons = []; let range = "";
             
-            // Анализ плюсов и минусов
             if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
             else cons.push("Сбрасывается вражескими тепловыми ловушками");
 
@@ -334,13 +337,15 @@
             else cons.push("Низкий математический DPM");
 
             if (item.start_speed >= 250) pros.push("Резкий старт (ПВО не успевает среагировать)");
+            else if (item.start_speed < 50) cons.push("Критически медленный старт (легко сбивается ПВО)");
             else cons.push("Медленный разгон на старте (уязвима в упор)");
 
             if (item.lock_time <= 1.2) pros.push("Мгновенный захват цели для спама");
+            else if (item.lock_time >= 3.0) cons.push(`Критически долгий захват цели (${item.lock_time} сек)`);
             
-            if (item.projectiles > 1) pros.push("Перегружает ПВО количеством снарядов");
+            if (item.projectiles > 1) pros.push(`Перегружает ПВО количеством снарядов (${item.projectiles} шт)`);
+            else if (item.hp < 100) cons.push("Крайне низкая прочность (сбивается одним лазером)");
 
-            // Определение эффективной дистанции
             if (item.anti_jamming === 1) {
                 range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Гарантированно долетит до цели сквозь ПВО)";
             } else if (item.start_speed >= 250) {
@@ -349,7 +354,6 @@
                 range = "СРЕДНЯЯ (Требуется поддержка союзного огня)";
             }
 
-            // Формирование HTML
             let html = `<div class="analysis-col">
                 <div class="col-title">${item.name}</div>
                 <div>${pros.map(p => `<div class="pro-item">${p}</div>`).join('')}</div>
@@ -362,7 +366,6 @@
         function runAnalysis(id1, id2) {
             const e1 = DB[id1]; const e2 = DB[id2];
 
-            // Подсветка характеристик зеленым/красным
             for (let key in STATS_LOGIC) {
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
                 el1.className = "stat-value"; el2.className = "stat-value";
@@ -375,17 +378,15 @@
                 else { el2.classList.add('win'); el1.classList.add('lose'); }
             }
 
-            // Рендер столбцов плюсов/минусов
             let analysisCols = `<div class="analysis-cols">${generateTactics(e1)}${generateTactics(e2)}</div>`;
             
-            // Финальный итог (сравнение рейтинга)
             let summaryText = "";
             if (Math.abs(e1.rating - e2.rating) < 5) {
                 summaryText = `Обе ракеты показывают схожую боевую эффективность (Паритет: ${e1.rating} vs ${e2.rating}). Выбор зависит исключительно от дистанции ведения боя вашего корпуса.`;
             } else {
                 const winner = e1.rating > e2.rating ? e1 : e2;
                 const loser = e1.rating > e2.rating ? e2 : e1;
-                let reason = winner.anti_jamming === 1 ? "наличия помехозащиты" : "огромного огневого потенциала (DPM/Скорость)";
+                let reason = winner.anti_jamming === 1 ? "наличия помехозащиты" : "огневого потенциала и кинетики";
                 summaryText = `<span style="color:var(--secondary); font-size: 1.2rem;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><br>В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating}).`;
             }
 
