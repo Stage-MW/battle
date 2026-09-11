@@ -157,10 +157,10 @@
                 <p style="margin-top: 15px;"><b>КАК РАССЧИТЫВАЕТСЯ ТИР-ЛИСТ:</b></p>
                 <ul style="margin-left: 20px; margin-top: 10px; color: #e0f2f1; padding-left: 10px;">
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 350 баллов):</b> Чистый DPM и разовый альфа-страйк.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная боеголовка (+150).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная БЧ / Осколки (+150), Урон по области и Радиус детонации (+50).</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Количество ракет за пуск (перегруз ПВО) и запас HP.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная скорость, максимальная скорость и штраф за медленное время разгона.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Наличие мертвой зоны отнимает по 50 баллов за каждый километр.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная скорость и максимальная скорость.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Наличие мертвой зоны отнимает по 50 баллов за каждый километр. Долгое время разгона (ПВО успевает среагировать) и высокий штраф разброса при ведении огня также снимают очки.</li>
                 </ul>
             </div>
         </div>
@@ -349,30 +349,37 @@
             lock_time: { label: "Время захвата (сек)", higherIsBetter: false },
             projectiles: { label: "Ракет за пуск", higherIsBetter: true },
             anti_jamming: { label: "Помехозащита", higherIsBetter: true },
-            cluster: { label: "Кластерная БЧ", isBool: true }, 
+            cluster: { label: "Кластерная / Осколки", isBool: true }, 
+            splash_damage: { label: "Урон по области", higherIsBetter: true },
+            splash_radius: { label: "Радиус взрыва (м)", higherIsBetter: true },
+            detonation_radius: { label: "Радиус детонации (м)", higherIsBetter: true },
             hp: { label: "Прочность (HP)", higherIsBetter: true },
             trajectory: { label: "Высота полёта", isString: true },
             start_speed: { label: "Нач. скорость (уз)", higherIsBetter: true },
             max_speed: { label: "Скорость (уз)", higherIsBetter: true },
             accel_time: { label: "Время разгона (сек)", higherIsBetter: false },
             range: { label: "Дальность (км)", higherIsBetter: true },
-            min_range: { label: "Мертвая зона (км)", higherIsBetter: false }
+            min_range: { label: "Мертвая зона (км)", higherIsBetter: false },
+            fire_penalty: { label: "Штраф при огне (%)", higherIsBetter: false }
         };
 
         const DB = {
-            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
-            "yj15": { name: "YJ-15", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
-            "yj17": { name: "YJ-17", category: "Ракеты", country: "Китай", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
-            "granit": { name: "P-700 GRANIT", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
-            "kh35": { name: "KH-35", category: "Ракеты", country: "Россия", rarity: "Редкий", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
-            "yj18": { name: "YJ-18", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
-            "champ": { name: "CHAMP", category: "Ракеты", country: "США", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
-            "gtx690": { name: "GTX 690", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
-            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" },
-            "kh90": { name: "KH-90 (ОЖИДАНИЕ ДАННЫХ)", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 1, trajectory: "Средняя", min_range: 3.0, damage_burst: 45000, dpm: 270000, reload: 10.00, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 250, start_speed: 200, max_speed: 450, accel_time: 2.00, range: 14.00, img: "https://via.placeholder.com/400x150/111/ffaa00?text=KH-90+CLUSTER" }
+            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
+            "yj15": { name: "YJ-15", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, fire_penalty: 45, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
+            "yj17": { name: "YJ-17", category: "Ракеты", country: "Китай", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, fire_penalty: 45, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
+            "granit": { name: "P-700 GRANIT", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, fire_penalty: 36, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
+            "kh35": { name: "KH-35", category: "Ракеты", country: "Россия", rarity: "Редкий", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, fire_penalty: 32, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
+            "yj18": { name: "YJ-18", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, fire_penalty: 36, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
+            "champ": { name: "CHAMP", category: "Ракеты", country: "США", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, fire_penalty: 36, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
+            "gtx690": { name: "GTX 690", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, splash_damage: 150, splash_radius: 666, fire_penalty: 36, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
+            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, fire_penalty: 32, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" },
+            "kh90": { name: "KH-90", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 1, trajectory: "Средняя", min_range: 3.0, damage_burst: 45000, dpm: 270000, reload: 10.00, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 250, start_speed: 200, max_speed: 450, accel_time: 2.00, range: 14.00, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ffaa00?text=KH-90+CLUSTER" },
+            "df100": { name: "DF-100", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 31199, dpm: 260734, reload: 7.00, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 194, max_speed: 524, accel_time: 1.70, range: 13.00, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=DF-100" },
+            "df12": { name: "DF-12", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 47400, dpm: 264085, reload: 10.50, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 400, start_speed: 58, max_speed: 524, accel_time: 2.18, range: 13.00, splash_damage: 4500, splash_radius: 266, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ffaa00?text=DF-12" },
+            "m001": { name: "PAN SPATIAL M-001", category: "Ракеты", country: "Pan Spatial", rarity: "Эпический", cluster: 1, trajectory: "Высокая", min_range: 1.60, damage_burst: 31300, dpm: 180399, reload: 10.15, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 325, start_speed: 77, max_speed: 583, accel_time: 2.00, range: 11.27, detonation_radius: 13, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=M-001" }
         };
 
-        // АЛГОРИТМ БАЛЛОВ НА 1000 С УЧЕТОМ ЗАЛПА И ВРЕМЕНИ РАЗГОНА
+        // АЛГОРИТМ БАЛЛОВ НА 1000 С УЧЕТОМ ЗАЛПА, СПЛЕША, ДЕТОНАЦИИ И ШТРАФОВ
         function calculateRating(item) {
             let score = 100; 
             
@@ -380,18 +387,24 @@
             score += (item.damage_burst / 60000) * 150; 
             score += item.anti_jamming === 1 ? 200 : 0; 
             score += item.cluster === 1 ? 150 : 0;
-            score += (item.projectiles * 30); // Бонус за залповый потенциал
+            score += (item.projectiles * 30); 
             score += (item.hp / 400) * 80; 
             score += (item.start_speed / 400) * 50; 
             score += (item.max_speed / 600) * 30; 
             
-            // Штраф за долгое время разгона (медленный разгон упрощает перехват ПВО)
+            // Бонусы за урон по области и радиус детонации
+            if (item.splash_damage) score += (item.splash_damage / 5000) * 30; 
+            if (item.splash_radius) score += (item.splash_radius / 300) * 20; 
+            if (item.detonation_radius) score += (item.detonation_radius / 20) * 15;
+            
+            // Штраф за долгое время разгона (ПВО легко собьет)
             score -= (item.accel_time * 20);
             
+            // Штраф за разброс при движении
+            if (item.fire_penalty) score -= (item.fire_penalty * 0.8);
+
             // Штраф за мертвую зону (50 баллов за каждый км)
-            if (item.min_range > 0) {
-                score -= (item.min_range * 50);
-            }
+            if (item.min_range > 0) score -= (item.min_range * 50);
             
             return Math.min(1000, Math.max(50, Math.round(score)));
         }
@@ -544,10 +557,13 @@
             let html = '';
             for (let key in STATS_LOGIC) {
                 let val = item[key];
-                if (key === 'dpm' || key === 'damage_burst') val = val.toLocaleString('ru');
+                if (val === undefined) continue;
+                
+                if (key === 'dpm' || key === 'damage_burst' || key === 'splash_damage') val = val.toLocaleString('ru');
                 if (key === 'anti_jamming') val = val === 1 ? "<span style='color:#ffaa00; text-shadow: 0 0 10px #ffaa00'>ЕСТЬ</span>" : "НЕТ";
                 if (key === 'cluster') val = val === 1 ? "<span style='color:#ff2a5f; text-shadow: 0 0 10px #ff2a5f'>ДА</span>" : "НЕТ";
                 if (key === 'min_range') val = val > 0 ? `<span style='color:#ff2a5f; font-weight:bold'>${val} км</span>` : "НЕТ";
+                if (key === 'fire_penalty') val = `${val}%`;
 
                 html += `<tr><td class="stat-name">${STATS_LOGIC[key].label}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
             }
@@ -560,7 +576,7 @@
             if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
             else cons.push("Сбрасывается вражескими тепловыми ловушками");
 
-            if (item.cluster === 1) pros.push("Кластерная БЧ (разделяющиеся боеголовки перегружают ПВО)");
+            if (item.cluster === 1) pros.push("Осколочная/Кластерная БЧ (разделяющиеся боеголовки перегружают ПВО)");
 
             if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
             else cons.push("Низкий математический DPM");
@@ -568,11 +584,17 @@
             if (item.damage_burst >= 40000) pros.push("Разрушительный альфа-страйк (урон за залп)");
 
             if (item.projectiles > 1) pros.push(`Залп из ${item.projectiles} ракет (повышенный шанс перегруза ПВО)`);
+            
+            if (item.splash_damage > 0) pros.push("Наносит урон по области (эффективно против скоплений и ПВО)");
+            if (item.detonation_radius > 0) pros.push("Радиус детонации (срабатывает даже при промахе рядом с целью)");
 
             if (item.start_speed >= 250) pros.push("Резкий старт (ПВО не успевает среагировать)");
             else if (item.start_speed < 50) cons.push("Критически медленный старт (легко сбивается ПВО)");
 
             if (item.accel_time > 3.0) cons.push(`Долгое время разгона (${item.accel_time} сек - уязвима для ПВО на траектории)`);
+
+            if (item.fire_penalty > 35) cons.push("Высокий штраф разброса при ведении огня в движении");
+            else if (item.fire_penalty <= 35) pros.push("Пониженный штраф разброса при стрельбе на ходу");
 
             if (item.trajectory === "Высокая") {
                 pros.push("Навесная траектория (позволяет вести огонь из-за островов)");
@@ -606,15 +628,17 @@
             const e1 = DB[id1]; const e2 = DB[id2];
 
             for (let key in STATS_LOGIC) {
-                if (e1[key] === undefined || e2[key] === undefined || STATS_LOGIC[key].isString) continue;
+                if (e1[key] === undefined && e2[key] === undefined) continue;
 
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
                 if(!el1 || !el2) continue;
 
                 el1.className = "stat-value"; el2.className = "stat-value";
-                const v1 = parseFloat(e1[key]); const v2 = parseFloat(e2[key]);
+                
+                const v1 = e1[key] !== undefined ? parseFloat(e1[key]) : 0;
+                const v2 = e2[key] !== undefined ? parseFloat(e2[key]) : 0;
 
-                if (v1 === v2) { el1.classList.add('neutral'); el2.classList.add('neutral'); continue; }
+                if (v1 === v2 || STATS_LOGIC[key].isString) { el1.classList.add('neutral'); el2.classList.add('neutral'); continue; }
 
                 const isV1Better = STATS_LOGIC[key].higherIsBetter ? v1 > v2 : v1 < v2;
                 if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } 
@@ -632,7 +656,7 @@
                 
                 let reason = "комплексного превосходства характеристик";
                 if (loser.min_range > 0 && winner.min_range === 0) reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
-                else if (winner.cluster === 1 && loser.cluster === 0) reason = "наличия кластерной БЧ";
+                else if (winner.cluster === 1 && loser.cluster === 0) reason = "наличия кластерной БЧ / Осколков";
                 else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
                 else if (winner.damage_burst > loser.damage_burst + 10000) reason = "разрушительного разового урона";
                 else if (winner.dpm > loser.dpm + 20000) reason = "подавляющего урона в минуту (DPM)";
