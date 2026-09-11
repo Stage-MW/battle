@@ -47,6 +47,11 @@
             cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; 
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(255, 42, 95, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); color: #fff; }
+        .info-btn {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
+            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(255, 42, 95, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        .info-btn:hover { background: var(--primary); box-shadow: var(--border-glow); color: #000; }
         
         .page { display: none; animation: fadeIn 0.4s ease-out forwards; max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 5;}
         .page.active { display: block; }
@@ -117,9 +122,15 @@
         .rating-bar-fill { height: 100%; transition: width 1s ease-out; box-shadow: 0 0 10px currentColor; }
         .rating-score { font-size: 1.8rem; font-family: 'Share Tech Mono'; font-weight: bold; min-width: 80px; text-align: right; margin-left: 20px; }
 
-        /* УВЕДОМЛЕНИЯ */
+        /* УВЕДОМЛЕНИЯ И МОДАЛЬНОЕ ОКНО */
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 400px; }
         .toast { background: rgba(10, 5, 8, 0.95); border: 1px solid var(--secondary); color: var(--secondary); padding: 15px 20px; font-family: 'Share Tech Mono'; font-size: 0.9rem; text-align: center; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: 0 0 15px rgba(0,229,255,0.3); text-transform: uppercase; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 20000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; backdrop-filter: blur(5px); }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--glass-bg); border: 1px solid var(--primary); padding: 30px; max-width: 650px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); box-shadow: inset 0 0 20px rgba(255, 42, 95, 0.1), 0 15px 40px rgba(0,0,0,0.8); }
+        .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--primary); font-size: 1.8rem; cursor: pointer; font-family: 'Jura'; font-weight: bold; transition: 0.3s; }
+        .modal-close:hover { transform: scale(1.2); text-shadow: 0 0 10px var(--primary); }
 
         @media (max-width: 1100px) {
             .compare-grid { display: flex; flex-direction: column; gap: 20px; }
@@ -129,16 +140,37 @@
             .analysis-cols { flex-direction: column; }
             nav { flex-direction: column; padding: 15px; gap: 10px; }
             .nav-btn { width: 100%; }
+            .info-btn { position: static; width: 100%; transform: none; margin-top: 5px; height: 35px; }
         }
     </style>
 </head>
 <body>
     <div id="toast-container"></div>
 
+    <div id="ibe-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div style="color: #fff; font-family: 'Jura'; font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px;">СИСТЕМА РЕЙТИНГА И АНАЛИЗА</div>
+            <div style="font-family: 'Share Tech Mono'; line-height: 1.6; font-size: 0.95rem; text-transform: none; color: #a09095;">
+                <p><b>АНАЛИЗАТОР:</b> Сравнивает две единицы вооружения, находя их уникальные тактические преимущества и определяя доминирующую ракету.</p>
+                <p style="margin-top: 15px;"><b>КАК РАССЧИТЫВАЕТСЯ ТИР-ЛИСТ (0-100 БАЛЛОВ):</b></p>
+                <p>Система автоматически оценивает потенциал оборудования в текущей "мете". Баллы начисляются по следующим критериям:</p>
+                <ul style="margin-left: 20px; margin-top: 10px; color: #e0f2f1; padding-left: 10px;">
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 35 баллов):</b> Учитывается чистый DPM (до 20) и разрушительность разового залпа (до 15).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 40 баллов):</b> Абсолютная помехозащита дает +25 баллов. Наличие кластерной БЧ добавляет +15 баллов.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Выживаемость (до 10 баллов):</b> Зависит от базовой прочности (HP) — способности пробить заградительный огонь ПВО.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика и захват (до 20 баллов):</b> Оценивается резкий старт (до 10), максимальная скорость в узлах (до 5) и скорость сведения на цель (до 5).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции (-10 баллов):</b> Наличие "мертвой зоны" жестко штрафуется за неспособность ракеты оборонять корабль в ближнем бою.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <nav>
         <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
         <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
         <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
+        <button class="info-btn" onclick="openModal()">?</button>
     </nav>
 
     <main id="page-compare" class="page">
@@ -236,6 +268,9 @@
 
         let currentCategory = "Ракеты";
         let compareQueue = [];
+
+        function openModal() { document.getElementById('ibe-modal').classList.add('active'); }
+        function closeModal() { document.getElementById('ibe-modal').classList.remove('active'); }
 
         function showToast(msg, isErr = false) {
             const c = document.getElementById('toast-container');
@@ -370,7 +405,7 @@
             if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
             else cons.push("Сбрасывается вражескими тепловыми ловушками");
 
-            if (item.cluster === 1) pros.push("Кластерная БЧ (наносит урон даже при позднем сбросе ловушек противником)");
+            if (item.cluster === 1) pros.push("Кластерная БЧ (разделяющиеся боеголовки перегружают ПВО)");
 
             if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
             else cons.push("Низкий математический DPM");
@@ -401,8 +436,8 @@
                 cons.push(`Мертвая зона ${item.min_range} км (невозможно обороняться в упор)`);
                 range = `ДАЛЬНЯЯ (Критически уязвима в ближнем бою из-за мертвой зоны ${item.min_range} км)`;
                 isWarning = true;
-            } else if (item.anti_jamming === 1 || item.cluster === 1) {
-                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Гарантированно долетит до цели сквозь ПВО и ловушки)";
+            } else if (item.anti_jamming === 1) {
+                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Эффективна на дистанции за счет защиты от РЭБ)";
             } else if (item.start_speed >= 250) {
                 range = "БЛИЖНЯЯ (Кинжальный бой из-за укрытий, ПВО не успеет свестись)";
             } else {
@@ -451,7 +486,7 @@
                 if (loser.min_range > 0 && winner.min_range === 0) {
                     reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
                 } else if (winner.cluster === 1 && loser.cluster === 0) {
-                    reason = "наличия кластерной БЧ (пробивает ПВО даже при сбросе ловушек)";
+                    reason = "наличия кластерной БЧ (разделяющиеся боеголовки эффективнее пробивают ПВО)";
                 } else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) {
                     reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
                 } else if (winner.damage_burst > loser.damage_burst + 10000) {
