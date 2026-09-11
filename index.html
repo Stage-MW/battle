@@ -157,7 +157,7 @@
                 <p style="margin-top: 15px;"><b>КАК РАССЧИТЫВАЕТСЯ ТИР-ЛИСТ:</b></p>
                 <ul style="margin-left: 20px; margin-top: 10px; color: #e0f2f1; padding-left: 10px;">
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 350 баллов):</b> Чистый DPM и разовый альфа-страйк.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная БЧ / Осколки (+150), Урон по области и Радиус детонации (+50), Лазерное наведение (+50).</li>
+                    <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная БЧ / Осколки (+100-150: ПВО не реагирует на мелкие части. Доп. бонус отводимым ракетам за урон при поздних ловушках), Урон по области и Детонация (+50), Лазерное наведение (+50).</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Выстрелов за атаку (перегруз ПВО) и запас HP.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная и максимальная скорость.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Ограничение зоны пуска (мертвая зона) отнимает по 50 баллов за км. Долгое время набора скорости (уязвимость к ПВО), штраф за ведение огня и долгий захват цели активно сжигают баллы.</li>
@@ -387,7 +387,17 @@
             score += (item.dpm / 300000) * 250; 
             score += (item.damage_burst / 60000) * 100; 
             score += item.anti_jamming === 1 ? 200 : 0; 
-            score += (item.cluster === 1 || item.fragmentation_damage > 0) ? 150 : 0;
+            
+            // НОВАЯ ЛОГИКА КЛАСТЕРОВ: ПВО не сбивает мелкие части
+            let hasCluster = (item.cluster === 1 || item.fragmentation_damage > 0);
+            if (hasCluster) {
+                score += 100; 
+                // Небольшое преимущество, если ракета отводимая (накажет за поздние ловушки)
+                if (item.anti_jamming === 0) {
+                    score += 50; 
+                }
+            }
+
             score += (item.projectiles * 30); 
             score += (item.hp / 400) * 80; 
             score += (item.start_speed / 400) * 50; 
@@ -584,7 +594,13 @@
             if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
             else cons.push("Сбрасывается вражескими тепловыми ловушками");
 
-            if (item.cluster === 1 || item.fragmentation_damage > 0) pros.push("Осколочная/Кластерная БЧ (разделяющиеся боеголовки перегружают ПВО)");
+            if (item.cluster === 1 || item.fragmentation_damage > 0) {
+                if (item.anti_jamming === 0) {
+                    pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает осколки, наносит урон при поздних ловушках)");
+                } else {
+                    pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает мелкие осколки, гарантируя урон)");
+                }
+            }
 
             if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
             else cons.push("Низкий математический DPM");
@@ -672,7 +688,7 @@
                 
                 let reason = "комплексного превосходства характеристик";
                 if (loser.min_range > 0 && winner.min_range === 0) reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
-                else if ((winner.cluster === 1 || winner.fragmentation_damage > 0) && loser.cluster === 0) reason = "наличия кластерной БЧ / Осколков";
+                else if ((winner.cluster === 1 || winner.fragmentation_damage > 0) && loser.cluster === 0) reason = "наличия кластерной БЧ (гарантированный урон осколками сквозь ПВО)";
                 else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
                 else if (winner.damage_burst > loser.damage_burst + 10000) reason = "разрушительного разового урона";
                 else if (winner.dpm > loser.dpm + 20000) reason = "подавляющего урона в минуту (DPM)";
