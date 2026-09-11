@@ -47,18 +47,13 @@
             cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; 
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(255, 42, 95, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); color: #fff; }
-        .info-btn {
-            position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
-            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(255, 42, 95, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-        }
-        .info-btn:hover { background: var(--primary); box-shadow: var(--border-glow); color: #000; }
-
+        
         .page { display: none; animation: fadeIn 0.4s ease-out forwards; max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 5;}
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         /* СЕТКА СРАВНЕНИЯ */
-        .compare-grid { display: grid; grid-template-columns: 1fr 500px 1fr; gap: 20px; align-items: start; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 600px 1fr; gap: 20px; align-items: start; }
         .equip-card { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px) saturate(150%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 20px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
         .equip-img-container { width: 100%; height: 180px; background: rgba(0,0,0,0.7); margin-bottom: 20px; background-size: contain; background-repeat: no-repeat; background-position: center; border: 1px solid rgba(255, 42, 95, 0.2); box-shadow: inset 0 0 30px #000; }
         
@@ -73,13 +68,21 @@
         /* АНАЛИТИЧЕСКИЙ ЦЕНТР */
         .analytics-core { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 25px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); min-height: 200px; display: flex; flex-direction: column; }
         .verdict-header { text-align: center; font-size: 1.4rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 700; letter-spacing: 2px; }
-        .tactic-block { margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,0.5); border-left: 3px solid #fff; font-family: 'Share Tech Mono'; text-transform: none; line-height: 1.5; font-size: 0.9rem; }
-        .tactic-block b { font-family: 'Jura'; text-transform: uppercase; }
-        .tactic-block.cqc { border-color: #ff2a5f; }
-        .tactic-block.sniper { border-color: #00e5ff; }
-        .tactic-block.firepower { border-color: #ffaa00; }
-        .tactic-title { font-family: 'Jura'; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; font-size: 1rem; letter-spacing: 1px; }
-        .final-summary-block { margin-top: 15px; padding: 15px; text-align: center; border: 2px solid var(--secondary); background: rgba(0, 229, 255, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.1); backdrop-filter: blur(10px); }
+        
+        /* ТАКТИЧЕСКИЕ БЛОКИ (ПЛЮСЫ / МИНУСЫ) */
+        .analysis-cols { display: flex; gap: 15px; margin-bottom: 20px; }
+        .analysis-col { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; }
+        .col-title { font-family: 'Jura'; font-weight: bold; color: var(--secondary); text-align: center; margin-bottom: 10px; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 5px;}
+        
+        .pro-item { color: #00e5ff; font-family: 'Share Tech Mono'; font-size: 0.9rem; margin-bottom: 8px; text-transform: none; line-height: 1.3;}
+        .pro-item::before { content: "[+] "; font-weight: bold; }
+        
+        .con-item { color: #ff2a5f; font-family: 'Share Tech Mono'; font-size: 0.9rem; margin-bottom: 8px; text-transform: none; line-height: 1.3;}
+        .con-item::before { content: "[-] "; font-weight: bold; }
+        
+        .range-block { margin-top: 15px; padding: 10px; background: rgba(0, 229, 255, 0.05); border-left: 3px solid var(--secondary); font-family: 'Share Tech Mono'; font-size: 0.9rem; text-transform: none; color: #e0f2f1;}
+
+        .final-summary-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid var(--primary); background: rgba(255, 42, 95, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(255, 42, 95, 0.1); backdrop-filter: blur(10px); }
 
         /* КАТАЛОГ (АРСЕНАЛ) & КАТЕГОРИИ */
         .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
@@ -108,51 +111,22 @@
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 400px; }
         .toast { background: rgba(10, 5, 8, 0.95); border: 1px solid var(--secondary); color: var(--secondary); padding: 15px 20px; font-family: 'Share Tech Mono'; font-size: 0.9rem; text-align: center; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: 0 0 15px rgba(0,229,255,0.3); text-transform: uppercase; }
 
-        /* МОДАЛЬНОЕ ОКНО */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 20000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--glass-bg); border: 1px solid var(--primary); padding: 25px; max-width: 600px; width: 90%; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
-        .modal-close { position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--primary); font-size: 1.5rem; cursor: pointer; }
-
-        /* --- МОБИЛЬНАЯ АДАПТАЦИЯ --- */
-        @media (max-width: 950px) {
+        @media (max-width: 1100px) {
             .compare-grid { display: flex; flex-direction: column; gap: 20px; }
             .equip-card { width: 100%; order: 1; }
             #card-equip-2 { order: 2; }
             .analytics-core { order: 3; width: 100%; margin-top: 10px; }
-            nav { flex-direction: column; padding: 15px; gap: 10px; }
-            .nav-btn { width: 100%; }
-            .info-btn { position: static; width: 100%; transform: none; margin-top: 5px; height: 35px; }
-            
-            /* Адаптация тир-листа */
-            .rating-item { flex-direction: column; align-items: center; text-align: center; padding: 20px 10px; }
-            .rating-img { margin: 15px 0; width: 100%; height: 80px; border: none; }
-            .rating-info { width: 100%; }
-            .rating-score { margin-left: 0; margin-top: 15px; font-size: 2rem; }
-            .rating-rank { position: absolute; top: 10px; left: 10px; font-size: 1.5rem; }
+            .analysis-cols { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-
-    <div id="ibe-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <div style="color: #fff; font-family: 'Jura'; font-size: 1.4rem; font-weight: bold; margin-bottom: 15px;">СПРАВКА И РЕЙТИНГИ</div>
-            <div style="font-family: 'Share Tech Mono'; line-height: 1.5; font-size: 0.95rem; text-transform: none; color: #a09095;">
-                <p><b>АНАЛИЗАТОР:</b> Выберите две единицы из одной категории в Арсенале для запуска протокола сравнения. Алгоритм автоматически определит тактические преимущества и выдаст итоговое резюме под определенные ситуации.</p>
-                <p><b>ТИР-ЛИСТ:</b> 100-балльная шкала рассчитывает чистый универсальный потенциал оружия на основе его выживаемости, урона и скорости. Позволяет быстро оценить, какое оборудование сейчас находится в "мете".</p>
-            </div>
-        </div>
-    </div>
-
     <div id="toast-container"></div>
 
     <nav>
         <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
-        <button class="nav-btn active" onclick="switchMainPage('page-catalog')">АРСЕНАЛ</button>
+        <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
         <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
-        <button class="info-btn" onclick="openModal()">?</button>
     </nav>
 
     <!-- СТРАНИЦА 1: СРАВНЕНИЕ -->
@@ -163,12 +137,14 @@
                 <h3 id="name-equip-1" style="margin-bottom:15px; color:#fff; text-align:center; font-size:1.3rem;"></h3>
                 <table class="stats-table" id="stats-equip-1"></table>
             </div>
+            
             <div class="analytics-core">
                 <div class="verdict-header">ТАКТИЧЕСКИЙ РАЗБОР</div>
                 <div id="verdict-screen" style="font-family: 'Share Tech Mono'; text-align: center; color: #a09095; margin-top: 10px;">
-                    [ ОЖИДАНИЕ ВЫБОРА ]
+                    [ ВЫБЕРИТЕ ДВЕ РАКЕТЫ ИЗ БАЗЫ ]
                 </div>
             </div>
+
             <div class="equip-card" id="card-equip-2">
                 <div class="equip-img-container" id="img-equip-2"></div>
                 <h3 id="name-equip-2" style="margin-bottom:15px; color:#fff; text-align:center; font-size:1.3rem;"></h3>
@@ -177,57 +153,63 @@
         </div>
     </main>
 
-    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ (АРСЕНАЛ) -->
+    <!-- СТРАНИЦА 2: БАЗА ДАННЫХ -->
     <main id="page-catalog" class="page active">
         <div class="categories-bar" id="category-bar"></div>
         <div class="catalog-grid" id="catalog-content"></div>
     </main>
 
-    <!-- СТРАНИЦА 3: ТИР-ЛИСТ (РЕЙТИНГ) -->
+    <!-- СТРАНИЦА 3: ТИР-ЛИСТ -->
     <main id="page-rating" class="page">
         <div class="categories-bar" id="rating-category-bar"></div>
         <div class="rating-container" id="rating-content"></div>
     </main>
 
     <script>
-        const CATEGORIES = ["Ракеты", "ПВО", "Гранатометы"];
+        const CATEGORIES = ["Ракеты"];
         
         const STATS_LOGIC = {
-            aa_type: { label: "Тип перехвата", isString: true },
             damage_burst: { label: "Урон за залп", higherIsBetter: true },
             dpm: { label: "Урон в минуту", higherIsBetter: true },
             reload: { label: "Перезарядка (сек)", higherIsBetter: false },
             lock_time: { label: "Время захвата (сек)", higherIsBetter: false },
-            projectiles: { label: "Снарядов/Атака", higherIsBetter: true },
+            projectiles: { label: "Ракет за пуск", higherIsBetter: true },
             anti_jamming: { label: "Помехозащита", higherIsBetter: true },
             hp: { label: "Прочность (HP)", higherIsBetter: true },
             start_speed: { label: "Нач. скорость (уз)", higherIsBetter: true },
             max_speed: { label: "Скорость (уз)", higherIsBetter: true },
             accel_time: { label: "Время разгона (сек)", higherIsBetter: false },
-            range: { label: "Дальность (км)", higherIsBetter: true },
-            splash: { label: "Радиус взрыва (м)", higherIsBetter: true },
-            anti_sub: { label: "Урон по ПЛ", isBool: true }
+            range: { label: "Дальность (км)", higherIsBetter: true }
         };
 
-        // ДОБАВЛЕН ПАРАМЕТР rating: 0-100 для автоматической сортировки Тир-Листа
+        // БАЗА ДАННЫХ ОЧИЩЕНА ОТ ПВО И ГРАНАТОМЕТОВ
         const DB = {
-            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", rating: 94, damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
-            "yj15": { name: "YJ-15", category: "Ракеты", rating: 86, damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
-            "yj17": { name: "YJ-17", category: "Ракеты", rating: 89, damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
-            
-            "searam": { name: "Sea RAM", category: "ПВО", rating: 85, damage_burst: 3200, dpm: 85000, reload: 2.5, range: 4.5, aa_type: "Ракетный", img: "https://via.placeholder.com/400x150/111/00e5ff?text=SEA+RAM" },
-            "thel": { name: "THEL", category: "ПВО", rating: 96, damage_burst: 1200, dpm: 92000, reload: 0, range: 3.8, aa_type: "Лазерный", img: "https://via.placeholder.com/400x150/111/00e5ff?text=THEL+LASER" },
-            "phalanx": { name: "Phalanx CIWS", category: "ПВО", rating: 78, damage_burst: 800, dpm: 75000, reload: 0, range: 3.0, aa_type: "Пулеметный", img: "https://via.placeholder.com/400x150/111/00e5ff?text=PHALANX" },
-
-            "a22": { name: "A-22 Ogon", category: "Гранатометы", rating: 91, damage_burst: 28000, dpm: 145000, reload: 5.5, range: 6.5, splash: 35, anti_sub: 1, projectiles: 8, img: "https://via.placeholder.com/400x150/111/ffaa00?text=A-22+OGON" },
-            "asroc": { name: "RUM-139 ASROC", category: "Гранатометы", rating: 83, damage_burst: 42000, dpm: 110000, reload: 9.0, range: 8.5, splash: 15, anti_sub: 1, projectiles: 2, img: "https://via.placeholder.com/400x150/111/ffaa00?text=ASROC" }
+            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
+            "yj15": { name: "YJ-15", category: "Ракеты", damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
+            "yj17": { name: "YJ-17", category: "Ракеты", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" }
         };
+
+        // АВТОМАТИЧЕСКИЙ РАСЧЕТ РЕЙТИНГА 0-100
+        function calculateRating(item) {
+            let score = 20; // Базовый балл
+            score += (item.dpm / 300000) * 15; // До 15 баллов за DPM
+            score += (item.damage_burst / 50000) * 10; // До 10 баллов за разовый урон
+            score += item.anti_jamming === 1 ? 25 : 0; // АБСОЛЮТНАЯ МЕТА: +25 баллов за игнор ловушек
+            score += (item.hp / 400) * 10; // До 10 баллов за живучесть
+            score += (item.start_speed / 400) * 10; // До 10 баллов за рывок
+            score += (item.max_speed / 600) * 5; // До 5 баллов за максималку
+            score += Math.max(0, (2.0 - item.lock_time) * 5); // Бонус за быстрый захват
+            
+            return Math.min(100, Math.round(score));
+        }
+
+        // Присваиваем рейтинг при запуске
+        for (let key in DB) {
+            DB[key].rating = calculateRating(DB[key]);
+        }
 
         let currentCategory = "Ракеты";
         let compareQueue = [];
-
-        function openModal() { document.getElementById('ibe-modal').classList.add('active'); }
-        function closeModal() { document.getElementById('ibe-modal').classList.remove('active'); }
 
         function showToast(msg, isErr = false) {
             const c = document.getElementById('toast-container');
@@ -249,41 +231,19 @@
         }
 
         function initApp() {
-            // Инициализация кнопок для Арсенала
             const catBar = document.getElementById('category-bar');
-            // Инициализация кнопок для Тир-листа
             const ratingCatBar = document.getElementById('rating-category-bar');
             
             CATEGORIES.forEach(cat => {
-                // Кнопки каталога
                 const btn = document.createElement('button');
-                btn.className = `cat-btn ${cat === currentCategory ? 'active' : ''}`;
-                btn.innerText = cat;
-                btn.onclick = (e) => {
-                    updateCategorySelection(cat);
-                    renderCatalog();
-                };
+                btn.className = `cat-btn active`; btn.innerText = cat;
                 catBar.appendChild(btn);
 
-                // Кнопки рейтинга
                 const rBtn = document.createElement('button');
-                rBtn.className = `cat-btn ${cat === currentCategory ? 'active' : ''}`;
-                rBtn.innerText = cat;
-                rBtn.onclick = (e) => {
-                    updateCategorySelection(cat);
-                    renderRatingList();
-                };
+                rBtn.className = `cat-btn active`; rBtn.innerText = cat;
                 ratingCatBar.appendChild(rBtn);
             });
             renderCatalog();
-        }
-
-        function updateCategorySelection(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                if(b.innerText === cat) b.classList.add('active');
-                else b.classList.remove('active');
-            });
         }
 
         function handleCatalogClick(itemId) {
@@ -293,61 +253,42 @@
                 showToast(`СЛОТ 1: ${item.name}`);
             } else if (compareQueue.length === 1) {
                 if (compareQueue[0] === itemId) { compareQueue = []; renderCatalog(); return; }
-                
                 const id1 = compareQueue[0]; const id2 = itemId;
-                if (DB[id1].category === item.category) {
-                    updateEquipView(1, id1); updateEquipView(2, id2);
-                    runAnalysis(id1, id2);
-                    switchMainPage('page-compare');
-                    showToast("АНАЛИЗ ЗАВЕРШЕН");
-                    compareQueue = [];
-                } else {
-                    showToast(`ОШИБКА: НЕСОВМЕСТИМО`, true);
-                    compareQueue = []; renderCatalog();
-                }
+                
+                updateEquipView(1, id1); updateEquipView(2, id2);
+                runAnalysis(id1, id2);
+                switchMainPage('page-compare');
+                showToast("АНАЛИЗ ЗАВЕРШЕН");
+                compareQueue = [];
             }
         }
 
         function renderCatalog() {
             const c = document.getElementById('catalog-content'); c.innerHTML = ''; 
             for (let key in DB) {
-                if (DB[key].category === currentCategory) {
-                    const s = DB[key]; const sel = compareQueue.includes(key) ? 'selected' : '';
-                    c.innerHTML += `
-                        <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
-                            <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
-                            <div style="color:#fff; font-size:1.1rem; font-weight:bold; margin-bottom:8px; font-family:'Jura'">${s.name}</div>
-                            <div style="color:#a09095; font-family:'Share Tech Mono'; font-size: 0.9rem; line-height: 1.5;">
-                                DPM: <span style="color:var(--secondary)">${s.dpm ? s.dpm.toLocaleString('ru') : '-'}</span><br>
-                                УРОН: <span style="color:#fff">${s.damage_burst ? s.damage_burst.toLocaleString('ru') : '-'}</span>
-                            </div>
-                        </div>`;
-                }
+                const s = DB[key]; const sel = compareQueue.includes(key) ? 'selected' : '';
+                c.innerHTML += `
+                    <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
+                        <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
+                        <div style="color:#fff; font-size:1.1rem; font-weight:bold; margin-bottom:8px; font-family:'Jura'">${s.name}</div>
+                        <div style="color:#a09095; font-family:'Share Tech Mono'; font-size: 0.9rem; line-height: 1.5;">
+                            DPM: <span style="color:var(--secondary)">${s.dpm.toLocaleString('ru')}</span><br>
+                            РЕЙТИНГ МЕТЫ: <span style="color:#ffaa00">${s.rating}/100</span>
+                        </div>
+                    </div>`;
             }
         }
 
-        // АЛГОРИТМ ВЫВОДА РЕЙТИНГА
         function renderRatingList() {
-            const c = document.getElementById('rating-content');
-            c.innerHTML = '';
-            
-            const items = [];
-            for (let key in DB) {
-                if (DB[key].category === currentCategory) {
-                    items.push({ id: key, ...DB[key] });
-                }
-            }
-            
-            // Сортировка от лучшего к худшему
+            const c = document.getElementById('rating-content'); c.innerHTML = '';
+            const items = Object.keys(DB).map(key => ({ id: key, ...DB[key] }));
             items.sort((a, b) => b.rating - a.rating);
 
             items.forEach((item, index) => {
-                // Цветовая градация в зависимости от балла
-                let color = 'var(--secondary)'; // Синий по умолчанию (80-89)
-                if (item.rating >= 90) color = '#ffaa00'; // Золотой для меты
-                else if (item.rating < 80) color = '#a09095'; // Серый для слабых
+                let color = 'var(--secondary)';
+                if (item.rating >= 90) color = '#ffaa00'; 
+                else if (item.rating < 80) color = '#a09095'; 
 
-                // Задержка анимации заполнения бара
                 setTimeout(() => {
                     const bar = document.getElementById(`bar-${item.id}`);
                     if(bar) bar.style.width = `${item.rating}%`;
@@ -358,16 +299,12 @@
                         <div class="rating-rank" style="color: ${color}">#${index + 1}</div>
                         <div class="rating-img" style="background-image: url('${item.img}')"></div>
                         <div class="rating-info">
-                            <div style="color: #fff; font-family: 'Jura'; font-size: 1.3rem; font-weight: bold; text-transform: uppercase;">${item.name}</div>
-                            <div class="rating-bar-bg">
-                                <div class="rating-bar-fill" id="bar-${item.id}" style="width: 0%; background: ${color}; color: ${color}"></div>
-                            </div>
+                            <div style="color: #fff; font-family: 'Jura'; font-size: 1.3rem; font-weight: bold;">${item.name}</div>
+                            <div class="rating-bar-bg"><div class="rating-bar-fill" id="bar-${item.id}" style="width: 0%; background: ${color}; color: ${color}"></div></div>
                         </div>
                         <div class="rating-score" style="color: ${color}">${item.rating}</div>
                     </div>`;
             });
-
-            if(items.length === 0) c.innerHTML = "<div style='text-align:center; color:#555; margin-top: 50px; font-family: Share Tech Mono; font-size: 1.2rem;'>ДАННЫХ НЕТ</div>";
         }
 
         function updateEquipView(side, itemId) {
@@ -376,26 +313,58 @@
             document.getElementById(`img-equip-${side}`).style.backgroundImage = `url('${item.img}')`;
             let html = '';
             for (let key in STATS_LOGIC) {
-                if (item[key] === undefined) continue;
                 let val = item[key];
-                
                 if (key === 'dpm' || key === 'damage_burst') val = val.toLocaleString('ru');
-                if (STATS_LOGIC[key].isBool || key === 'anti_jamming') val = val === 1 ? "<span style='color:#00e5ff'>ДА</span>" : "НЕТ";
+                if (key === 'anti_jamming') val = val === 1 ? "<span style='color:#ffaa00; text-shadow: 0 0 10px #ffaa00'>ЕСТЬ</span>" : "НЕТ";
                 
                 html += `<tr><td class="stat-name">${STATS_LOGIC[key].label}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
             }
             document.getElementById(`stats-equip-${side}`).innerHTML = html;
         }
 
+        // ГЕНЕРАТОР ТАКТИЧЕСКОГО РАЗБОРА (+ / - / Дистанция / Итог)
+        function generateTactics(item) {
+            let pros = []; let cons = []; let range = "";
+            
+            // Анализ плюсов и минусов
+            if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
+            else cons.push("Сбрасывается вражескими тепловыми ловушками");
+
+            if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
+            else cons.push("Низкий математический DPM");
+
+            if (item.start_speed >= 250) pros.push("Резкий старт (ПВО не успевает среагировать)");
+            else cons.push("Медленный разгон на старте (уязвима в упор)");
+
+            if (item.lock_time <= 1.2) pros.push("Мгновенный захват цели для спама");
+            
+            if (item.projectiles > 1) pros.push("Перегружает ПВО количеством снарядов");
+
+            // Определение эффективной дистанции
+            if (item.anti_jamming === 1) {
+                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Гарантированно долетит до цели сквозь ПВО)";
+            } else if (item.start_speed >= 250) {
+                range = "БЛИЖНЯЯ (Кинжальный бой из-за укрытий, ПВО не успеет свестись)";
+            } else {
+                range = "СРЕДНЯЯ (Требуется поддержка союзного огня)";
+            }
+
+            // Формирование HTML
+            let html = `<div class="analysis-col">
+                <div class="col-title">${item.name}</div>
+                <div>${pros.map(p => `<div class="pro-item">${p}</div>`).join('')}</div>
+                <div style="margin-top:10px;">${cons.map(c => `<div class="con-item">${c}</div>`).join('')}</div>
+                <div class="range-block"><b>ЭФФЕКТИВНОСТЬ:</b><br>${range}</div>
+            </div>`;
+            return html;
+        }
+
         function runAnalysis(id1, id2) {
             const e1 = DB[id1]; const e2 = DB[id2];
-            let analysisHTML = "";
 
+            // Подсветка характеристик зеленым/красным
             for (let key in STATS_LOGIC) {
-                if (e1[key] === undefined || e2[key] === undefined || STATS_LOGIC[key].isString) continue;
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
-                if (!el1 || !el2) continue;
-                
                 el1.className = "stat-value"; el2.className = "stat-value";
                 const v1 = parseFloat(e1[key]); const v2 = parseFloat(e2[key]);
 
@@ -406,48 +375,23 @@
                 else { el2.classList.add('win'); el1.classList.add('lose'); }
             }
 
+            // Рендер столбцов плюсов/минусов
+            let analysisCols = `<div class="analysis-cols">${generateTactics(e1)}${generateTactics(e2)}</div>`;
+            
+            // Финальный итог (сравнение рейтинга)
             let summaryText = "";
-            if (e1.category === "Ракеты") {
-                if (Math.abs(e1.start_speed - e2.start_speed) > 50) {
-                    const fast = e1.start_speed > e2.start_speed ? e1 : e2;
-                    analysisHTML += `<div class="tactic-block cqc"><div class="tactic-title" style="color:#ff2a5f">► Кинжальный бой</div>Экстремальная начальная скорость <b>${fast.name}</b> (${fast.start_speed} уз.) не дает ПВО врага свестись на цель в упор.</div>`;
-                }
-                if (e1.anti_jamming !== e2.anti_jamming || e1.hp !== e2.hp) {
-                    const jam = e1.anti_jamming === 1 ? e1 : (e1.hp > e2.hp ? e1 : e2);
-                    analysisHTML += `<div class="tactic-block sniper"><div class="tactic-title" style="color:#00e5ff">► Дальняя дистанция</div><b>${jam.name}</b> лучше пробивает эшелонированную ПВО благодаря ${jam.anti_jamming ? 'помехозащите' : 'высокой прочности'}.</div>`;
-                }
-                const dpmWinner = e1.dpm > e2.dpm ? e1.name : e2.name;
-                const utilWinner = e1.start_speed > e2.start_speed ? e1.name : e2.name;
-                summaryText = `<b>ИТОГ:</b> ${utilWinner} идеальна для динамичных боев на ближней/средней дистанции (трудно сбить на старте). ${dpmWinner} требует аккуратной игры от укрытий из-за высокого DPM, но уязвима к ПРО.`;
-            } 
-            else if (e1.category === "ПВО") {
-                if (e1.aa_type !== e2.aa_type) {
-                    analysisHTML += `<div class="tactic-block cqc"><div class="tactic-title" style="color:#ffaa00">► Архитектура перехвата</div><b>${e1.name}</b> использует ${e1.aa_type.toLowerCase()} тип урона, а <b>${e2.name}</b> — ${e2.aa_type.toLowerCase()}. Лазеры бьют мгновенно, ракеты наносят сплеш-урон.</div>`;
-                }
-                if (e1.range !== e2.range) {
-                    const rWinner = e1.range > e2.range ? e1 : e2;
-                    analysisHTML += `<div class="tactic-block sniper"><div class="tactic-title" style="color:#00e5ff">► Защитный купол</div>Дальность работы <b>${rWinner.name}</b> (${rWinner.range} км) позволяет сбивать авиацию на подлете, до того как они скинут бомбы.</div>`;
-                }
-                const type1Desc = e1.aa_type === 'Лазерный' ? 'отлично режет быстрые одиночные цели (гиперзвук)' : 'справляется с плотным спамом ракет (сплеш)';
-                const type2Desc = e2.aa_type === 'Лазерный' ? 'отлично режет быстрые одиночные цели' : 'лучше работает по авиации и роям ракет';
-                summaryText = `<b>ИТОГ:</b> ${e1.name} ${type1Desc}. ${e2.name}, в свою очередь, ${type2Desc}. Комбинируйте их в разных слотах корабля для 100% защиты.`;
-            }
-            else if (e1.category === "Гранатометы") {
-                if (e1.splash !== e2.splash) {
-                    const spl = e1.splash > e2.splash ? e1 : e2;
-                    analysisHTML += `<div class="tactic-block sniper"><div class="tactic-title" style="color:#00e5ff">► Противоторпедная оборона</div><b>${spl.name}</b> эффективнее уничтожает вражеские торпеды благодаря широкому радиусу взрыва (${spl.splash} м).</div>`;
-                }
-                if (e1.dpm !== e2.dpm) {
-                    const dmg = e1.dpm > e2.dpm ? e1 : e2;
-                    analysisHTML += `<div class="tactic-block cqc"><div class="tactic-title" style="color:#ff2a5f">► Наступательный потенциал</div>В ближнем бою <b>${dmg.name}</b> вливает колоссальный урон по надводным целям (${dmg.dpm.toLocaleString()} DPM).</div>`;
-                }
-                const defWinner = e1.splash > e2.splash ? e1.name : e2.name;
-                const atkWinner = e1.dpm > e2.dpm ? e1.name : e2.name;
-                summaryText = `<b>ИТОГ:</b> Выбирайте ${defWinner} для глухой обороны от подводных лодок и торпедного спама. ${atkWinner} — агрессивный вариант для уничтожения кораблей противника в упор.`;
+            if (Math.abs(e1.rating - e2.rating) < 5) {
+                summaryText = `Обе ракеты показывают схожую боевую эффективность (Паритет: ${e1.rating} vs ${e2.rating}). Выбор зависит исключительно от дистанции ведения боя вашего корпуса.`;
+            } else {
+                const winner = e1.rating > e2.rating ? e1 : e2;
+                const loser = e1.rating > e2.rating ? e2 : e1;
+                let reason = winner.anti_jamming === 1 ? "наличия помехозащиты" : "огромного огневого потенциала (DPM/Скорость)";
+                summaryText = `<span style="color:var(--secondary); font-size: 1.2rem;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><br>В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating}).`;
             }
 
-            let finalVerdictHTML = `<div class="final-summary-block"><div style="color:#fff; font-family:'Share Tech Mono'; font-size:1rem; line-height: 1.5; text-transform: none;">${summaryText}</div></div>`;
-            document.getElementById('verdict-screen').innerHTML = analysisHTML + finalVerdictHTML;
+            let finalVerdictHTML = `<div class="final-summary-block"><div style="color:#fff; font-family:'Share Tech Mono'; font-size:0.95rem; line-height: 1.6; text-transform: none;">${summaryText}</div></div>`;
+            
+            document.getElementById('verdict-screen').innerHTML = analysisCols + finalVerdictHTML;
         }
 
         window.onload = initApp;
