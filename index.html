@@ -49,7 +49,7 @@
         .nav-btn:hover, .nav-btn.active { background: rgba(255, 42, 95, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); color: #fff; }
         .info-btn {
             position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
-            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(255, 42, 95, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(255, 42, 95, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
         .info-btn:hover { background: var(--primary); box-shadow: var(--border-glow); color: #000; }
         
@@ -85,7 +85,6 @@
         .analytics-core { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 25px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); min-height: 200px; display: flex; flex-direction: column; }
         .verdict-header { text-align: center; font-size: 1.4rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 700; letter-spacing: 2px; }
         
-        /* ТАКТИЧЕСКИЕ БЛОКИ */
         .analysis-cols { display: flex; gap: 15px; margin-bottom: 20px; }
         .analysis-col { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px; }
         .col-title { font-family: 'Jura'; font-weight: bold; color: var(--secondary); text-align: center; margin-bottom: 10px; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 5px;}
@@ -150,7 +149,7 @@
     <!-- МОДАЛЬНОЕ ОКНО СПРАВКИ -->
     <div id="ibe-modal" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
+            <button class="modal-close" onclick="closeModal('ibe-modal')">×</button>
             <div style="color: #fff; font-family: 'Jura'; font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px;">СИСТЕМА РЕЙТИНГА И АНАЛИЗА</div>
             <div style="font-family: 'Share Tech Mono'; line-height: 1.6; font-size: 0.95rem; text-transform: none; color: #a09095;">
                 <p><b>АНАЛИЗАТОР:</b> Сравнивает две единицы вооружения, находя их уникальные тактические преимущества и определяя доминирующую ракету.</p>
@@ -171,7 +170,8 @@
         <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
         <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
         <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
-        <button class="info-btn" onclick="openModal()">?</button>
+        <button class="info-btn" style="width: auto; padding: 0 15px; font-size: 1.1rem; right: 75px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
+        <button class="info-btn" style="width: 40px;" onclick="openModal('ibe-modal')">?</button>
     </nav>
 
     <main id="page-compare" class="page">
@@ -213,7 +213,47 @@
         <div class="rating-container" id="rating-content"></div>
     </main>
 
+    <!-- ЛИЧНЫЙ КАБИНЕТ (АДМИН-ПАНЕЛЬ) -->
+    <main id="page-admin" class="page">
+        <div class="analytics-core" style="max-width: 600px; margin: 0 auto; text-align: center;">
+            <div class="verdict-header">ПАНЕЛЬ АДМИНИСТРАТОРА</div>
+            <div id="admin-auth">
+                <input type="password" id="admin-pass" class="search-input" placeholder="ПАРОЛЬ ДОСТУПА" style="margin-bottom: 15px;">
+                <br>
+                <button class="nav-btn" onclick="checkAdmin()">ВОЙТИ</button>
+            </div>
+            <div id="admin-dashboard" style="display: none;">
+                <div style="font-size: 1.2rem; color: var(--secondary); margin-bottom: 20px; font-family: 'Jura'; font-weight: bold;">СТАТИСТИКА СЕРВЕРА</div>
+                <div class="tactic-block" style="font-size: 1.2rem; border-color: var(--secondary); background: rgba(0, 229, 255, 0.1);">
+                    ПОСЕЩЕНИЯ САЙТА (Локально): <br>
+                    <span id="visit-counter" style="color: #fff; font-size: 2.5rem; font-weight: bold;">0</span>
+                </div>
+                <div style="color: #a09095; font-size: 0.9rem; margin-top: 25px; font-family: 'Share Tech Mono'; text-transform: none; text-align: left; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                    <span style="color: var(--primary);">ВНИМАНИЕ:</span> Этот счетчик отображает локальные заходы на сайт.<br><br>
+                    Для сбора глобальной статистики всех уникальных пользователей в сети потребуется подключить базу данных. Вы можете легко интегрировать данный счетчик с вашим Telegram-ботом STAGE или настроить триггер записи в Supabase.
+                </div>
+            </div>
+        </div>
+    </main>
+
     <script>
+        // СИСТЕМА ПОСЕЩЕНИЙ
+        let siteVisits = localStorage.getItem('mw_site_visits') || 0;
+        siteVisits++;
+        localStorage.setItem('mw_site_visits', siteVisits);
+
+        function checkAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === 'admin') {
+                document.getElementById('admin-auth').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                document.getElementById('visit-counter').innerText = siteVisits;
+                showToast("ДОСТУП РАЗРЕШЕН");
+            } else {
+                showToast('ОШИБКА: НЕВЕРНЫЙ ПАРОЛЬ', true);
+            }
+        }
+
         const CATEGORIES = ["Ракеты"];
         let searchQuery = "";
         
@@ -258,7 +298,6 @@
             score += (item.max_speed / 600) * 5; 
             score += Math.max(0, (2.0 - item.lock_time) * 5); 
             
-            // Динамический штраф за мертвую зону (5 баллов за каждый км)
             if (item.min_range > 0) {
                 score -= (item.min_range * 5);
             }
@@ -273,8 +312,8 @@
         let currentCategory = "Ракеты";
         let compareQueue = [];
 
-        function openModal() { document.getElementById('ibe-modal').classList.add('active'); }
-        function closeModal() { document.getElementById('ibe-modal').classList.remove('active'); }
+        function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
 
         function showToast(msg, isErr = false) {
             const c = document.getElementById('toast-container');
@@ -425,7 +464,6 @@
                 cons.push("Долго находится в воздухе (уязвима для дальнобойного ПВО)");
             } else if (item.trajectory === "Низкая") {
                 pros.push("Стелется над водой (минимальное время для реакции ПВО)");
-                cons.push("Требует прямой видимости (разбивается об укрытия)");
             } else if (item.trajectory === "Средняя") {
                 pros.push("Сбалансированная траектория полета");
             }
