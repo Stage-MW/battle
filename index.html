@@ -186,6 +186,7 @@
         const CATEGORIES = ["Ракеты"];
         let searchQuery = "";
         
+        // Добавлен параметр Кластер (isBool)
         const STATS_LOGIC = {
             damage_burst: { label: "Урон за залп", higherIsBetter: true },
             dpm: { label: "Урон в минуту", higherIsBetter: true },
@@ -193,6 +194,7 @@
             lock_time: { label: "Время захвата (сек)", higherIsBetter: false },
             projectiles: { label: "Ракет за пуск", higherIsBetter: true },
             anti_jamming: { label: "Помехозащита", higherIsBetter: true },
+            cluster: { label: "Кластерная БЧ", isBool: true }, 
             hp: { label: "Прочность (HP)", higherIsBetter: true },
             trajectory: { label: "Высота полёта", isString: true },
             start_speed: { label: "Нач. скорость (уз)", higherIsBetter: true },
@@ -202,15 +204,18 @@
         };
 
         const DB = {
-            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", trajectory: "Высокая", damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
-            "yj15": { name: "YJ-15", category: "Ракеты", trajectory: "Высокая", damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
-            "yj17": { name: "YJ-17", category: "Ракеты", trajectory: "Высокая", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
-            "granit": { name: "P-700 GRANIT", category: "Ракеты", trajectory: "Низкая", damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
-            "kh35": { name: "KH-35", category: "Ракеты", trajectory: "Низкая", damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
-            "yj18": { name: "YJ-18", category: "Ракеты", trajectory: "Низкая", damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
-            "champ": { name: "CHAMP", category: "Ракеты", trajectory: "Низкая", damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
-            "gtx690": { name: "GTX 690", category: "Ракеты", trajectory: "Средняя", damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
-            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", trajectory: "Низкая", damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" }
+            "zircon": { name: "3M22 ZIRCON", category: "Ракеты", cluster: 0, trajectory: "Высокая", damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON" },
+            "yj15": { name: "YJ-15", category: "Ракеты", cluster: 0, trajectory: "Высокая", damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15" },
+            "yj17": { name: "YJ-17", category: "Ракеты", cluster: 0, trajectory: "Высокая", damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17" },
+            "granit": { name: "P-700 GRANIT", category: "Ракеты", cluster: 0, trajectory: "Низкая", damage_burst: 58499, dpm: 311994, reload: 10.50, lock_time: 4.00, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 29, max_speed: 311, accel_time: 4.83, range: 14.73, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=P-700+GRANIT" },
+            "kh35": { name: "KH-35", category: "Ракеты", cluster: 0, trajectory: "Низкая", damage_burst: 31199, dpm: 249592, reload: 6.65, lock_time: 2.00, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 15, max_speed: 340, accel_time: 2.23, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=KH-35" },
+            "yj18": { name: "YJ-18", category: "Ракеты", cluster: 0, trajectory: "Низкая", damage_burst: 23400, dpm: 242357, reload: 5.60, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 349, accel_time: 3.56, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18" },
+            "champ": { name: "CHAMP", category: "Ракеты", cluster: 0, trajectory: "Низкая", damage_burst: 23400, dpm: 215428, reload: 6.30, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 106, max_speed: 408, accel_time: 4.43, range: 12.57, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=CHAMP" },
+            "gtx690": { name: "GTX 690", category: "Ракеты", cluster: 0, trajectory: "Средняя", damage_burst: 58649, dpm: 254880, reload: 13.30, lock_time: 2.20, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 87, max_speed: 427, accel_time: 11.67, range: 12.13, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=GTX+690" },
+            "swarmer": { name: "НОВОГОДНИЙ СВАРМЕР", category: "Ракеты", cluster: 0, trajectory: "Низкая", damage_burst: 25350, dpm: 247162, reload: 5.60, lock_time: 1.50, projectiles: 3, anti_jamming: 0, hp: 63, start_speed: 97, max_speed: 388, accel_time: 4.29, range: 12.13, img: "https://via.placeholder.com/400x150/111/ffaa00?text=NEW+YEAR+SWARMER" },
+            
+            // ВРЕМЕННЫЙ СЛОТ ДЛЯ KH-90
+            "kh90": { name: "KH-90 (ОЖИДАНИЕ ДАННЫХ)", category: "Ракеты", cluster: 1, trajectory: "Средняя", damage_burst: 45000, dpm: 270000, reload: 10.00, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 250, start_speed: 200, max_speed: 450, accel_time: 2.00, range: 14.00, img: "https://via.placeholder.com/400x150/111/ffaa00?text=KH-90+CLUSTER" }
         };
 
         function calculateRating(item) {
@@ -218,8 +223,9 @@
             score += (item.dpm / 300000) * 20; 
             score += (item.damage_burst / 60000) * 15; 
             score += item.anti_jamming === 1 ? 25 : 0; 
+            score += item.cluster === 1 ? 15 : 0; // БОНУС КЛАСТЕРА В ТИР-ЛИСТЕ
             score += (item.hp / 400) * 10; 
-            score += (item.start_speed / 400) * 10; 
+            score += (item.start_speed / 400) * 5; 
             score += (item.max_speed / 600) * 5; 
             score += Math.max(0, (2.0 - item.lock_time) * 5); 
             return Math.min(100, Math.round(score));
@@ -356,8 +362,11 @@
             for (let key in STATS_LOGIC) {
                 let val = item[key];
                 if (key === 'dpm' || key === 'damage_burst') val = val.toLocaleString('ru');
-                if (key === 'anti_jamming') val = val === 1 ? "<span style='color:#ffaa00; text-shadow: 0 0 10px #ffaa00'>ЕСТЬ</span>" : "НЕТ";
                 
+                // Рендер логических значений
+                if (key === 'anti_jamming') val = val === 1 ? "<span style='color:#ffaa00; text-shadow: 0 0 10px #ffaa00'>ЕСТЬ</span>" : "НЕТ";
+                if (key === 'cluster') val = val === 1 ? "<span style='color:#ff2a5f; text-shadow: 0 0 10px #ff2a5f'>ДА</span>" : "НЕТ";
+
                 html += `<tr><td class="stat-name">${STATS_LOGIC[key].label}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
             }
             document.getElementById(`stats-equip-${side}`).innerHTML = html;
@@ -368,6 +377,8 @@
             
             if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
             else cons.push("Сбрасывается вражескими тепловыми ловушками");
+
+            if (item.cluster === 1) pros.push("Кластерная БЧ (наносит урон даже при позднем сбросе ловушек противником)");
 
             if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
             else cons.push("Низкий математический DPM");
@@ -391,11 +402,11 @@
             if (item.lock_time <= 1.2) pros.push("Мгновенный захват цели для спама");
             else if (item.lock_time >= 3.0) cons.push(`Критически долгий захват цели (${item.lock_time} сек)`);
             
-            if (item.projectiles > 1) pros.push(`Перегружает ПВО количеством снарядов (${item.projectiles} шт)`);
+            if (item.projectiles > 1 && item.cluster === 0) pros.push(`Перегружает ПВО количеством снарядов (${item.projectiles} шт)`);
             else if (item.hp < 100) cons.push("Крайне низкая прочность (сбивается одним лазером)");
 
-            if (item.anti_jamming === 1) {
-                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Гарантированно долетит до цели сквозь ПВО)";
+            if (item.anti_jamming === 1 || item.cluster === 1) {
+                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Гарантированно долетит до цели сквозь ПВО и ловушки)";
             } else if (item.start_speed >= 250) {
                 range = "БЛИЖНЯЯ (Кинжальный бой из-за укрытий, ПВО не успеет свестись)";
             } else {
@@ -438,7 +449,7 @@
             } else {
                 const winner = e1.rating > e2.rating ? e1 : e2;
                 const loser = e1.rating > e2.rating ? e2 : e1;
-                let reason = winner.anti_jamming === 1 ? "наличия помехозащиты" : "огневого потенциала (Урон/DPM) и кинетики";
+                let reason = winner.anti_jamming === 1 || winner.cluster === 1 ? "абсолютной независимости от вражеских ловушек (РЭБ)" : "огневого потенциала (Урон/DPM) и кинетики";
                 summaryText = `<span style="color:var(--secondary); font-size: 1.2rem;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><br>В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating}).`;
             }
 
