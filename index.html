@@ -3,193 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BATTLE MW | СИСТЕМА АНАЛИЗА</title>
+    <title>BATTLE MW | АНАЛИЗ ВООРУЖЕНИЯ</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
 
         :root {
             --bg-color: #03070b;
-            --primary: #00e5ff;
-            --primary-dim: rgba(0, 229, 255, 0.2);
-            --danger: #ff2a5f;
-            --glass-bg: linear-gradient(135deg, rgba(16, 25, 40, 0.65), rgba(6, 11, 18, 0.4));
-            --glass-border: rgba(0, 229, 255, 0.2);
+            --primary: #ff2a5f; /* Изменил основной цвет на агрессивный красный/розовый для оружия */
+            --primary-dim: rgba(255, 42, 95, 0.2);
+            --secondary: #00e5ff;
+            --glass-bg: linear-gradient(135deg, rgba(20, 10, 15, 0.65), rgba(10, 5, 8, 0.8));
+            --glass-border: rgba(255, 42, 95, 0.2);
             --glass-reflection: rgba(255, 255, 255, 0.1);
-            --border-glow: 0 0 20px rgba(0, 229, 255, 0.4);
-            --text-main: #e0f2f1;
+            --border-glow: 0 0 20px rgba(255, 42, 95, 0.4);
+            --text-main: #f0e6e6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
         body {
             background-color: var(--bg-color);
-            background-image: url('bg-ocean.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-image: radial-gradient(circle at 50% 50%, #1a0b12 0%, #030408 100%);
             color: var(--text-main);
             font-family: 'Jura', sans-serif;
             text-transform: uppercase;
             overflow-x: hidden;
             position: relative;
-        }
-
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(3, 7, 12, 0.45); 
-            backdrop-filter: blur(14px) saturate(120%);
-            -webkit-backdrop-filter: blur(14px) saturate(120%);
-            z-index: -1;
+            min-height: 100vh;
         }
 
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px);
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
             pointer-events: none; z-index: 999;
         }
 
-        /* --- СТАРТОВАЯ АНИМАЦИЯ --- */
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10000;
-            display: flex; pointer-events: all; animation: removeOverlay 0.1s forwards 3.5s;
-        }
-        .door {
-            position: absolute; top: 0; width: 50vw; height: 100vh;
-            background-image: url('bg-ocean.jpg'); background-size: 100vw 100vh; background-repeat: no-repeat;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
-        }
-        .door-left { left: 0; background-position: left center; border-right: 2px solid var(--primary); box-shadow: 10px 0 30px rgba(0,0,0,0.9); animation: slideLeft 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s; }
-        .door-right { right: 0; background-position: right center; border-left: 2px solid var(--primary); box-shadow: -10px 0 30px rgba(0,0,0,0.9); animation: slideRight 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.8s; }
-        .intro-title-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10002; animation: fadeTitle 0.6s ease-out forwards 1.8s; }
-        .intro-title-box {
-            background: var(--glass-bg); border: 1px solid var(--primary); border-top: 2px solid var(--glass-reflection);
-            padding: 25px 60px; backdrop-filter: blur(25px) saturate(150%); -webkit-backdrop-filter: blur(25px) saturate(150%);
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            opacity: 0; transform: scale(0.7) scaleX(2.5); animation: boxDeploy 1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.2s;
-        }
-        .intro-text {
-            color: var(--primary); font-size: 3.5rem; font-weight: 700; white-space: nowrap; font-family: 'Jura', sans-serif;
-            opacity: 0; filter: blur(10px); letter-spacing: 40px; animation: textFocus 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.4s;
-        }
-
-        @keyframes boxDeploy { 0% { transform: scale(0.6) scaleX(3); opacity: 0; box-shadow: inset 0 0 0 transparent; } 40% { transform: scale(1.05) scaleX(0.9); opacity: 1; box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.5); } 100% { transform: scale(1) scaleX(1); opacity: 1; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), var(--border-glow); } }
-        @keyframes textFocus { 0% { letter-spacing: 40px; opacity: 0; filter: blur(15px); color: #fff; text-shadow: none; } 50% { letter-spacing: -2px; opacity: 0.9; filter: blur(2px); color: var(--primary); text-shadow: 0 0 30px var(--primary); } 100% { letter-spacing: 12px; opacity: 1; filter: blur(0); text-shadow: 0 0 20px var(--primary); } }
-        @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        @keyframes slideRight { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
-        @keyframes fadeTitle { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); pointer-events: none; } }
-        @keyframes removeOverlay { to { visibility: hidden; pointer-events: none; } }
-
         /* --- НАВИГАЦИЯ --- */
-        nav { display: flex; justify-content: center; align-items: center; gap: 25px; padding: 25px; background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%); position: relative; z-index: 10; }
+        nav { display: flex; justify-content: center; align-items: center; gap: 25px; padding: 25px; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); position: relative; z-index: 10; border-bottom: 1px solid var(--primary-dim); }
         .nav-btn {
-            background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             color: var(--primary); padding: 12px 35px; font-family: 'Share Tech Mono'; font-size: 1.1rem;
             cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; 
         }
-        .nav-btn:hover, .nav-btn.active { background: rgba(0, 229, 255, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); }
+        .nav-btn:hover, .nav-btn.active { background: rgba(255, 42, 95, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); color: #fff; }
         .info-btn {
             position: absolute; right: 30px; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
-            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            width: 40px; height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(255, 42, 95, 0.2); backdrop-filter: blur(5px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
-        .info-btn:hover { background: var(--primary-dim); box-shadow: var(--border-glow); color: #fff; }
+        .info-btn:hover { background: var(--primary); box-shadow: var(--border-glow); color: #000; }
 
         /* --- МОДАЛЬНОЕ ОКНО --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 20000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 20000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--glass-bg); border: 1px solid var(--primary); border-top: 1px solid var(--glass-reflection); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 229, 255, 0.1); padding: 35px; max-width: 700px; width: 90%; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); color: var(--text-main); transform: scale(0.95); transition: 0.3s ease; }
+        .modal-content { background: var(--glass-bg); border: 1px solid var(--primary); border-top: 1px solid var(--glass-reflection); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 42, 95, 0.1); padding: 35px; max-width: 750px; width: 90%; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); color: var(--text-main); transform: scale(0.95); transition: 0.3s ease; }
         .modal-overlay.active .modal-content { transform: scale(1); }
         .modal-title { color: #fff; font-family: 'Jura', sans-serif; font-size: 1.6rem; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; letter-spacing: 1px; }
-        .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--danger); font-size: 1.8rem; font-family: 'Jura', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .modal-close:hover { text-shadow: 0 0 15px var(--danger); transform: scale(1.1); }
-        .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.6; font-size: 1rem; }
+        .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--primary); font-size: 1.8rem; font-family: 'Jura', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .modal-close:hover { text-shadow: 0 0 15px var(--primary); transform: scale(1.1); }
+        .modal-body { font-family: 'Share Tech Mono', monospace; line-height: 1.6; font-size: 1rem; text-transform: none; }
         .modal-body p { margin-bottom: 10px; }
-        .modal-body ul { margin: 10px 0 10px 25px; color: #8892b0; font-size: 0.95rem; }
-        .modal-body li { margin-bottom: 5px; }
         .modal-body b { color: var(--primary); font-family: 'Jura', sans-serif; }
+        .modal-body ul { margin-left: 20px; margin-bottom: 15px; color: #a09095; }
 
-        .page { display: none; animation: fadeIn 0.4s ease-out forwards; max-width: 1500px; margin: 0 auto; padding: 20px; position: relative; z-index: 5;}
+        .page { display: none; animation: fadeIn 0.4s ease-out forwards; max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 5;}
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         /* СЕТКА СРАВНЕНИЯ */
-        .compare-grid { display: grid; grid-template-columns: 1fr 500px 1fr; gap: 25px; align-items: start; }
-        .ship-card { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px) saturate(150%); -webkit-backdrop-filter: blur(25px) saturate(150%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.05); padding: 25px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
-        .ship-img-container { width: 100%; height: 220px; background: rgba(0,0,0,0.5); margin-bottom: 25px; background-size: cover; background-position: center; border: 1px solid rgba(0, 229, 255, 0.2); box-shadow: inset 0 0 20px #000; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 550px 1fr; gap: 25px; align-items: start; }
+        .equip-card { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px) saturate(150%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 25px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%); }
+        .equip-img-container { width: 100%; height: 200px; background: rgba(0,0,0,0.7); margin-bottom: 25px; background-size: contain; background-repeat: no-repeat; background-position: center; border: 1px solid rgba(255, 42, 95, 0.2); box-shadow: inset 0 0 30px #000; position: relative; }
+        
         .stats-table { width: 100%; border-collapse: collapse; }
-        .stats-table td { padding: 9px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.9rem; }
-        .stat-name { color: #8892b0; }
-        .stat-value { text-align: right; font-weight: bold; font-size: 1.05rem; }
-        .win { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
-        .lose { color: var(--danger); opacity: 0.7; }
+        .stats-table td { padding: 9px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Share Tech Mono'; font-size: 0.95rem; }
+        .stat-name { color: #a09095; }
+        .stat-value { text-align: right; font-weight: bold; font-size: 1.1rem; }
+        .win { color: #00e5ff; text-shadow: 0 0 10px #00e5ff; }
+        .lose { color: #555; opacity: 0.7; }
         .neutral { color: #aaa; }
 
         /* АНАЛИТИЧЕСКИЙ ЦЕНТР */
-        .analytics-core { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); backdrop-filter: blur(25px) saturate(150%); -webkit-backdrop-filter: blur(25px) saturate(150%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.05); padding: 30px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); min-height: 200px; display: flex; flex-direction: column; }
-        .verdict-header { text-align: center; font-size: 1.4rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 700; letter-spacing: 1px; }
-        .tactic-block { margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.4); border-left: 3px solid #fff; font-family: 'Jura'; text-transform: none; line-height: 1.5; font-size: 0.95rem; backdrop-filter: blur(5px);}
-        .tactic-block.mobility { border-color: var(--primary); }
-        .tactic-block.intel { border-color: #ffd700; }
-        .tactic-title { font-family: 'Share Tech Mono'; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        .final-winner-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid var(--primary); background: rgba(0, 229, 255, 0.1); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.2); animation: pulseGlow 2s infinite alternate; backdrop-filter: blur(10px); }
-        .final-draw-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid #aaa; background: rgba(255, 255, 255, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); backdrop-filter: blur(10px); }
+        .analytics-core { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 30px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); min-height: 200px; display: flex; flex-direction: column; }
+        .verdict-header { text-align: center; font-size: 1.5rem; color: #fff; margin-bottom: 25px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 700; letter-spacing: 2px; }
+        
+        .tactic-block { margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.5); border-left: 3px solid #fff; font-family: 'Share Tech Mono'; text-transform: none; line-height: 1.5; font-size: 0.95rem; }
+        .tactic-block b { font-family: 'Jura'; text-transform: uppercase; }
+        .tactic-block.cqc { border-color: #ff2a5f; }
+        .tactic-block.sniper { border-color: #00e5ff; }
+        .tactic-block.firepower { border-color: #ffaa00; }
+        .tactic-title { font-family: 'Jura'; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 1px; }
+        
+        .final-winner-block { margin-top: 20px; padding: 20px; text-align: center; border: 2px solid var(--secondary); background: rgba(0, 229, 255, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.1); backdrop-filter: blur(10px); }
 
-        /* КАТАЛОГ (БАЗА ДАННЫХ) */
+        /* КАТАЛОГ (АРСЕНАЛ) */
         .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
-        .cat-btn { background: rgba(10, 15, 25, 0.5); border: 1px solid rgba(255,255,255,0.1); color: #8892b0; padding: 8px 20px; font-family: 'Jura'; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 4px; backdrop-filter: blur(10px); }
-        .cat-btn:hover, .cat-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(0, 229, 255, 0.15); box-shadow: var(--border-glow); }
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .catalog-item { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); border-left: 1px solid rgba(255, 255, 255, 0.05); padding: 15px; cursor: pointer; position: relative; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); transition: all 0.3s ease; }
+        .cat-btn { background: rgba(10, 5, 8, 0.6); border: 1px solid rgba(255,255,255,0.1); color: #a09095; padding: 10px 25px; font-family: 'Jura'; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 4px; }
+        .cat-btn:hover, .cat-btn.active { border-color: var(--primary); color: #fff; background: rgba(255, 42, 95, 0.2); box-shadow: var(--border-glow); }
+        
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .catalog-item { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); padding: 15px; cursor: pointer; position: relative; transition: all 0.3s ease; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
         .catalog-item:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.7), var(--border-glow); }
-        .catalog-item.selected { border-color: var(--primary); box-shadow: var(--border-glow); background: rgba(0, 229, 255, 0.1); }
-        .catalog-item.selected::after { content: "ВЫБРАН (1)"; position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; font-family: 'Share Tech Mono'; padding: 2px 8px; font-weight: bold; box-shadow: 0 0 10px var(--primary);}
-        .catalog-item-img { height: 160px; background: rgba(0,0,0,0.5); margin-bottom: 15px; background-size: cover; background-position: center; border-bottom: 2px solid var(--primary-dim); }
+        .catalog-item.selected { border-color: var(--secondary); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); background: rgba(0, 229, 255, 0.1); }
+        .catalog-item.selected::after { content: "СЛОТ 1"; position: absolute; top: 10px; right: 10px; background: var(--secondary); color: #000; font-family: 'Share Tech Mono'; padding: 3px 10px; font-weight: bold; box-shadow: 0 0 10px var(--secondary);}
+        
+        .catalog-item-img { height: 140px; background: rgba(0,0,0,0.8); margin-bottom: 15px; background-size: contain; background-repeat: no-repeat; background-position: center; border-bottom: 2px solid var(--primary-dim); }
         
         /* УВЕДОМЛЕНИЯ */
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: rgba(6, 11, 18, 0.85); border: 1px solid var(--primary); color: var(--primary); padding: 15px 30px; font-family: 'Share Tech Mono'; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: var(--border-glow); backdrop-filter: blur(15px); border-top: 1px solid var(--glass-reflection); }
-        .toast.error { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(255, 42, 95, 0.5); }
+        .toast { background: rgba(10, 5, 8, 0.9); border: 1px solid var(--secondary); color: var(--secondary); padding: 15px 30px; font-family: 'Share Tech Mono'; opacity: 0; transform: translateY(20px); transition: 0.3s; box-shadow: 0 0 15px rgba(0,229,255,0.3); backdrop-filter: blur(15px); text-transform: uppercase; }
+        .toast.error { border-color: var(--primary); color: var(--primary); box-shadow: var(--border-glow); }
     </style>
 </head>
 <body>
 
-    <!-- СТАРТОВЫЙ ИНТРО-ЭКРАН -->
-    <div id="intro-overlay">
-        <div class="door door-left"></div>
-        <div class="door door-right"></div>
-        <div class="intro-title-wrapper">
-            <div class="intro-title-box">
-                <div class="intro-text">BATTLE MW</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО СПРАВКИ ИБЭ -->
     <div id="ibe-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">×</button>
-            <div class="modal-title">СПРАВКА: ИНДЕКС ИБЭ</div>
+            <div class="modal-title">СПРАВКА: СИСТЕМА ОЦЕНКИ ОБОРУДОВАНИЯ</div>
             <div class="modal-body">
-                <p><b>ИБЭ (Индекс Боевой Эффективности)</b> — это аналитический алгоритм, оценивающий чистый потенциал корпуса боевого корабля по 10,000-балльной шкале.</p>
-                <p>При расчете <b>намеренно исключены</b> показатели урона (DPM), так как вооружение в игре является сменяемым. В расчет идут 10 фундаментальных характеристик:</p>
+                <p>В отличие от корпусов кораблей, оборудование тестируется на скрытые механики, тайминги и устойчивость к контрмерам. Анализ разделен на ситуативные роли:</p>
+                <p><b>КИНЖАЛЬНЫЙ БОЙ (Ближняя дистанция)</b></p>
                 <ul>
-                    <li><b>Прочность (28%):</b> Базовый запас живучести корпуса.</li>
-                    <li><b>Маневренность (20%):</b> Динамика рулей и способность уклоняться от торпед.</li>
-                    <li><b>Скорость (18%):</b> Тактическая мобильность на карте.</li>
-                    <li><b>Радар (8%):</b> Право первого удара.</li>
-                    <li><b>Стелс-модуль (6%):</b> Снижает радиус обнаружения корабля на радарах противника (Малозаметность).</li>
-                    <li><b>Скрытность среды (13%):</b> Суммарная незаметность с воздуха, поверхности и от ПЛ.</li>
-                    <li><b>Разведданные (4%):</b> Длительность удержания противника в засвете.</li>
-                    <li><b>Стабилизация (3%):</b> Штраф разброса орудий при стрельбе на ходу.</li>
+                    <li><i>Начальная скорость & Разгон:</i> Критически важны. Чем выше стартовая скорость, тем меньше шансов у вражеского ПВО навестись на цель в упор.</li>
+                    <li><i>Время захвата:</i> Позволяет быстрее откидывать залп из-за препятствий.</li>
                 </ul>
-                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--primary-dim);">
-                    <p style="color: #fff; margin-bottom: 5px;"><b>ШКАЛА ПРЕВОСХОДСТВА:</b></p>
-                    <ul style="list-style: none; margin-left: 0;">
-                        <li><span style="color:#aaa;">Разрыв 0 – 149:</span> Боевой паритет (разница в рамках погрешности).</li>
-                        <li><span style="color:var(--primary);">Разрыв 150 – 299:</span> Тактическое превосходство одной из платформ.</li>
-                        <li><span style="color:#ffaa00;">Разрыв 300 и более:</span> Абсолютное доминирование (корпус на поколение выше).</li>
-                    </ul>
-                </div>
+                <p><b>СНАЙПЕРСКИЙ ОГОНЬ (Дальняя дистанция)</b></p>
+                <ul>
+                    <li><i>Помехозащищенность:</i> Гарантирует, что противник не собьет прицел ловушками.</li>
+                    <li><i>Прочность (HP) и Макс. Скорость:</i> Позволяют пробить эшелонированную ПВО на подлете к цели.</li>
+                </ul>
+                <p><b>ОГНЕВОЙ ПОТЕНЦИАЛ</b></p>
+                <ul>
+                    <li>Учитывает DPM, урон с одного клика (Burst) и способность перегружать ПВО количеством летящих снарядов.</li>
+                </ul>
+                <p style="margin-top: 15px; color: var(--secondary); font-family: 'Jura';">Выберите две единицы из одной категории в Арсенале для запуска протокола сравнения.</p>
             </div>
         </div>
     </div>
@@ -197,31 +145,31 @@
     <div id="toast-container"></div>
 
     <nav>
-        <button class="nav-btn" onclick="switchMainPage('page-compare')">ТЕРМИНАЛ СРАВНЕНИЯ</button>
-        <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА ДАННЫХ ФЛОТА</button>
-        <button class="info-btn" onclick="openModal()" title="Справка по ИБЭ">?</button>
+        <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР ОБОРУДОВАНИЯ</button>
+        <button class="nav-btn active" onclick="switchMainPage('page-catalog')">АРСЕНАЛ ВООРУЖЕНИЯ</button>
+        <button class="info-btn" onclick="openModal()" title="Справка">?</button>
     </nav>
 
     <!-- СТРАНИЦА 1: СРАВНЕНИЕ -->
     <main id="page-compare" class="page">
         <div class="compare-grid">
-            <div class="ship-card">
-                <div class="ship-img-container" id="img-ship-1"></div>
-                <h3 id="name-ship-1" style="margin-bottom:15px; color:var(--primary); text-align:center; font-size:1.4rem;"></h3>
-                <table class="stats-table" id="stats-ship-1"></table>
+            <div class="equip-card">
+                <div class="equip-img-container" id="img-equip-1"></div>
+                <h3 id="name-equip-1" style="margin-bottom:15px; color:#fff; text-align:center; font-size:1.4rem; letter-spacing: 1px;"></h3>
+                <table class="stats-table" id="stats-equip-1"></table>
             </div>
 
             <div class="analytics-core">
-                <div class="verdict-header">АНАЛИЗ БОЕВОЙ ПЛАТФОРМЫ</div>
-                <div id="verdict-screen" style="font-family: 'Share Tech Mono'; text-align: center; color: #8892b0; margin-top: 20px;">
-                    [ ОЖИДАНИЕ ВЫБОРА ЕДИНИЦ ДЛЯ АНАЛИЗА ]
+                <div class="verdict-header">ТАКТИЧЕСКИЙ РАЗБОР</div>
+                <div id="verdict-screen" style="font-family: 'Share Tech Mono'; text-align: center; color: #a09095; margin-top: 20px;">
+                    [ ОЖИДАНИЕ ВЫБОРА ЕДИНИЦ ВООРУЖЕНИЯ ]
                 </div>
             </div>
 
-            <div class="ship-card">
-                <div class="ship-img-container" id="img-ship-2"></div>
-                <h3 id="name-ship-2" style="margin-bottom:15px; color:var(--primary); text-align:center; font-size:1.4rem;"></h3>
-                <table class="stats-table" id="stats-ship-2"></table>
+            <div class="equip-card">
+                <div class="equip-img-container" id="img-equip-2"></div>
+                <h3 id="name-equip-2" style="margin-bottom:15px; color:#fff; text-align:center; font-size:1.4rem; letter-spacing: 1px;"></h3>
+                <table class="stats-table" id="stats-equip-2"></table>
             </div>
         </div>
     </main>
@@ -233,38 +181,50 @@
     </main>
 
     <script>
-        const CATEGORIES = ["Фрегат", "Эсминец", "Крейсер", "Линкор", "Авианосец", "Экраноплан", "Ховеркрафт", "Субмарина"];
+        const CATEGORIES = ["Ракеты", "ПВО", "Гранатометы", "Торпеды", "Автопушки", "Орудия"];
         
-        const STAT_LABELS = {
-            hp: "Прочность (HP)", speed: "Скорость (Узлы)", maneuverability: "Маневренность",
-            radar: "Радиус обзора (КМ)", stealth: "Малозаметность", conc_air: "Заметность (Воздух)", 
-            conc_surf: "Заметность (Поверхность)", conc_depth: "Заметность (Глубина)", 
-            recon: "Разведданные (сек)", penalty: "Штраф движения (%)"
+        // Массив характеристик, определяющий, что лучше: больше (true) или меньше (false)
+        const STATS_LOGIC = {
+            damage_burst: { label: "Урон за залп", higherIsBetter: true },
+            dpm: { label: "Урон в минуту", higherIsBetter: true },
+            reload: { label: "Перезарядка (сек)", higherIsBetter: false },
+            lock_time: { label: "Время захвата (сек)", higherIsBetter: false },
+            projectiles: { label: "Выстрелов за атаку", higherIsBetter: true },
+            anti_jamming: { label: "Помехозащита", higherIsBetter: true },
+            hp: { label: "Прочность (HP)", higherIsBetter: true },
+            start_speed: { label: "Нач. скорость (уз)", higherIsBetter: true },
+            max_speed: { label: "Скорость (уз)", higherIsBetter: true },
+            accel_time: { label: "Время набора скор. (сек)", higherIsBetter: false },
+            range: { label: "Дальность (км)", higherIsBetter: true }
         };
 
         const DB = {
-            "aquitaine": { name: "FS Aquitaine (D650)", category: "Фрегат", hp: 429000, speed: 30.3, maneuverability: 8.45, radar: 11.20, stealth: 1, conc_air: 4.25, conc_surf: 3.83, conc_depth: 2.98, recon: 5, penalty: 6.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+AQUITAINE" },
-            "forbin": { name: "FS Forbin", category: "Фрегат", hp: 429000, speed: 29.1, maneuverability: 10.14, radar: 10.00, stealth: 1, conc_air: 4.53, conc_surf: 3.97, conc_depth: 3.12, recon: 5, penalty: 6.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FS+FORBIN" },
-            "type32": { name: "HMS TYPE 32", category: "Фрегат", hp: 435500, speed: 26.0, maneuverability: 10.40, radar: 10.80, stealth: 1, conc_air: 4.65, conc_surf: 4.08, conc_depth: 3.23, recon: 5, penalty: 5.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=HMS+TYPE+32" },
-            "f124": { name: "FGS F124", category: "Фрегат", hp: 429000, speed: 27.0, maneuverability: 8.32, radar: 10.40, stealth: 1, conc_air: 4.96, conc_surf: 4.11, conc_depth: 2.98, recon: 5, penalty: 6.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=FGS+F124" },
-            "ushakov": { name: "RF Admiral Ushakov", category: "Эсминец", hp: 448500, speed: 23.5, maneuverability: 9.10, radar: 10.60, stealth: 0, conc_air: 4.82, conc_surf: 4.25, conc_depth: 3.40, recon: 4, penalty: 9.5, img: "https://via.placeholder.com/600x400/111/00e5ff?text=ADMIRAL+USHAKOV" },
-            "fletcher": { name: "USS Fletcher (DD-992)", category: "Эсминец", hp: 455000, speed: 25.3, maneuverability: 9.75, radar: 11.60, stealth: 0, conc_air: 5.10, conc_surf: 4.53, conc_depth: 3.40, recon: 4, penalty: 9.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=USS+FLETCHER" },
-            "orlan": { name: "Проект 1144 «Орлан»", category: "Крейсер", hp: 480000, speed: 24.0, maneuverability: 6.5, radar: 12.0, stealth: 0, conc_air: 6.5, conc_surf: 5.5, conc_depth: 4.5, recon: 4, penalty: 8.0, img: "https://via.placeholder.com/600x400/111/00e5ff?text=CRUISER" }
+            "zircon": { 
+                name: "3M22 ZIRCON", category: "Ракеты", 
+                damage_burst: 41600, dpm: 289714, reload: 8.40, lock_time: 1.50, projectiles: 1, 
+                anti_jamming: 0, hp: 300, start_speed: 388, max_speed: 583, accel_time: 1.43, range: 15.60, 
+                img: "https://via.placeholder.com/400x150/111/ff2a5f?text=ZIRCON+MISSILE" 
+            },
+            "yj15": { 
+                name: "YJ-15", category: "Ракеты", 
+                damage_burst: 37500, dpm: 257675, reload: 8.40, lock_time: 1.25, projectiles: 2, 
+                anti_jamming: 0, hp: 250, start_speed: 155, max_speed: 544, accel_time: 2.00, range: 13.87, 
+                img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-15+MISSILE" 
+            },
+            "yj17": { 
+                name: "YJ-17", category: "Ракеты", 
+                damage_burst: 36400, dpm: 204533, reload: 10.50, lock_time: 1.00, projectiles: 1, 
+                anti_jamming: 1, hp: 375, start_speed: 97, max_speed: 583, accel_time: 1.79, range: 13.00, 
+                img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-17+MISSILE" 
+            }
         };
 
-        let currentCategory = "Фрегат";
+        let currentCategory = "Ракеты";
         let compareQueue = [];
 
         function openModal() { document.getElementById('ibe-modal').classList.add('active'); }
         function closeModal() { document.getElementById('ibe-modal').classList.remove('active'); }
-        window.onclick = function(event) { const modal = document.getElementById('ibe-modal'); if (event.target === modal) { closeModal(); } }
-
-        function checkCompatibility(cat1, cat2) {
-            const special = ["Субмарина", "Авианосец"];
-            if (cat1 === cat2) return true;
-            if (special.includes(cat1) || special.includes(cat2)) return false;
-            return true;
-        }
+        window.onclick = function(event) { const modal = document.getElementById('ibe-modal'); if (event.target === modal) closeModal(); }
 
         function showToast(msg, isErr = false) {
             const c = document.getElementById('toast-container');
@@ -272,7 +232,7 @@
             t.className = `toast ${isErr ? 'error' : ''}`; t.innerText = msg;
             c.appendChild(t);
             setTimeout(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; }, 10);
-            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 3000);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 3500);
         }
 
         function switchMainPage(pageId) {
@@ -302,28 +262,27 @@
             renderCatalog();
         }
 
-        function handleCatalogClick(shipId) {
-            const ship = DB[shipId];
+        function handleCatalogClick(itemId) {
+            const item = DB[itemId];
             if (compareQueue.length === 0) {
-                compareQueue.push(shipId); 
+                compareQueue.push(itemId); 
                 renderCatalog(); 
-                showToast(`ВЫБРАНА ЦЕЛЬ 1: ${ship.name}. Выберите вторую цель.`);
+                showToast(`СЛОТ 1 ЗАГРУЖЕН: ${item.name}. ВЫБЕРИТЕ ВТОРУЮ ЕДИНИЦУ.`);
             } else if (compareQueue.length === 1) {
-                if (compareQueue[0] === shipId) { compareQueue = []; renderCatalog(); return; }
+                if (compareQueue[0] === itemId) { compareQueue = []; renderCatalog(); return; }
                 
                 const id1 = compareQueue[0];
-                const id2 = shipId;
-                const firstShip = DB[id1];
+                const id2 = itemId;
                 
-                if (checkCompatibility(firstShip.category, ship.category)) {
-                    updateShipView(1, id1);
-                    updateShipView(2, id2);
+                if (DB[id1].category === item.category) {
+                    updateEquipView(1, id1);
+                    updateEquipView(2, id2);
                     runAnalysis(id1, id2);
                     switchMainPage('page-compare');
-                    showToast("ДАННЫЕ ПЕРЕДАНЫ В ТЕРМИНАЛ АНАЛИЗА");
+                    showToast("ОБОРУДОВАНИЕ ЗАГРУЖЕНО В АНАЛИЗАТОР");
                     compareQueue = [];
                 } else {
-                    showToast(`ОШИБКА: Несовместимые классы (${firstShip.category} и ${ship.category})`, true);
+                    showToast(`ОШИБКА: НЕСОВМЕСТИМЫЕ КАТЕГОРИИ`, true);
                     compareQueue = []; renderCatalog();
                 }
             }
@@ -338,150 +297,115 @@
                     c.innerHTML += `
                         <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
                             <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
-                            <div style="color:var(--primary); font-size:1.2rem; font-weight:bold; margin-bottom:8px;">${s.name}</div>
-                            <div style="color:#8892b0; font-family:'Share Tech Mono'; font-size: 0.9rem; line-height: 1.5;">
-                                СКОРОСТЬ: <span style="color:#fff">${s.speed} уз.</span><br>
-                                МАНЕВРЕННОСТЬ: <span style="color:#fff">${s.maneuverability}</span><br>
-                                ПРОЧНОСТЬ: <span style="color:#fff">${s.hp.toLocaleString('ru')}</span>
+                            <div style="color:#fff; font-size:1.2rem; font-weight:bold; margin-bottom:8px; font-family:'Jura'">${s.name}</div>
+                            <div style="color:#a09095; font-family:'Share Tech Mono'; font-size: 0.95rem; line-height: 1.6;">
+                                DPM: <span style="color:var(--secondary)">${s.dpm.toLocaleString('ru')}</span><br>
+                                УРОН (ЗАЛП): <span style="color:#fff">${s.damage_burst.toLocaleString('ru')}</span><br>
+                                ПЕРЕЗАРЯДКА: <span style="color:#fff">${s.reload} сек</span>
                             </div>
                         </div>`;
                 }
             }
-            if (!found) c.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.5); padding: 40px; font-family:'Share Tech Mono'; font-size: 1.2rem; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); border: 1px dashed rgba(255,255,255,0.2);">БАЗА ДАННЫХ ПУСТА</div>`;
+            if (!found) c.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.3); padding: 50px; font-family:'Share Tech Mono'; font-size: 1.2rem; background: rgba(0,0,0,0.4); border: 1px dashed rgba(255,255,255,0.1);">АРСЕНАЛ В ДАННОЙ КАТЕГОРИИ ПУСТ</div>`;
         }
 
-        function updateShipView(side, shipId) {
-            const ship = DB[shipId];
-            document.getElementById(`name-ship-${side}`).innerText = ship.name;
-            document.getElementById(`img-ship-${side}`).style.backgroundImage = `url('${ship.img}')`;
+        function updateEquipView(side, itemId) {
+            const item = DB[itemId];
+            document.getElementById(`name-equip-${side}`).innerText = item.name;
+            document.getElementById(`img-equip-${side}`).style.backgroundImage = `url('${item.img}')`;
             let html = '';
-            for (let key in STAT_LABELS) {
-                let val = ship[key];
-                if (key === 'hp') val = val.toLocaleString('ru');
-                if (key === 'stealth') val = val === 1 ? "Да" : "Нет";
-                html += `<tr><td class="stat-name">${STAT_LABELS[key]}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
+            for (let key in STATS_LOGIC) {
+                if (item[key] === undefined) continue;
+                let val = item[key];
+                
+                // Форматирование значений
+                if (key === 'dpm' || key === 'damage_burst') val = val.toLocaleString('ru');
+                if (key === 'anti_jamming') val = val === 1 ? "<span style='color:#00e5ff'>ДА</span>" : "НЕТ";
+                
+                html += `<tr><td class="stat-name">${STATS_LOGIC[key].label}</td><td class="stat-value" id="val-${side}-${key}">${val}</td></tr>`;
             }
-            document.getElementById(`stats-ship-${side}`).innerHTML = html;
+            document.getElementById(`stats-equip-${side}`).innerHTML = html;
         }
 
         function runAnalysis(id1, id2) {
-            const s1 = DB[id1]; const s2 = DB[id2];
-            
-            const WEIGHTS = { 
-                hp: 0.28, maneuverability: 0.20, speed: 0.18, radar: 0.08, 
-                stealth: 0.06, conc_surf: 0.05, conc_air: 0.04, conc_depth: 0.04, 
-                recon: 0.04, penalty: 0.03 
-            };
-            
-            const reverseLogic = ['conc_air', 'conc_surf', 'conc_depth', 'penalty'];
-            
-            let score1 = 0; let score2 = 0;
+            const e1 = DB[id1]; const e2 = DB[id2];
+            let analysisHTML = "";
 
-            for (let key in STAT_LABELS) {
-                if (!WEIGHTS[key] && key !== 'speed') continue; 
+            // Подсветка таблиц характеристик
+            for (let key in STATS_LOGIC) {
+                if (e1[key] === undefined || e2[key] === undefined) continue;
                 
-                const v1 = parseFloat(s1[key]); const v2 = parseFloat(s2[key]);
-                const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
+                const el1 = document.getElementById(`val-1-${key}`);
+                const el2 = document.getElementById(`val-2-${key}`);
                 el1.className = "stat-value"; el2.className = "stat-value";
+
+                const v1 = parseFloat(e1[key]); const v2 = parseFloat(e2[key]);
 
                 if (v1 === v2) {
                     el1.classList.add('neutral'); el2.classList.add('neutral');
-                    if (WEIGHTS[key]) { score1 += 1 * WEIGHTS[key]; score2 += 1 * WEIGHTS[key]; }
                     continue;
                 }
 
-                const isInverse = reverseLogic.includes(key);
-                const isV1Better = isInverse ? v1 < v2 : v1 > v2;
-
+                const isV1Better = STATS_LOGIC[key].higherIsBetter ? v1 > v2 : v1 < v2;
                 if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } 
                 else { el2.classList.add('win'); el1.classList.add('lose'); }
-
-                if (WEIGHTS[key]) {
-                    if (!isInverse) {
-                        const maxVal = Math.max(v1, v2);
-                        score1 += (v1 / maxVal) * WEIGHTS[key];
-                        score2 += (v2 / maxVal) * WEIGHTS[key];
-                    } else {
-                        const minVal = Math.min(v1, v2);
-                        score1 += (minVal / v1) * WEIGHTS[key];
-                        score2 += (minVal / v2) * WEIGHTS[key];
-                    }
-                }
             }
 
-            const finalScore1 = Math.round(score1 * 10000);
-            const finalScore2 = Math.round(score2 * 10000);
-
-            let analysisHTML = "";
-            const manDiff = Math.abs(s1.maneuverability - s2.maneuverability);
-            const speedDiff = Math.abs(s1.speed - s2.speed);
-            let kineticText = "";
+            // БЛОК 1: КИНЖАЛЬНЫЙ БОЙ (Ближняя дистанция)
+            let cqcText = "";
+            let cqcAdvantage = null;
             
-            if (manDiff >= 0.5) {
-                const manWinner = s1.maneuverability > s2.maneuverability ? s1 : s2;
-                kineticText += `<b>${manWinner.name}</b> превосходит оппонента в скорости перекладки руля (+${manDiff.toFixed(2)}). Это обеспечивает превосходное гашение инерции и чистый вход в повороты. `;
+            // Если разница в стартовой скорости критическая
+            if (Math.abs(e1.start_speed - e2.start_speed) > 50) {
+                const fastStart = e1.start_speed > e2.start_speed ? e1 : e2;
+                cqcText += `Абсолютное преимущество на ближней дистанции за <b>${fastStart.name}</b>. Экстремальная начальная скорость (${fastStart.start_speed} уз.) не позволяет ПВО противника свестись на цель сразу после пуска. `;
+                cqcAdvantage = fastStart;
             }
-            if (speedDiff >= 0.8) {
-                const speedWinner = s1.speed > s2.speed ? s1 : s2;
-                kineticText += `При этом <b>${speedWinner.name}</b> быстрее на прямой (+${speedDiff.toFixed(1)} уз.), что позволяет эффективнее занимать тактические позиции.`;
+            if (e1.lock_time !== e2.lock_time) {
+                const fastLock = e1.lock_time < e2.lock_time ? e1 : e2;
+                cqcText += `<br>Ускоренный захват цели (${fastLock.lock_time} сек у <b>${fastLock.name}</b>) позволяет эффективнее "спамить" из-за укрытий.`;
             }
-
-            if (kineticText) {
-                analysisHTML += `<div class="tactic-block mobility"><div class="tactic-title" style="color:var(--primary)">► Динамика и Кинетика</div>${kineticText}</div>`;
-            }
-
-            let stealthText = "";
-            if (s1.radar !== s2.radar) {
-                const radWinner = s1.radar > s2.radar ? s1 : s2;
-                stealthText += `Преимущество дальнего обнаружения за <b>${radWinner.name}</b> (Радар ${radWinner.radar} км). `;
-            }
-            if (s1.stealth !== s2.stealth) {
-                const stealthWinner = s1.stealth === 1 ? s1 : s2;
-                stealthText += `<br><b>${stealthWinner.name}</b> оборудован технологией <b>"Малозаметность"</b> (Stealth), что позволяет ему дольше оставаться невидимым для радаров противника. `;
-            }
-            if (s1.conc_surf !== s2.conc_surf) {
-                const stWinner = s1.conc_surf < s2.conc_surf ? s1 : s2;
-                stealthText += `<br>Корпус <b>${stWinner.name}</b> обладает меньшей физической заметностью с поверхности (${stWinner.conc_surf} км). `;
-            }
-            if (s1.recon !== s2.recon) {
-                const reconWinner = s1.recon > s2.recon ? s1 : s2;
-                stealthText += `<br>Длительность удержания разведданных у <b>${reconWinner.name}</b> выше (${reconWinner.recon} сек).`;
+            if (cqcText) {
+                analysisHTML += `<div class="tactic-block cqc"><div class="tactic-title" style="color:#ff2a5f">► Кинжальный бой (Динамика)</div>${cqcText}</div>`;
             }
 
-            if (stealthText) {
-                analysisHTML += `<div class="tactic-block intel"><div class="tactic-title" style="color:#ffd700">► Радиоэлектронная борьба</div>${stealthText}</div>`;
+            // БЛОК 2: СНАЙПЕРСКИЙ ОГОНЬ (Дальняя дистанция и Выживаемость)
+            let sniperText = "";
+            if (e1.anti_jamming !== e2.anti_jamming) {
+                const jammer = e1.anti_jamming === 1 ? e1 : e2;
+                sniperText += `Наличие встроенной <b>Помехозащиты</b> делает <b>${jammer.name}</b> идеальным выбором для снайперских сборок. Враг не сможет сбросить прицел ловушками. `;
+            }
+            if (e1.hp !== e2.hp) {
+                const tank = e1.hp > e2.hp ? e1 : e2;
+                sniperText += `<br>Повышенная прочность ракеты (${tank.hp} HP у <b>${tank.name}</b>) увеличивает шанс прорыва сквозь плотный заградительный огонь (лазеры/автопушки).`;
+            }
+            if (sniperText) {
+                analysisHTML += `<div class="tactic-block sniper"><div class="tactic-title" style="color:#00e5ff">► Дальняя дистанция (Прорыв ПВО)</div>${sniperText}</div>`;
             }
 
-            let finalVerdictHTML = "";
-            const scoreDiff = Math.abs(finalScore1 - finalScore2);
-            
-            if (scoreDiff < 150) {
-                finalVerdictHTML = `
-                <div class="final-draw-block">
-                    <div style="color:#aaa; font-size:1.4rem; font-weight:bold; font-family:'Jura';">БОЕВОЙ ПАРИТЕТ ПЛАТФОРМ</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">
-                        Рейтинг ИБЭ: ${finalScore1} :: ${finalScore2} 
-                        <span style="color:#8892b0; font-size:0.9rem;">(Разрыв менее 150)</span>
+            // БЛОК 3: ОГНЕВОЙ ПОТЕНЦИАЛ
+            let fpText = "";
+            if (e1.projectiles !== e2.projectiles) {
+                const spamer = e1.projectiles > e2.projectiles ? e1 : e2;
+                fpText += `<b>${spamer.name}</b> выпускает больше снарядов за атаку (${spamer.projectiles} шт). Это работает как естественная перегрузка ракетных и лазерных ПВО противника. `;
+            }
+            if (Math.abs(e1.dpm - e2.dpm) > 20000) {
+                const dmg = e1.dpm > e2.dpm ? e1 : e2;
+                fpText += `<br>По чистому математическому урону (DPM: ${dmg.dpm.toLocaleString('ru')}) <b>${dmg.name}</b> превосходит оппонента, при условии 100% попадания всех залпов.`;
+            }
+            if (fpText) {
+                analysisHTML += `<div class="tactic-block firepower"><div class="tactic-title" style="color:#ffaa00">► Огневой потенциал</div>${fpText}</div>`;
+            }
+
+            // ФИНАЛЬНЫЙ ВЕРДИКТ
+            let finalVerdictHTML = `
+                <div class="final-winner-block">
+                    <div style="color:var(--secondary); font-size:1.3rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);">РЕЗЮМЕ СИСТЕМЫ</div>
+                    <div style="color:#fff; font-family:'Share Tech Mono'; margin-top:10px; font-size:1rem; line-height: 1.5; text-transform: none;">
+                        Оборудование в MW не имеет "абсолютного победителя". Выбор зависит от слота и тактики корпуса. 
+                        Используйте характеристики кинжального боя для эсминцев, а снайперские — для крейсеров и линкоров.
                     </div>
                 </div>`;
-            } else {
-                const winner = finalScore1 > finalScore2 ? s1 : s2;
-                const winScore = finalScore1 > finalScore2 ? finalScore1 : finalScore2;
-                const loseScore = finalScore1 > finalScore2 ? finalScore2 : finalScore1;
-                
-                const isDomination = scoreDiff >= 300;
-                const color = isDomination ? "#ffaa00" : "var(--primary)";
-                const title = isDomination ? "АБСОЛЮТНОЕ ДОМИНИРОВАНИЕ" : "ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО";
-                
-                finalVerdictHTML = `
-                <div class="final-winner-block" style="border-color: ${color}; box-shadow: inset 0 0 20px ${isDomination ? 'rgba(255, 170, 0, 0.2)' : 'rgba(0, 229, 255, 0.2)'};">
-                    <div style="color:${color}; font-size:1.4rem; font-weight:bold; font-family:'Jura'; text-shadow: 0 0 10px ${color};">${title}: ${winner.name}</div>
-                    <div style="color:#e0f2f1; font-family:'Share Tech Mono'; margin-top:5px; font-size:1.1rem;">
-                        Рейтинг ИБЭ: <span style="color:${color}">${winScore}</span> vs ${loseScore} 
-                        <span style="color:#8892b0; font-size:0.9rem;">(Разрыв: +${scoreDiff})</span>
-                    </div>
-                </div>`;
-            }
 
             document.getElementById('verdict-screen').innerHTML = analysisHTML + finalVerdictHTML;
         }
