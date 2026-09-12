@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MWLAB | АНАЛИЗ ВООРУЖЕНИЯ</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Заменили сервер Chart.js на более стабильный (cdnjs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@900&display=swap');
 
@@ -418,6 +419,7 @@
     </div>
 
     <script>
+        // --- АНИМАЦИЯ ОТКРЫТИЯ САЙТА ---
         function triggerIntro() {
             const introScreen = document.getElementById('intro-screen');
             const explosionContainer = document.getElementById('intro-explosion');
@@ -451,6 +453,7 @@
             }, 2500);
         }
 
+        // --- ЛЕТЯЩИЕ ФОРМУЛЫ ФОНА ---
         const bgFormulasList = ['E=mc²', 'F=m·a', 'v=d/t', 'DPM=(D/t)*60', 'W=F·d', 'p=m·v', 'ΔQ=m·c·ΔT', 'A=π·r²', 'V=I·R', 'a²+b²=c²', '∫f(x)dx', '∇×E=-∂B/∂t', 'λ=h/p', 'P=IV', 'ρ=m/V', 'F=G(m₁m₂/r²)'];
         const bgFormulasContainer = document.getElementById('formulas-container');
 
@@ -488,6 +491,7 @@
             }
         }
 
+        // --- БАЗА ДАННЫХ И ЛОГИКА ---
         const CATEGORIES = ["Ракеты"];
         let searchQuery = "";
         
@@ -543,6 +547,7 @@
             "hycore": { name: "HYCORE", category: "Ракеты", country: "Южная Корея", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 32499, dpm: 271598, reload: 7.00, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 225, start_speed: 194, max_speed: 583, accel_time: 2.86, range: 12.13, fire_penalty: 40, img: "img/hycore.png" },
             "karambit": { name: "KARAMBIT", category: "Ракеты", country: "Южная Корея", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 29899, dpm: 249870, reload: 7.00, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 190, start_speed: 97, max_speed: 563, accel_time: 3.43, range: 11.27, fire_penalty: 40, img: "img/karambit.png" },
             "nsm": { name: "NSM BLOCK 1A", category: "Ракеты", country: "Норвегия", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 35100, dpm: 318348, reload: 5.95, lock_time: 1.50, projectiles: 2, anti_jamming: 0, hp: 95, start_speed: 38, max_speed: 408, accel_time: 3.17, range: 12.13, fire_penalty: 32, img: "img/nsm.png" },
+            "yj20": { name: "YJ-20", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 29000, dpm: 140166, reload: 12.00, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 97, max_speed: 524, accel_time: 2.93, range: 10.00, detonation_radius: 66, fire_penalty: 40, img: "img/yj20.png" },
             "scalp": { name: "SCALP NAVAL", category: "Ракеты", country: "Франция", rarity: "Эпический", cluster: 0, trajectory: "Низкая", min_range: 0, damage_burst: 31699, dpm: 262648, reload: 7.00, lock_time: 2.00, projectiles: 1, anti_jamming: 0, hp: 280, start_speed: 194, max_speed: 515, accel_time: 1.83, range: 11.27, splash_damage: 500, splash_radius: 100, fire_penalty: 40, img: "img/scalp.png" },
             "jhgv": { name: "TYPE 40 JHGV", category: "Ракеты", country: "Япония", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 29899, dpm: 277633, reload: 6.30, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 38, max_speed: 622, accel_time: 3.75, range: 11.27, fire_penalty: 40, img: "img/jhgv.png" },
             "turbometla": { name: "ТУРБОМЕТЛА", category: "Ракеты", country: "Россия", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 31199, dpm: 260288, reload: 7.00, lock_time: 1.60, projectiles: 1, anti_jamming: 0, hp: 190, start_speed: 77, max_speed: 563, accel_time: 2.78, range: 10.40, fire_penalty: 40, img: "img/turbometla.png" },
@@ -575,6 +580,7 @@
             "subroc": { name: "UUM-44 SUBROC", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 34800, dpm: 204183, reload: 9.80, lock_time: 2.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 48, max_speed: 544, accel_time: 2.83, range: 15.60, detonation_radius: 26, splash_damage: 7500, splash_radius: 333, fire_penalty: 40, sub_launch: 1, img: "img/subroc.png" },
             "bazalt": { name: "P-500 BAZALT (ЯДЕРНАЯ БЧ)", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 45100, dpm: 272031, reload: 9.45, lock_time: 3.00, projectiles: 1, anti_jamming: 0, hp: 350, start_speed: 77, max_speed: 485, accel_time: 2.10, range: 14.73, detonation_radius: 33, splash_damage: 10000, splash_radius: 466, fire_penalty: 45, img: "img/bazalt.png" },
             "alfa": { name: "P-900 ALFA", category: "Ракеты", country: "Россия", rarity: "Легендарный", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 31200, dpm: 241389, reload: 7.00, lock_time: 1.20, projectiles: 3, anti_jamming: 0, hp: 88, start_speed: 194, max_speed: 515, accel_time: 2.36, range: 9.97, fire_penalty: 40, sub_launch: 1, img: "img/alfa.png" },
+            
             "shtil1": { name: "SHTIL-1", category: "Ракеты", country: "Россия", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 12550, dpm: 194855, reload: 3.50, lock_time: 1.00, projectiles: 2, anti_jamming: 0, hp: 115, start_speed: 136, max_speed: 524, accel_time: 1.82, range: 11.27, detonation_radius: 33, splash_damage: 750, splash_radius: 100, fire_penalty: 35, air_target: 1, img: "img/shtil1.png" },
             "hq26": { name: "HQ-26", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 12250, dpm: 174125, reload: 4.20, lock_time: 0.30, projectiles: 1, anti_jamming: 0, hp: 200, start_speed: 155, max_speed: 505, accel_time: 1.80, range: 10.40, detonation_radius: 33, splash_damage: 2500, splash_radius: 500, fire_penalty: 35, air_target: 1, img: "img/hq26.png" },
             "yu8": { name: "YU-8", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 29899, dpm: 208225, reload: 8.40, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 150, start_speed: 48, max_speed: 447, accel_time: 2.93, range: 10.83, fire_penalty: 36, img: "img/yu8.png" },
@@ -584,6 +590,7 @@
             "redshark": { name: "RED SHARK (382 MM)", category: "Ракеты", country: "Южная Корея", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 20800, dpm: 217285, reload: 5.60, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 150, start_speed: 38, max_speed: 485, accel_time: 3.83, range: 12.13, fire_penalty: 32, img: "img/redshark.png" },
             "rim174um": { name: "RIM-174UM", category: "Ракеты", country: "США", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 13700, dpm: 183641, reload: 4.20, lock_time: 0.35, projectiles: 2, anti_jamming: 0, hp: 150, start_speed: 58, max_speed: 466, accel_time: 1.40, range: 10.83, detonation_radius: 66, splash_damage: 1000, splash_radius: 100, fire_penalty: 35, air_target: 1, sub_launch: 1, img: "img/rim174um.png" },
             "micam": { name: "MICA-M", category: "Ракеты", country: "Франция", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 16950, dpm: 173121, reload: 5.25, lock_time: 0.25, projectiles: 3, anti_jamming: 0, hp: 70, start_speed: 194, max_speed: 544, accel_time: 0.90, range: 12.57, detonation_radius: 46, splash_damage: 1750, splash_radius: 200, fire_penalty: 35, air_target: 1, img: "img/micam.png" },
+            
             "agni1": { name: "AGNI-1", category: "Ракеты", country: "Индия", rarity: "Легендарный", cluster: 1, trajectory: "Высокая", min_range: 1.33, damage_burst: 39500, dpm: 301379, reload: 7.70, lock_time: 1.25, projectiles: 1, anti_jamming: 0, hp: 350, start_speed: 68, max_speed: 485, accel_time: 1.54, range: 13.87, splash_damage: 500, splash_radius: 100, fragmentation_damage: 13000, detonation_radius: 13, fire_penalty: 55, img: "img/agni1.png" },
             "brahmosng": { name: "BRAHMOS NG", category: "Ракеты", country: "Индия", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 20000, dpm: 146250, reload: 8.00, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 250, start_speed: 97, max_speed: 622, accel_time: 2.70, range: 12.00, detonation_radius: 23, fire_penalty: 40, img: "img/brahmosng.png" },
             "haeseong3": { name: "HAESEONG III", category: "Ракеты", country: "Южная Корея", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 23500, dpm: 120565, reload: 11.50, lock_time: 1.00, projectiles: 1, anti_jamming: 0, hp: 270, start_speed: 77, max_speed: 485, accel_time: 3.00, range: 9.33, fire_penalty: 40, img: "img/haeseong3.png" },
@@ -885,7 +892,19 @@
                             ticks: { display: false } 
                         } 
                     },
-                    plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false
+                    plugins: { 
+                        legend: { 
+                            display: true, 
+                            position: 'top',
+                            labels: {
+                                color: '#fff',
+                                font: { family: 'Share Tech Mono', size: 12 },
+                                padding: 15
+                            }
+                        } 
+                    }, 
+                    responsive: true, 
+                    maintainAspectRatio: false
                 }
             });
         }
