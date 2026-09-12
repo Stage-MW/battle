@@ -301,7 +301,7 @@
             <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
             <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
             <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
-            <button class="info-btn" style="width: auto; padding: 0 15px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
+            <button class="info-btn" style="width: auto; padding: 0 15px; font-size: 1rem; right: 75px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
             <button class="info-btn" style="width: 40px;" onclick="openModal('ibe-modal')">?</button>
         </nav>
 
@@ -935,15 +935,22 @@
                 summaryText = `<span style="color:var(--secondary); font-size: 1.2rem; display:block; margin-bottom: 5px;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><span style="color:#fff;">В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating} из 1000).</span>`;
             }
 
-            let cqbReason = cqbWinner.min_range === 0 ? `высокой начальной скорости (${cqbWinner.start_speed} уз.) и отсутствия мертвой зоны` : "лучшим показателям живучести";
-            if (e1.min_range > 0 && e2.min_range === 0) { cqbWinner = e2; cqbReason = "отсутствия мертвой зоны у конкурента"; }
-            if (e2.min_range > 0 && e1.min_range === 0) { cqbWinner = e1; cqbReason = "отсутствия мертвой зоны у конкурента"; }
-
-            let lrReason = "";
-            if (lrWinner.anti_jamming === 1) {
-                lrReason = "защиты от РЭБ (неотводимость)";
+            let cqbLoser = cqbWinner === e1 ? e2 : e1;
+            let cqbReason = "";
+            if (cqbLoser.min_range > 0 && cqbWinner.min_range === 0) {
+                cqbReason = "отсутствия мертвой зоны у конкурента"; 
             } else {
-                lrReason = `комбинации высокой скорости (${lrWinner.max_speed} уз.) и прочности (${lrWinner.hp} HP)`;
+                cqbReason = `высокой начальной скорости (${cqbWinner.start_speed} уз.) и отличной динамики`;
+            }
+
+            let lrLoser = (lrWinner === e1) ? e2 : e1;
+            let lrReason = "";
+            if (lrWinner.anti_jamming === 1 && lrLoser.anti_jamming === 0) {
+                lrReason = "защиты от РЭБ (неотводимости)";
+            } else if (lrWinner.max_speed > lrLoser.max_speed + 30) {
+                lrReason = `превосходства в маршевой скорости (${lrWinner.max_speed} уз.)`;
+            } else {
+                lrReason = `комбинации высокой скорости (${lrWinner.max_speed} уз.) и запаса прочности (${lrWinner.hp} HP)`;
             }
 
             let rangeAnalysisHTML = `
