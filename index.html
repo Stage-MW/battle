@@ -124,7 +124,7 @@
         }
 
         /* --- НАВИГАЦИЯ --- */
-        nav { display: flex; justify-content: center; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%); position: relative; border-bottom: 1px solid rgba(255, 42, 95, 0.1); }
+        nav { display: flex; justify-content: center; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%); position: relative; border-bottom: 1px solid rgba(255, 42, 95, 0.1); flex-wrap: wrap; }
         .nav-btn {
             background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -133,7 +133,7 @@
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(255, 42, 95, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); color: #fff; }
         .info-btn {
-            position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
+            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--primary); color: var(--primary);
             height: 40px; border-radius: 5px; font-family: 'Jura'; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(255, 42, 95, 0.2); backdrop-filter: blur(10px); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
         .info-btn:hover { background: var(--primary); box-shadow: var(--border-glow); color: #000; }
@@ -200,8 +200,8 @@
         .pro-item::before { content: "[+] "; font-weight: bold; }
         .con-item { color: #ff2a5f; font-family: 'Share Tech Mono'; font-size: 0.9rem; margin-bottom: 8px; text-transform: none; line-height: 1.3;}
         .con-item::before { content: "[-] "; font-weight: bold; }
-        .range-block { margin-top: 15px; padding: 10px; background: rgba(0, 229, 255, 0.05); border-left: 3px solid var(--secondary); font-family: 'Share Tech Mono'; font-size: 0.9rem; text-transform: none; color: #e0f2f1;}
-        .range-block.warning { background: rgba(255, 42, 95, 0.05); border-left-color: var(--primary); }
+        .range-block { margin-top: 15px; padding: 10px; background: rgba(0, 0, 0, 0.3); border-left: 3px solid var(--secondary); font-family: 'Share Tech Mono'; font-size: 0.9rem; text-transform: none; color: #e0f2f1;}
+        .range-block.warning { border-left-color: var(--primary); }
 
         .final-summary-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid var(--primary); background: rgba(255, 42, 95, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(255, 42, 95, 0.1); }
 
@@ -238,15 +238,34 @@
         .modal-close { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--primary); font-size: 1.8rem; cursor: pointer; font-family: 'Jura'; font-weight: bold; transition: 0.3s; }
         .modal-close:hover { transform: scale(1.2); text-shadow: 0 0 10px var(--primary); }
 
+        /* --- АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНОВ И ПЛАНШЕТОВ --- */
         @media (max-width: 1100px) {
             .compare-grid { display: flex; flex-direction: column; gap: 20px; }
             .equip-card { width: 100%; order: 1; }
             #card-equip-2 { order: 2; }
             .analytics-core { order: 3; width: 100%; margin-top: 10px; }
             .analysis-cols { flex-direction: column; }
-            nav { flex-direction: column; padding: 15px; gap: 10px; }
-            .nav-btn { width: 100%; }
-            .info-btn { position: static; width: 100%; transform: none; margin-top: 5px; height: 35px; }
+        }
+
+        @media (max-width: 768px) {
+            #intro-text { font-size: 4rem; letter-spacing: 5px; }
+            nav { padding: 15px 10px; flex-wrap: wrap; gap: 8px; justify-content: center; }
+            .nav-btn { font-size: 0.85rem; padding: 10px 15px; flex-grow: 1; text-align: center; }
+            
+            .info-btn.mobile-btn { position: static; transform: none; width: 100%; margin-top: 5px; }
+            
+            .controls-container { flex-direction: column; align-items: center; gap: 10px; }
+            .search-input, .filter-select { max-width: 100%; }
+            
+            .equip-card { padding: 15px; }
+            .stats-table td { font-size: 0.8rem; padding: 6px 2px; }
+            .verdict-header { font-size: 1.6rem; letter-spacing: 2px; }
+            
+            .rating-item { padding: 10px; }
+            .rating-rank { font-size: 1.5rem; width: 40px; }
+            .rating-img { width: 70px; height: 45px; margin: 0 10px; }
+            .rating-info div:first-child { font-size: 1rem !important; }
+            .rating-score { font-size: 1.3rem; min-width: 60px; margin-left: 10px; }
         }
     </style>
 </head>
@@ -276,7 +295,7 @@
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 350 баллов):</b> Чистый DPM и разовый альфа-страйк.</li>
                     <li style="margin-bottom: 8px;"><b style="color: #ffaa00;">Уникальные механики (до 350 баллов):</b> Помехозащита (+200), Кластерная БЧ / Осколки (+100-150: ПВО не реагирует на мелкие части. Доп. бонус отводимым ракетам за урон при поздних ловушках), Урон по области и Детонация (+50), Лазерное наведение (+50), Атака авиации (+50), Подводный пуск (+50).</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Залп и Прочность (до 150 баллов):</b> Выстрелов за атаку (перегруз ПВО) и запас HP.</li>
-                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная и максимальная скорость.</li>
+                    <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Кинетика (до 150 баллов):</b> Начальная и максимальная скорость. <b style="color:#00e5ff;">Синергия:</b> Высокая прочность в сочетании с резким стартом дает доп. бонус за доминацию в ближнем бою.</li>
                     <li style="margin-bottom: 8px;"><b style="color: var(--primary);">Штрафные санкции:</b> Ограничение зоны пуска (мертвая зона) отнимает по 50 баллов за км. Долгое время набора скорости (уязвимость к ПВО), штраф обнаружения и долгий захват цели активно сжигают баллы.</li>
                 </ul>
             </div>
@@ -289,8 +308,10 @@
             <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
             <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
             <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
-            <button class="info-btn" style="width: auto; padding: 0 15px; font-size: 1.1rem; right: 75px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
-            <button class="info-btn" style="width: 40px;" onclick="openModal('ibe-modal')">?</button>
+            <div style="display: flex; gap: 10px; width: 100%; justify-content: center;" class="mobile-buttons-wrapper">
+                <button class="info-btn mobile-btn" style="width: 150px; font-size: 1rem;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
+                <button class="info-btn mobile-btn" style="width: 50px;" onclick="openModal('ibe-modal')">?</button>
+            </div>
         </nav>
 
         <main id="page-compare" class="page">
@@ -558,8 +579,6 @@
             "df100": { name: "DF-100", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 31199, dpm: 260734, reload: 7.00, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 194, max_speed: 524, accel_time: 1.70, range: 13.00, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=DF-100" },
             "df12": { name: "DF-12", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 47400, dpm: 264085, reload: 10.50, lock_time: 1.50, projectiles: 1, anti_jamming: 0, hp: 400, start_speed: 58, max_speed: 524, accel_time: 2.18, range: 13.00, splash_damage: 4500, splash_radius: 266, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ffaa00?text=DF-12" },
             "m001": { name: "PAN SPATIAL M-001", category: "Ракеты", country: "Pan Spatial", rarity: "Эпический", cluster: 1, trajectory: "Высокая", min_range: 1.60, damage_burst: 31300, dpm: 180399, reload: 10.15, lock_time: 1.50, projectiles: 1, anti_jamming: 1, hp: 325, start_speed: 77, max_speed: 583, accel_time: 2.00, range: 11.27, detonation_radius: 13, fragmentation_damage: 23500, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=M-001" },
-            
-            // НОВЫЕ РАКЕТЫ ИЗ СКРИНШОТОВ
             "sm3": { name: "RIM-161 (SM-3)", category: "Ракеты", country: "США", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 13000, dpm: 158122, reload: 4.90, lock_time: 0.40, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 213, max_speed: 408, accel_time: 1.25, range: 8.67, detonation_radius: 33, fire_penalty: 35, air_target: 1, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=SM-3" },
             "df11": { name: "DF-11", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 33800, dpm: 213571, reload: 9.10, lock_time: 2.50, projectiles: 1, anti_jamming: 0, hp: 180, start_speed: 15, max_speed: 505, accel_time: 4.20, range: 10.40, fire_penalty: 36, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=DF-11" },
             "yj18b": { name: "YJ-18B", category: "Ракеты", country: "Китай", rarity: "Эпический", cluster: 0, trajectory: "Средняя", min_range: 0, damage_burst: 28599, dpm: 214769, reload: 7.35, lock_time: 1.80, projectiles: 2, anti_jamming: 0, hp: 90, start_speed: 97, max_speed: 388, accel_time: 5.00, range: 9.53, fire_penalty: 32, sub_launch: 1, img: "https://via.placeholder.com/400x150/111/ff2a5f?text=YJ-18B" },
@@ -581,6 +600,7 @@
             "darkeagle": { name: "LRHW DARK EAGLE", category: "Ракеты", country: "США", rarity: "Легендарный", cluster: 0, trajectory: "Высокая", min_range: 0, damage_burst: 40000, dpm: 269714, reload: 8.75, lock_time: 1.00, projectiles: 1, anti_jamming: 0, hp: 300, start_speed: 194, max_speed: 563, accel_time: 3.17, range: 13.00, splash_damage: 1000, splash_radius: 133, fire_penalty: 40, img: "https://via.placeholder.com/400x150/111/ffaa00?text=DARK+EAGLE" }
         };
 
+        // АЛГОРИТМ БАЛЛОВ НА 1000
         function calculateRating(item) {
             let score = 100; 
             
@@ -599,6 +619,12 @@
             score += (item.start_speed / 400) * 50; 
             score += (item.max_speed / 600) * 30; 
             
+            // Синергия ближнего боя (Без мертвой зоны + Хорошее ХП + Резкий старт)
+            if (item.min_range === 0) {
+                if (item.hp >= 200 && item.start_speed >= 150) score += 30;
+                else if (item.hp >= 150 && item.start_speed >= 100) score += 15;
+            }
+
             if (item.splash_damage) score += (item.splash_damage / 5000) * 30; 
             if (item.splash_radius) score += (item.splash_radius / 300) * 20; 
             if (item.detonation_radius) score += (item.detonation_radius / 20) * 15;
@@ -781,7 +807,8 @@
         }
 
         function generateTactics(item) {
-            let pros = []; let cons = []; let range = ""; let isWarning = false;
+            let pros = []; let cons = []; let range = "";
+            let closeRangeEval = ""; let closeRangeColor = "";
             
             if (item.anti_jamming === 1) pros.push("Абсолютная защита от ловушек (РЭБ)");
             else cons.push("Сбрасывается вражескими тепловыми ловушками");
@@ -790,11 +817,8 @@
             if (item.sub_launch === 1) pros.push("Подводный пуск (можно атаковать из-под воды)");
 
             if (item.cluster === 1 || item.fragmentation_damage > 0) {
-                if (item.anti_jamming === 0) {
-                    pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает осколки, наносит урон при поздних ловушках)");
-                } else {
-                    pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает мелкие осколки, гарантируя урон)");
-                }
+                if (item.anti_jamming === 0) pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает осколки, наносит урон при поздних ловушках)");
+                else pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает мелкие осколки, гарантируя урон)");
             }
 
             if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
@@ -830,23 +854,31 @@
                 cons.push(`Критически долгий захват цели (${item.lock_time} сек)`);
             }
 
+            // Оценка эффективности ближнего боя
             if (item.min_range > 0) {
-                cons.push(`Мертвая зона ${item.min_range} км (невозможно обороняться в упор)`);
-                range = `ДАЛЬНЯЯ (Критически уязвима в ближнем бою из-за мертвой зоны ${item.min_range} км)`;
-                isWarning = true;
-            } else if (item.anti_jamming === 1) {
-                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Эффективна на дистанции за счет защиты от РЭБ)";
-            } else if (item.start_speed >= 250) {
-                range = "БЛИЖНЯЯ (Кинжальный бой из-за укрытий, ПВО не успеет свестись)";
+                closeRangeEval = "НЕВОЗМОЖНА (Мертвая зона)";
+                closeRangeColor = "var(--primary)";
             } else {
-                range = "СРЕДНЯЯ (Требуется поддержка союзного огня)";
+                let crScore = 0;
+                if (item.start_speed >= 150) crScore++;
+                else if (item.start_speed < 80) crScore--;
+                
+                if (item.hp >= 200) crScore++;
+                else if (item.hp <= 120) crScore--;
+
+                if (crScore >= 2) { closeRangeEval = "ОТЛИЧНАЯ (Пробивает ПВО в упор)"; closeRangeColor = "var(--secondary)"; }
+                else if (crScore === 1) { closeRangeEval = "ХОРОШАЯ"; closeRangeColor = "#fff"; }
+                else if (crScore === 0) { closeRangeEval = "СРЕДНЯЯ"; closeRangeColor = "#aaa"; }
+                else { closeRangeEval = "УЯЗВИМАЯ (Легко сбивается ПВО)"; closeRangeColor = "var(--primary)"; }
             }
 
             let html = `<div class="analysis-col">
                 <div class="col-title">${item.name}</div>
                 <div>${pros.map(p => `<div class="pro-item">${p}</div>`).join('')}</div>
                 <div style="margin-top:10px;">${cons.map(c => `<div class="con-item">${c}</div>`).join('')}</div>
-                <div class="range-block ${isWarning ? 'warning' : ''}"><b>ЭФФЕКТИВНОСТЬ:</b><br>${range}</div>
+                <div class="range-block" style="margin-top:15px; border-left: 3px solid ${closeRangeColor}; background: rgba(0,0,0,0.3);">
+                    <b style="color:var(--secondary)">ЭФФЕКТИВНОСТЬ ВБЛИЗИ:</b><br><span style="color:${closeRangeColor}">${closeRangeEval}</span>
+                </div>
             </div>`;
             return html;
         }
