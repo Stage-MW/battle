@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WARDEX | АНАЛИЗ ВООРУЖЕНИЯ</title>
+    <title>MWLAB | АНАЛИЗ ВООРУЖЕНИЯ</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@900&display=swap');
 
         :root {
             --bg-color: #03070b;
@@ -41,7 +41,7 @@
         }
         #intro-explosion { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 1px; }
         #intro-text {
-            color: var(--primary); font-family: 'Jura', sans-serif;
+            color: var(--primary); font-family: 'Orbitron', sans-serif;
             font-size: 8rem; font-weight: 900; letter-spacing: 15px;
             text-shadow: 0 0 50px rgba(255, 42, 95, 0.8), 0 0 100px rgba(255, 42, 95, 0.4);
             opacity: 0;
@@ -191,7 +191,7 @@
 
         /* АНАЛИТИЧЕСКИЙ ЦЕНТР */
         .analytics-core { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); backdrop-filter: blur(20px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 42, 95, 0.05); padding: 25px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); min-height: 200px; display: flex; flex-direction: column; }
-        .verdict-header { text-align: center; font-size: 2.2rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Jura'; font-weight: 900; letter-spacing: 5px; text-shadow: 0 0 20px rgba(255,42,95,0.8); }
+        .verdict-header { text-align: center; font-size: 2.2rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 5px; text-shadow: 0 0 20px rgba(255,42,95,0.8); }
         
         .analysis-cols { display: flex; gap: 15px; margin-bottom: 20px; }
         .analysis-col { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); padding: 15px; }
@@ -266,7 +266,7 @@
     <!-- ИНТРО АНИМАЦИЯ -->
     <div id="intro-screen">
         <div id="intro-explosion"></div>
-        <div id="intro-text">WARDEX</div>
+        <div id="intro-text">MWLAB</div>
     </div>
 
     <!-- ФОНОВЫЕ СЛОИ -->
@@ -331,7 +331,7 @@
         <main id="page-catalog" class="page active">
             <div class="categories-bar" id="category-bar"></div>
             <div class="controls-container">
-                <input type="text" class="search-input" id="search-input-catalog" placeholder="ПОИСК ПО НАЗВАНИЮ..." oninput="handleSearch(this.value)">
+                <input type="text" class="search-input" id="search-input-catalog" autocomplete="off" placeholder="ПОИСК ПО НАЗВАНИЮ..." oninput="handleSearch(this.value)">
                 <select class="filter-select" id="filter-country-catalog" onchange="handleFilter(this.value, 'country')">
                     <option value="">ВСЕ СТРАНЫ</option>
                     <option value="Австралия">Австралия</option>
@@ -383,7 +383,7 @@
         <main id="page-rating" class="page">
             <div class="categories-bar" id="rating-category-bar"></div>
             <div class="controls-container">
-                <input type="text" class="search-input" id="search-input-rating" placeholder="ПОИСК В ТИР-ЛИСТЕ..." oninput="handleSearch(this.value)">
+                <input type="text" class="search-input" id="search-input-rating" autocomplete="off" placeholder="ПОИСК В ТИР-ЛИСТЕ..." oninput="handleSearch(this.value)">
                 <select class="filter-select" id="filter-country-rating" onchange="handleFilter(this.value, 'country')">
                     <option value="">ВСЕ СТРАНЫ</option>
                     <option value="Австралия">Австралия</option>
@@ -437,7 +437,7 @@
             <div class="analytics-core" style="max-width: 600px; margin: 0 auto; text-align: center;">
                 <div class="verdict-header">ПАНЕЛЬ АДМИНИСТРАТОРА</div>
                 <div id="admin-auth">
-                    <input type="password" id="admin-pass" class="search-input" placeholder="ПАРОЛЬ ДОСТУПА" style="margin-bottom: 15px;">
+                    <input type="password" id="admin-pass" class="search-input" autocomplete="new-password" placeholder="ПАРОЛЬ ДОСТУПА" style="margin-bottom: 15px;">
                     <br>
                     <button class="nav-btn" onclick="checkAdmin()">ВОЙТИ</button>
                 </div>
@@ -945,12 +945,14 @@
 
             let lrLoser = (lrWinner === e1) ? e2 : e1;
             let lrReason = "";
+            
+            // Проверяем: если защита есть у обеих (или ее нет ни у одной), не пишем про РЭБ
             if (lrWinner.anti_jamming === 1 && lrLoser.anti_jamming === 0) {
                 lrReason = "защиты от РЭБ (неотводимости)";
             } else if (lrWinner.max_speed > lrLoser.max_speed + 30) {
                 lrReason = `превосходства в маршевой скорости (${lrWinner.max_speed} уз.)`;
             } else {
-                lrReason = `комбинации высокой скорости (${lrWinner.max_speed} уз.) и запаса прочности (${lrWinner.hp} HP)`;
+                lrReason = `лучшей комбинации скорости (${lrWinner.max_speed} уз.) и запаса прочности (${lrWinner.hp} HP)`;
             }
 
             let rangeAnalysisHTML = `
