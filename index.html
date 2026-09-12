@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MWLAB | АНАЛИЗ ВООРУЖЕНИЯ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@900&display=swap');
 
@@ -129,7 +130,7 @@
             background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             color: var(--primary); padding: 12px 20px; font-family: 'Share Tech Mono'; font-size: 1rem;
-            cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; 
+            cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s ease; text-transform: uppercase;
         }
         .nav-btn:hover, .nav-btn.active { background: rgba(255, 42, 95, 0.15); border-color: var(--primary); box-shadow: var(--border-glow); text-shadow: 0 0 8px var(--primary); color: #fff; }
         
@@ -143,17 +144,28 @@
         .page.active { display: block; animation: pageFade 0.4s ease-out forwards; }
         @keyframes pageFade { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
 
+        .max-lvl-disclaimer { text-align: center; color: var(--secondary); font-size: 0.85rem; padding: 10px; background: rgba(0, 0, 0, 0.5); border-bottom: 1px solid rgba(0, 229, 255, 0.2); text-shadow: 0 0 5px rgba(0, 229, 255, 0.5); }
+
         /* ПАНЕЛЬ ФИЛЬТРОВ И ПОИСКА */
-        .controls-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .controls-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .search-input, .filter-select { 
             background: rgba(0,0,0,0.6); border: 1px solid var(--primary-dim); color: var(--secondary); 
-            padding: 12px 20px; width: 100%; max-width: 280px; font-family: 'Share Tech Mono'; 
+            padding: 12px 20px; width: 100%; max-width: 250px; font-family: 'Share Tech Mono'; 
             font-size: 1rem; border-radius: 4px; outline: none; transition: 0.3s;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.9); text-transform: uppercase; backdrop-filter: blur(10px);
         }
         .search-input::placeholder { color: rgba(0, 229, 255, 0.3); }
         .search-input:focus, .filter-select:focus { border-color: var(--secondary); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); color: #fff; }
         .filter-select option { background: #03070b; color: #fff; }
+
+        /* МЕХАНИКИ ЧЕКБОКСЫ */
+        .mechanics-filters { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
+        .mech-checkbox { display: none; }
+        .mech-checkbox:checked + .cat-btn { background: rgba(0, 229, 255, 0.2); border-color: var(--secondary); box-shadow: 0 0 15px rgba(0,229,255,0.4); color: #fff; }
+        
+        .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+        .cat-btn { background: rgba(10, 5, 8, 0.6); border: 1px solid rgba(255,255,255,0.1); color: #a09095; padding: 8px 18px; font-family: 'Jura'; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 4px; font-size: 0.95rem; backdrop-filter: blur(10px); display: inline-block;}
+        .cat-btn:hover, .cat-btn.active { border-color: var(--primary); color: #fff; background: rgba(255, 42, 95, 0.2); box-shadow: var(--border-glow); }
 
         /* СЕТКА СРАВНЕНИЯ И АНИМАЦИИ ПОБЕДИТЕЛЯ */
         .compare-grid { display: grid; grid-template-columns: 1fr 600px 1fr; gap: 20px; align-items: start; }
@@ -205,12 +217,11 @@
         .range-block.warning { background: rgba(255, 42, 95, 0.05); border-left-color: var(--primary); }
 
         .final-summary-block { margin-top: 15px; padding: 20px; text-align: center; border: 2px solid var(--primary); background: rgba(255, 42, 95, 0.05); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 0 0 20px rgba(255, 42, 95, 0.1); }
+        
+        .ttk-container { margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0, 229, 255, 0.2); text-align: center; }
+        .radar-container { width: 100%; max-width: 400px; margin: 0 auto 20px auto; }
 
         /* КАТАЛОГ (АРСЕНАЛ) */
-        .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-        .cat-btn { background: rgba(10, 5, 8, 0.6); border: 1px solid rgba(255,255,255,0.1); color: #a09095; padding: 8px 18px; font-family: 'Jura'; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 4px; font-size: 0.95rem; backdrop-filter: blur(10px);}
-        .cat-btn:hover, .cat-btn.active { border-color: var(--primary); color: #fff; background: rgba(255, 42, 95, 0.2); box-shadow: var(--border-glow); }
-        
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .catalog-item { background: var(--glass-bg); border: 1px solid var(--primary-dim); border-top: 1px solid var(--glass-reflection); padding: 15px; cursor: pointer; position: relative; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); }
         .catalog-item:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.8), var(--border-glow); }
@@ -282,7 +293,7 @@
             <button class="modal-close" onclick="closeModal('ibe-modal')">×</button>
             <div style="color: #fff; font-family: 'Jura'; font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px;">СИСТЕМА РЕЙТИНГА И АНАЛИЗА (0 - 1000 БАЛЛОВ)</div>
             <div style="font-family: 'Share Tech Mono'; line-height: 1.6; font-size: 0.95rem; text-transform: none; color: #a09095;">
-                <p><b>АНАЛИЗ:</b> Сравнивает две единицы вооружения, находя их уникальные тактические преимущества и оценивая потенциал на разных дистанциях.</p>
+                <p><b>Оценочный модуль:</b> Сравнивает две единицы вооружения, находя их уникальные тактические преимущества и оценивая потенциал на разных дистанциях.</p>
                 <p style="margin-top: 15px;"><b>КАК РАССЧИТЫВАЕТСЯ ТИР-ЛИСТ:</b></p>
                 <ul style="margin-left: 20px; margin-top: 10px; color: #e0f2f1; padding-left: 10px;">
                     <li style="margin-bottom: 8px;"><b style="color: var(--secondary);">Огневая мощь (до 350 баллов):</b> Чистый DPM и разовый альфа-страйк.</li>
@@ -298,12 +309,14 @@
     <!-- ОСНОВНОЙ КОНТЕНТ (С АНИМАЦИЕЙ ПОЯВЛЕНИЯ) -->
     <div class="app-wrapper">
         <nav>
-            <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
+            <button class="nav-btn" onclick="switchMainPage('page-compare')">Оценочный модуль</button>
             <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
             <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
             <button class="info-btn" style="width: auto; padding: 0 15px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
             <button class="info-btn" style="width: 40px;" onclick="openModal('ibe-modal')">?</button>
         </nav>
+
+        <div class="max-lvl-disclaimer">⚠️ ВСЕ ХАРАКТЕРИСТИКИ ПРИВЕДЕНЫ ДЛЯ МАКСИМАЛЬНОГО УРОВНЯ ПРОКАЧКИ</div>
 
         <main id="page-compare" class="page">
             <div class="compare-grid">
@@ -330,53 +343,51 @@
 
         <main id="page-catalog" class="page active">
             <div class="categories-bar" id="category-bar"></div>
+            
             <div class="controls-container">
                 <input type="text" class="search-input" id="search-input-catalog" autocomplete="off" placeholder="ПОИСК ПО НАЗВАНИЮ..." oninput="handleSearch(this.value)">
-                <select class="filter-select" id="filter-country-catalog" onchange="handleFilter(this.value, 'country')">
+                <select class="filter-select" id="filter-country-catalog" onchange="handleFilter()">
                     <option value="">ВСЕ СТРАНЫ</option>
                     <option value="Австралия">Австралия</option>
-                    <option value="Австрия">Австрия</option>
-                    <option value="Бразилия">Бразилия</option>
                     <option value="Великобритания">Великобритания</option>
                     <option value="Германия">Германия</option>
-                    <option value="Египет">Египет</option>
                     <option value="Европейский Союз">Европейский Союз</option>
                     <option value="Израиль">Израиль</option>
                     <option value="Индия">Индия</option>
-                    <option value="Индонезия">Индонезия</option>
                     <option value="Иран">Иран</option>
-                    <option value="Испания">Испания</option>
                     <option value="Италия">Италия</option>
                     <option value="Китай">Китай</option>
-                    <option value="Мексика">Мексика</option>
-                    <option value="Нидерланды">Нидерланды</option>
                     <option value="Норвегия">Норвегия</option>
-                    <option value="Объединенные Арабские Эмираты">Объединенные Арабские Эмираты</option>
-                    <option value="Пакистан">Пакистан</option>
-                    <option value="Перу">Перу</option>
-                    <option value="Польша">Польша</option>
                     <option value="Россия">Россия</option>
-                    <option value="Северная Корея">Северная Корея</option>
-                    <option value="Словакия">Словакия</option>
                     <option value="США">США</option>
                     <option value="Турция">Турция</option>
                     <option value="Франция">Франция</option>
-                    <option value="Чешская Республика">Чешская Республика</option>
-                    <option value="Швейцария">Швейцария</option>
                     <option value="Швеция">Швеция</option>
-                    <option value="Южная Африка">Южная Африка</option>
                     <option value="Южная Корея">Южная Корея</option>
                     <option value="Япония">Япония</option>
                     <option value="Pan Spatial">Pan Spatial</option>
-                    <option value="Rodrigo Avella">Rodrigo Avella</option>
                 </select>
-                <select class="filter-select" id="filter-rarity-catalog" onchange="handleFilter(this.value, 'rarity')">
+                <select class="filter-select" id="filter-rarity-catalog" onchange="handleFilter()">
                     <option value="">ВСЯ РЕДКОСТЬ</option>
                     <option value="Легендарный">Легендарный</option>
                     <option value="Эпический">Эпический</option>
                     <option value="Редкий">Редкий</option>
                 </select>
+                <select class="filter-select" id="sort-catalog" onchange="handleFilter()">
+                    <option value="rating">ТОП: РЕЙТИНГ МЕТЫ</option>
+                    <option value="dpm">ТОП: УРОН В МИНУТУ</option>
+                    <option value="burst">ТОП: АЛЬФА-СТРАЙК</option>
+                    <option value="speed">ТОП: СКОРОСТЬ</option>
+                </select>
             </div>
+
+            <div class="mechanics-filters">
+                <label><input type="checkbox" class="mech-checkbox" id="cb-jamming" onchange="handleFilter()"><span class="cat-btn">РЭБ-ЗАЩИТА</span></label>
+                <label><input type="checkbox" class="mech-checkbox" id="cb-sub" onchange="handleFilter()"><span class="cat-btn">ПОДЛОДКИ</span></label>
+                <label><input type="checkbox" class="mech-checkbox" id="cb-cluster" onchange="handleFilter()"><span class="cat-btn">КЛАСТЕРНЫЕ</span></label>
+                <label><input type="checkbox" class="mech-checkbox" id="cb-air" onchange="handleFilter()"><span class="cat-btn">АВИАЦИЯ</span></label>
+            </div>
+
             <div class="catalog-grid" id="catalog-content"></div>
         </main>
 
@@ -384,50 +395,7 @@
             <div class="categories-bar" id="rating-category-bar"></div>
             <div class="controls-container">
                 <input type="text" class="search-input" id="search-input-rating" autocomplete="off" placeholder="ПОИСК В ТИР-ЛИСТЕ..." oninput="handleSearch(this.value)">
-                <select class="filter-select" id="filter-country-rating" onchange="handleFilter(this.value, 'country')">
-                    <option value="">ВСЕ СТРАНЫ</option>
-                    <option value="Австралия">Австралия</option>
-                    <option value="Австрия">Австрия</option>
-                    <option value="Бразилия">Бразилия</option>
-                    <option value="Великобритания">Великобритания</option>
-                    <option value="Германия">Германия</option>
-                    <option value="Египет">Египет</option>
-                    <option value="Европейский Союз">Европейский Союз</option>
-                    <option value="Израиль">Израиль</option>
-                    <option value="Индия">Индия</option>
-                    <option value="Индонезия">Индонезия</option>
-                    <option value="Иран">Иран</option>
-                    <option value="Испания">Испания</option>
-                    <option value="Италия">Италия</option>
-                    <option value="Китай">Китай</option>
-                    <option value="Мексика">Мексика</option>
-                    <option value="Нидерланды">Нидерланды</option>
-                    <option value="Норвегия">Норвегия</option>
-                    <option value="Объединенные Арабские Эмираты">Объединенные Арабские Эмираты</option>
-                    <option value="Пакистан">Пакистан</option>
-                    <option value="Перу">Перу</option>
-                    <option value="Польша">Польша</option>
-                    <option value="Россия">Россия</option>
-                    <option value="Северная Корея">Северная Корея</option>
-                    <option value="Словакия">Словакия</option>
-                    <option value="США">США</option>
-                    <option value="Турция">Турция</option>
-                    <option value="Франция">Франция</option>
-                    <option value="Чешская Республика">Чешская Республика</option>
-                    <option value="Швейцария">Швейцария</option>
-                    <option value="Швеция">Швеция</option>
-                    <option value="Южная Африка">Южная Африка</option>
-                    <option value="Южная Корея">Южная Корея</option>
-                    <option value="Япония">Япония</option>
-                    <option value="Pan Spatial">Pan Spatial</option>
-                    <option value="Rodrigo Avella">Rodrigo Avella</option>
-                </select>
-                <select class="filter-select" id="filter-rarity-rating" onchange="handleFilter(this.value, 'rarity')">
-                    <option value="">ВСЯ РЕДКОСТЬ</option>
-                    <option value="Легендарный">Легендарный</option>
-                    <option value="Эпический">Эпический</option>
-                    <option value="Редкий">Редкий</option>
-                </select>
+                <!-- Дублирующие селекты для синхронизации, скрыты для чистоты UI -->
             </div>
             <div class="rating-container" id="rating-content"></div>
         </main>
@@ -509,7 +477,6 @@
         setInterval(spawnBgFormula, 1200);
         for(let i=0; i<10; i++) setTimeout(spawnBgFormula, i * 300);
 
-        // --- ЛИЧНЫЙ КАБИНЕТ И СЧЕТЧИК ---
         let siteVisits = localStorage.getItem('mw_site_visits') || 0;
         siteVisits++;
         localStorage.setItem('mw_site_visits', siteVisits);
@@ -529,8 +496,6 @@
         // --- БАЗА ДАННЫХ И ЛОГИКА ---
         const CATEGORIES = ["Ракеты"];
         let searchQuery = "";
-        let selectedCountry = "";
-        let selectedRarity = "";
         
         const STATS_LOGIC = {
             damage_burst: { label: "Урон за залп", higherIsBetter: true },
@@ -621,16 +586,12 @@
 
         function calculateRating(item) {
             let score = 100; 
-            
             score += (item.dpm / 300000) * 250; 
             score += (item.damage_burst / 60000) * 100; 
             score += item.anti_jamming === 1 ? 200 : 0; 
             
             let hasCluster = (item.cluster === 1 || item.fragmentation_damage > 0);
-            if (hasCluster) {
-                score += 100; 
-                if (item.anti_jamming === 0) score += 50; 
-            }
+            if (hasCluster) { score += 100; if (item.anti_jamming === 0) score += 50; }
 
             score += (item.projectiles * 30); 
             score += (item.hp / 400) * 80; 
@@ -644,11 +605,7 @@
             if (item.air_target === 1) score += 50;
             if (item.sub_launch === 1) score += 50;
 
-            if (item.lock_time === 0) {
-                score += 50;
-            } else if (item.lock_time > 2.0) {
-                score -= ((item.lock_time - 2.0) * 25);
-            }
+            if (item.lock_time === 0) { score += 50; } else if (item.lock_time > 2.0) { score -= ((item.lock_time - 2.0) * 25); }
             
             score -= (item.accel_time * 30);
             if (item.fire_penalty) score -= (item.fire_penalty * 0.8);
@@ -657,7 +614,6 @@
             return Math.min(1000, Math.max(50, Math.round(score)));
         }
 
-        // РАСЧЕТ ДИСТАНЦИОННОГО ПОТЕНЦИАЛА
         function getCQBScore(item) {
             let score = (item.start_speed * 2.0) + (item.hp * 1.0);
             if (item.min_range > 0) score -= 2000; 
@@ -672,11 +628,11 @@
             return score;
         }
 
-        for (let key in DB) {
-            DB[key].rating = calculateRating(DB[key]);
-        }
+        for (let key in DB) { DB[key].rating = calculateRating(DB[key]); }
 
         let compareQueue = [];
+        let currentEq1 = null;
+        let currentEq2 = null;
 
         function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
@@ -691,27 +647,47 @@
         }
 
         function handleSearch(val) {
-            searchQuery = val.toLowerCase();
+            if(val !== undefined) searchQuery = val.toLowerCase();
             syncFilters();
-            renderCatalog();
-            renderRatingList();
+            handleFilter();
         }
 
-        function handleFilter(val, type) {
-            if (type === 'country') selectedCountry = val;
-            if (type === 'rarity') selectedRarity = val;
-            syncFilters();
-            renderCatalog();
-            renderRatingList();
+        function handleFilter() {
+            selectedCountry = document.getElementById('filter-country-catalog').value;
+            let sortType = document.getElementById('sort-catalog').value;
+            
+            let items = Object.keys(DB).map(key => ({ id: key, ...DB[key] }));
+            
+            // Фильтрация
+            items = items.filter(item => {
+                if (searchQuery && !item.name.toLowerCase().includes(searchQuery)) return false;
+                if (selectedCountry && item.country !== selectedCountry) return false;
+                
+                let rarityFilter = document.getElementById('filter-rarity-catalog').value;
+                if (rarityFilter && item.rarity !== rarityFilter) return false;
+                
+                if (document.getElementById('cb-jamming').checked && item.anti_jamming === 0) return false;
+                if (document.getElementById('cb-sub').checked && item.sub_launch !== 1) return false;
+                if (document.getElementById('cb-cluster').checked && item.cluster !== 1 && (!item.fragmentation_damage || item.fragmentation_damage <= 0)) return false;
+                if (document.getElementById('cb-air').checked && item.air_target !== 1) return false;
+
+                return true;
+            });
+
+            // Сортировка
+            items.sort((a, b) => {
+                if (sortType === 'dpm') return b.dpm - a.dpm;
+                if (sortType === 'burst') return b.damage_burst - a.damage_burst;
+                if (sortType === 'speed') return b.max_speed - a.max_speed;
+                return b.rating - a.rating; // default: rating
+            });
+
+            renderCatalogUI(items);
+            renderRatingList(items);
         }
 
         function syncFilters() {
-            document.getElementById('search-input-catalog').value = searchQuery;
-            document.getElementById('search-input-rating').value = searchQuery;
-            document.getElementById('filter-country-catalog').value = selectedCountry;
-            document.getElementById('filter-country-rating').value = selectedCountry;
-            document.getElementById('filter-rarity-catalog').value = selectedRarity;
-            document.getElementById('filter-rarity-rating').value = selectedRarity;
+            document.getElementById('search-input-rating').value = document.getElementById('search-input-catalog').value;
         }
 
         function switchMainPage(pageId) {
@@ -720,32 +696,25 @@
             document.getElementById(pageId).classList.add('active');
             
             if(pageId === 'page-compare') document.querySelectorAll('.nav-btn')[0].classList.add('active');
-            if(pageId === 'page-catalog') { document.querySelectorAll('.nav-btn')[1].classList.add('active'); compareQueue = []; renderCatalog(); }
-            if(pageId === 'page-rating') { document.querySelectorAll('.nav-btn')[2].classList.add('active'); renderRatingList(); }
+            if(pageId === 'page-catalog') { document.querySelectorAll('.nav-btn')[1].classList.add('active'); compareQueue = []; handleFilter(); }
+            if(pageId === 'page-rating') { document.querySelectorAll('.nav-btn')[2].classList.add('active'); handleFilter(); }
         }
 
         function initApp() {
             const catBar = document.getElementById('category-bar');
-            const ratingCatBar = document.getElementById('rating-category-bar');
-            CATEGORIES.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = `cat-btn active`; btn.innerText = cat;
-                catBar.appendChild(btn);
-
-                const rBtn = document.createElement('button');
-                rBtn.className = `cat-btn active`; rBtn.innerText = cat;
-                ratingCatBar.appendChild(rBtn);
-            });
-            renderCatalog();
+            const btn = document.createElement('button');
+            btn.className = `cat-btn active`; btn.innerText = "Ракеты";
+            catBar.appendChild(btn);
+            handleFilter();
         }
 
         function handleCatalogClick(itemId) {
             const item = DB[itemId];
             if (compareQueue.length === 0) {
-                compareQueue.push(itemId); renderCatalog(); 
+                compareQueue.push(itemId); handleFilter(); 
                 showToast(`СЛОТ 1: ${item.name}`);
             } else if (compareQueue.length === 1) {
-                if (compareQueue[0] === itemId) { compareQueue = []; renderCatalog(); return; }
+                if (compareQueue[0] === itemId) { compareQueue = []; handleFilter(); return; }
                 const id1 = compareQueue[0]; const id2 = itemId;
                 
                 updateEquipView(1, id1); updateEquipView(2, id2);
@@ -753,26 +722,16 @@
                 switchMainPage('page-compare');
                 showToast("АНАЛИЗ ЗАВЕРШЕН");
                 compareQueue = [];
-                searchQuery = ""; selectedCountry = ""; selectedRarity = "";
-                syncFilters();
+                handleFilter();
             }
         }
 
-        function filterItem(s) {
-            if (searchQuery && !s.name.toLowerCase().includes(searchQuery)) return false;
-            if (selectedCountry && s.country !== selectedCountry) return false;
-            if (selectedRarity && s.rarity !== selectedRarity) return false;
-            return true;
-        }
-
-        function renderCatalog() {
+        function renderCatalogUI(filteredItems) {
             const c = document.getElementById('catalog-content'); c.innerHTML = ''; 
-            for (let key in DB) {
-                const s = DB[key];
-                if (!filterItem(s)) continue;
-                const sel = compareQueue.includes(key) ? 'selected' : '';
+            filteredItems.forEach(s => {
+                const sel = compareQueue.includes(s.id) ? 'selected' : '';
                 c.innerHTML += `
-                    <div class="catalog-item ${sel}" onclick="handleCatalogClick('${key}')">
+                    <div class="catalog-item ${sel}" onclick="handleCatalogClick('${s.id}')">
                         <div class="catalog-item-img" style="background-image: url('${s.img}')"></div>
                         <div style="color:#fff; font-size:1.1rem; font-weight:bold; margin-bottom:8px; font-family:'Jura'">${s.name}</div>
                         <div style="color:#a09095; font-family:'Share Tech Mono'; font-size: 0.9rem; line-height: 1.5;">
@@ -780,16 +739,12 @@
                             РЕЙТИНГ МЕТЫ: <span style="color:#ffaa00">${s.rating}/1000</span>
                         </div>
                     </div>`;
-            }
+            });
         }
 
-        function renderRatingList() {
+        function renderRatingList(filteredItems) {
             const c = document.getElementById('rating-content'); c.innerHTML = '';
-            let items = Object.keys(DB).map(key => ({ id: key, ...DB[key] }));
-            items = items.filter(item => filterItem(item));
-            items.sort((a, b) => b.rating - a.rating);
-
-            items.forEach((item, index) => {
+            filteredItems.forEach((item, index) => {
                 let color = 'var(--secondary)';
                 if (item.rating >= 800) color = '#ffaa00'; 
                 else if (item.rating < 500) color = '#a09095'; 
@@ -814,6 +769,9 @@
 
         function updateEquipView(side, itemId) {
             const item = DB[itemId];
+            if(side === 1) currentEq1 = item;
+            if(side === 2) currentEq2 = item;
+            
             document.getElementById(`name-equip-${side}`).innerText = item.name;
             document.getElementById(`img-equip-${side}`).style.backgroundImage = `url('${item.img}')`;
             let html = '';
@@ -843,66 +801,92 @@
             if (item.sub_launch === 1) pros.push("Подводный пуск (можно атаковать из-под воды)");
 
             if (item.cluster === 1 || item.fragmentation_damage > 0) {
-                if (item.anti_jamming === 0) {
-                    pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает осколки, наносит урон при поздних ловушках)");
-                } else {
-                    pros.push("Кластерная БЧ (разделяется перед целью: ПВО не сбивает мелкие осколки, гарантируя урон)");
-                }
+                if (item.anti_jamming === 0) { pros.push("Кластерная БЧ (ПВО не сбивает осколки, урон при поздних ловушках)"); } 
+                else { pros.push("Кластерная БЧ (ПВО не сбивает мелкие осколки, гарантируя урон)"); }
             }
 
             if (item.dpm > 250000) pros.push("Колоссальный базовый урон в минуту");
             else cons.push("Низкий математический DPM");
 
             if (item.damage_burst >= 40000) pros.push("Разрушительный альфа-страйк (урон за залп)");
-
             if (item.projectiles > 1) pros.push(`Залп из ${item.projectiles} ракет (повышенный шанс перегруза ПВО)`);
-            
             if (item.splash_damage > 0) pros.push("Наносит урон по области (эффективно против скоплений и ПВО)");
             if (item.detonation_radius > 0) pros.push("Радиус детонации (срабатывает даже при промахе рядом с целью)");
 
             if (item.start_speed >= 200) pros.push("Резкий старт (ПВО не успевает среагировать)");
             else if (item.start_speed < 50) cons.push("Критически медленный старт (легко сбивается ПВО)");
 
-            if (item.accel_time > 3.0) cons.push(`Долгое время разгона (${item.accel_time} сек - уязвима для ПВО на траектории)`);
+            if (item.accel_time > 3.0) cons.push(`Долгое время разгона (${item.accel_time} сек - уязвима для ПВО)`);
 
             if (item.fire_penalty > 35) cons.push("Высокий штраф обнаружения при пуске");
             else if (item.fire_penalty <= 35) pros.push("Пониженный штраф обнаружения");
 
-            if (item.trajectory === "Высокая") {
-                pros.push("Навесная траектория (позволяет вести огонь из-за островов)");
-                cons.push("Долго находится в воздухе (уязвима для дальнобойного ПВО)");
-            } else if (item.trajectory === "Низкая") {
-                pros.push("Стелется над водой (минимальное время для реакции ПВО)");
-            }
+            if (item.trajectory === "Высокая") { pros.push("Навесная траектория (огонь из-за островов)"); cons.push("Долго находится в воздухе (уязвима для ПВО)"); } 
+            else if (item.trajectory === "Низкая") { pros.push("Стелется над водой (минимальное время для реакции ПВО)"); }
 
-            if (item.lock_time === 0) {
-                pros.push("Ручное / Лазерное наведение (моментальный пуск без ожидания захвата)");
-            } else if (item.lock_time <= 1.2) {
-                pros.push("Мгновенный захват цели для спама");
-            } else if (item.lock_time >= 3.0) {
-                cons.push(`Критически долгий захват цели (${item.lock_time} сек)`);
-            }
-
-            if (item.min_range > 0) {
-                range = `<b>ТОЛЬКО ДАЛЬНЯЯ:</b> Имеет мертвую зону ${item.min_range} км, абсолютно беззащитна вблизи.`;
-                isWarning = true;
-            } else if (item.max_speed >= 480 && item.start_speed < 180) {
-                range = `<b>ДАЛЬНЯЯ ДИСТАНЦИЯ:</b> Маршевая скорость ${item.max_speed} уз. и прочность позволяют эффективно пробивать ПВО издалека.`;
-            } else if (item.start_speed >= 180 && item.accel_time <= 2.5) {
-                range = `<b>БЛИЖНЯЯ ДИСТАНЦИЯ:</b> Резкий старт ${item.start_speed} уз. дает мгновенный урон из-за укрытий.`;
-            } else if (item.start_speed < 100 && item.max_speed < 450) {
-                range = `<b>СРЕДНЯЯ ДИСТАНЦИЯ:</b> Из-за долгого разгона легко сбивается ПВО на больших расстояниях.`;
-            } else {
-                range = `<b>УНИВЕРСАЛЬНАЯ:</b> Сбалансированные показатели скорости для любых дистанций.`;
-            }
+            if (item.lock_time === 0) { pros.push("Лазерное наведение (моментальный пуск без ожидания)"); } 
+            else if (item.lock_time <= 1.2) { pros.push("Мгновенный захват цели для спама"); } 
+            else if (item.lock_time >= 3.0) { cons.push(`Критически долгий захват (${item.lock_time} сек)`); }
 
             let html = `<div class="analysis-col">
                 <div class="col-title">${item.name}</div>
                 <div>${pros.map(p => `<div class="pro-item">${p}</div>`).join('')}</div>
                 <div style="margin-top:10px;">${cons.map(c => `<div class="con-item">${c}</div>`).join('')}</div>
-                <div class="range-block ${isWarning ? 'warning' : ''}" style="margin-top: 20px;">${range}</div>
             </div>`;
             return html;
+        }
+        
+        function drawRadarChart(e1, e2) {
+            let ctx = document.getElementById('radarChart').getContext('2d');
+            if(window.radarChartInstance) window.radarChartInstance.destroy();
+            
+            // Нормализация параметров (0-100)
+            const nDpm1 = Math.min(100, (e1.dpm / 320000) * 100); const nDpm2 = Math.min(100, (e2.dpm / 320000) * 100);
+            const nBurst1 = Math.min(100, (e1.damage_burst / 60000) * 100); const nBurst2 = Math.min(100, (e2.damage_burst / 60000) * 100);
+            const nHp1 = Math.min(100, (e1.hp / 400) * 100); const nHp2 = Math.min(100, (e2.hp / 400) * 100);
+            const nSpeed1 = Math.min(100, (e1.max_speed / 650) * 100); const nSpeed2 = Math.min(100, (e2.max_speed / 650) * 100);
+            const nRel1 = Math.max(0, 100 - (e1.reload / 25) * 100); const nRel2 = Math.max(0, 100 - (e2.reload / 25) * 100);
+            const nRange1 = Math.min(100, (e1.range / 16) * 100); const nRange2 = Math.min(100, (e2.range / 16) * 100);
+
+            window.radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Урон в минуту', 'Альфа', 'Живучесть (HP)', 'Скорость', 'Скорострельность', 'Дальность'],
+                    datasets: [
+                        { label: e1.name, data: [nDpm1, nBurst1, nHp1, nSpeed1, nRel1, nRange1], backgroundColor: 'rgba(255, 42, 95, 0.2)', borderColor: '#ff2a5f', pointBackgroundColor: '#ff2a5f', borderWidth: 2 },
+                        { label: e2.name, data: [nDpm2, nBurst2, nHp2, nSpeed2, nRel2, nRange2], backgroundColor: 'rgba(0, 229, 255, 0.2)', borderColor: '#00e5ff', pointBackgroundColor: '#00e5ff', borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    scales: { r: { angleLines: { color: 'rgba(255, 255, 255, 0.1)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, pointLabels: { color: '#a09095', font: { family: 'Jura', size: 12 } }, ticks: { display: false, max: 100, min: 0 } } },
+                    plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false
+                }
+            });
+        }
+        
+        function updateTTK() {
+            if(!currentEq1 || !currentEq2) return;
+            const targetHp = document.getElementById('target-hp-input').value || 350000;
+            
+            let v1 = Math.ceil(targetHp / currentEq1.damage_burst);
+            let t1 = ((v1 - 1) * currentEq1.reload).toFixed(1);
+            if(targetHp <= currentEq1.damage_burst) t1 = 0;
+            
+            let v2 = Math.ceil(targetHp / currentEq2.damage_burst);
+            let t2 = ((v2 - 1) * currentEq2.reload).toFixed(1);
+            if(targetHp <= currentEq2.damage_burst) t2 = 0;
+            
+            let html = `
+                <div style="flex: 1; text-align: left; padding: 10px; border-right: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #ff2a5f; font-weight: bold; margin-bottom: 5px;">${currentEq1.name}</div>
+                    Залпов: <b style="color:#fff;">${v1} шт.</b><br>Время: <b style="color:#fff;">${t1} сек.</b>
+                </div>
+                <div style="flex: 1; text-align: right; padding: 10px;">
+                    <div style="color: #00e5ff; font-weight: bold; margin-bottom: 5px;">${currentEq2.name}</div>
+                    Залпов: <b style="color:#fff;">${v2} шт.</b><br>Время: <b style="color:#fff;">${t2} сек.</b>
+                </div>
+            `;
+            document.getElementById('ttk-results').innerHTML = html;
         }
 
         function runAnalysis(id1, id2) {
@@ -910,79 +894,62 @@
             const card1 = document.getElementById('card-equip-1');
             const card2 = document.getElementById('card-equip-2');
             
-            card1.className = 'equip-card';
-            card2.className = 'equip-card';
+            card1.className = 'equip-card'; card2.className = 'equip-card';
 
             for (let key in STATS_LOGIC) {
                 if (e1[key] === undefined && e2[key] === undefined) continue;
-
                 const el1 = document.getElementById(`val-1-${key}`); const el2 = document.getElementById(`val-2-${key}`);
                 if(!el1 || !el2) continue;
-
                 el1.className = "stat-value"; el2.className = "stat-value";
-                
                 const v1 = e1[key] !== undefined ? parseFloat(e1[key]) : 0;
                 const v2 = e2[key] !== undefined ? parseFloat(e2[key]) : 0;
-
                 if (v1 === v2 || STATS_LOGIC[key].isString) { el1.classList.add('neutral'); el2.classList.add('neutral'); continue; }
-
                 const isV1Better = STATS_LOGIC[key].higherIsBetter ? v1 > v2 : v1 < v2;
-                if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } 
-                else { el2.classList.add('win'); el1.classList.add('lose'); }
+                if (isV1Better) { el1.classList.add('win'); el2.classList.add('lose'); } else { el2.classList.add('win'); el1.classList.add('lose'); }
             }
 
             let analysisCols = `<div class="analysis-cols">${generateTactics(e1)}${generateTactics(e2)}</div>`;
             
             let summaryText = "";
-            let lrWinner = getLRScore(e1) > getLRScore(e2) ? e1 : e2;
-            let cqbWinner = getCQBScore(e1) > getCQBScore(e2) ? e1 : e2;
+            let lrWinner = getLRScore(e1) > getLRScore(e2) ? e1 : e2; let cqbWinner = getCQBScore(e1) > getCQBScore(e2) ? e1 : e2;
 
             if (Math.abs(e1.rating - e2.rating) < 15) {
-                summaryText = `<span style="color:#fff; font-size: 1.1rem;">Обе ракеты показывают схожую боевую эффективность (Паритет: ${e1.rating} vs ${e2.rating}). Выбор зависит исключительно от дистанции ведения боя вашего корпуса.</span>`;
-                card1.classList.add('card-tie');
-                card2.classList.add('card-tie');
+                summaryText = `<span style="color:#fff; font-size: 1.1rem;">Обе ракеты показывают схожую эффективность. Выбор зависит исключительно от вашей дистанции ведения боя.</span>`;
+                card1.classList.add('card-tie'); card2.classList.add('card-tie');
             } else {
-                const winner = e1.rating > e2.rating ? e1 : e2;
-                const loser = e1.rating > e2.rating ? e2 : e1;
+                const winner = e1.rating > e2.rating ? e1 : e2; const loser = e1.rating > e2.rating ? e2 : e1;
+                if (e1.rating > e2.rating) { card1.classList.add('card-winner'); card2.classList.add('card-loser'); } else { card1.classList.add('card-loser'); card2.classList.add('card-winner'); }
                 
-                if (e1.rating > e2.rating) {
-                    card1.classList.add('card-winner');
-                    card2.classList.add('card-loser');
-                } else {
-                    card1.classList.add('card-loser');
-                    card2.classList.add('card-winner');
-                }
-                
-                let reason = "комплексного превосходства характеристик";
-                if (loser.min_range > 0 && winner.min_range === 0) reason = "полноценной возможности вести бой на любой дистанции (без мертвых зон)";
-                else if ((winner.cluster === 1 || winner.fragmentation_damage > 0) && loser.cluster === 0) reason = "наличия кластерной БЧ (гарантированный урон осколками сквозь ПВО)";
-                else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) reason = "абсолютной независимости от вражеских ловушек (РЭБ)";
+                let reason = "комплексного превосходства";
+                if (loser.min_range > 0 && winner.min_range === 0) reason = "возможности вести бой на любой дистанции (без мертвых зон)";
+                else if ((winner.cluster === 1 || winner.fragmentation_damage > 0) && loser.cluster === 0) reason = "кластерной БЧ (урон осколками сквозь ПВО)";
+                else if (winner.anti_jamming === 1 && loser.anti_jamming === 0) reason = "абсолютной независимости от ловушек (РЭБ)";
                 else if (winner.damage_burst > loser.damage_burst + 10000) reason = "разрушительного разового урона";
                 else if (winner.dpm > loser.dpm + 20000) reason = "подавляющего урона в минуту (DPM)";
 
                 summaryText = `<span style="color:var(--secondary); font-size: 1.2rem; display:block; margin-bottom: 5px;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><span style="color:#fff;">В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating} из 1000).</span>`;
             }
 
-            let cqbLoser = cqbWinner === e1 ? e2 : e1;
-            let cqbReason = "";
-            if (cqbLoser.min_range > 0 && cqbWinner.min_range === 0) {
-                cqbReason = "отсутствия мертвой зоны у конкурента"; 
-            } else {
-                cqbReason = `высокой начальной скорости (${cqbWinner.start_speed} уз.) и отличной динамики`;
-            }
+            let cqbLoser = cqbWinner === e1 ? e2 : e1; let cqbReason = "";
+            if (cqbLoser.min_range > 0 && cqbWinner.min_range === 0) { cqbReason = "отсутствия мертвой зоны"; } 
+            else { cqbReason = `высокой начальной скорости (${cqbWinner.start_speed} уз.)`; }
 
-            let lrLoser = (lrWinner === e1) ? e2 : e1;
-            let lrReason = "";
-            
-            if (lrWinner.anti_jamming === 1 && lrLoser.anti_jamming === 0) {
-                lrReason = "защиты от РЭБ (неотводимости)";
-            } else if (lrWinner.max_speed > lrLoser.max_speed + 30) {
-                lrReason = `превосходства в маршевой скорости (${lrWinner.max_speed} уз.)`;
-            } else {
-                lrReason = `лучшей комбинации скорости (${lrWinner.max_speed} уз.) и запаса прочности (${lrWinner.hp} HP)`;
-            }
+            let lrLoser = (lrWinner === e1) ? e2 : e1; let lrReason = "";
+            if (lrWinner.anti_jamming === 1 && lrLoser.anti_jamming === 0) { lrReason = "защиты от РЭБ (неотводимости)"; } 
+            else if (lrWinner.max_speed > lrLoser.max_speed + 30) { lrReason = `превосходства в скорости (${lrWinner.max_speed} уз.)`; } 
+            else { lrReason = `лучшей комбинации скорости и запаса прочности (${lrWinner.hp} HP)`; }
 
-            let rangeAnalysisHTML = `
+            let visualsHTML = `
+                <div class="radar-container" style="height: 250px;">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                
+                <div class="ttk-container">
+                    <div style="font-family:'Jura'; color:var(--secondary); font-weight:bold; font-size:1.1rem; margin-bottom:10px;">🕒 КАЛЬКУЛЯТОР УНИЧТОЖЕНИЯ (TTK)</div>
+                    <div style="margin-bottom: 10px;">ЗДОРОВЬЕ ЦЕЛИ: <input type="number" id="target-hp-input" value="350000" class="search-input" style="width: 120px; text-align: center; padding: 5px;" oninput="updateTTK()"> HP</div>
+                    <div id="ttk-results" style="display:flex; justify-content:space-between; font-family:'Share Tech Mono'; background: rgba(0,0,0,0.4); border-radius: 4px;"></div>
+                </div>
+
                 <div style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 4px;">
                     <div style="color: var(--secondary); font-size: 1rem; margin-bottom: 5px; font-weight: bold;">⚔️ БЛИЖНИЙ БОЙ (Кинжальная дистанция):</div>
                     <div style="color: #e0f2f1; font-size: 0.9rem; margin-bottom: 15px;">Доминирует <b style="color: #fff;">${cqbWinner.name}</b> за счет ${cqbReason}.</div>
@@ -992,14 +959,16 @@
                 </div>
             `;
 
-            let finalVerdictHTML = `<div class="final-summary-block"><div style="font-family:'Share Tech Mono'; font-size:0.95rem; line-height: 1.6; text-transform: none;">${summaryText}</div>${rangeAnalysisHTML}</div>`;
+            let finalVerdictHTML = `<div class="final-summary-block"><div style="font-family:'Share Tech Mono'; font-size:0.95rem; line-height: 1.6; text-transform: none;">${summaryText}</div>${visualsHTML}</div>`;
             document.getElementById('verdict-screen').innerHTML = analysisCols + finalVerdictHTML;
+            
+            setTimeout(() => {
+                drawRadarChart(e1, e2);
+                updateTTK();
+            }, 100);
         }
 
-        window.onload = () => {
-            initApp();
-            triggerIntro();
-        };
+        window.onload = () => { initApp(); triggerIntro(); };
     </script>
 </body>
 </html>
