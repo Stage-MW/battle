@@ -249,10 +249,10 @@
         }
 
         @media (max-width: 768px) {
-            #intro-text { font-size: 4rem; letter-spacing: 5px; }
-            nav { padding: 15px 10px; }
+            #intro-text { font-size: 3.5rem; letter-spacing: 5px; }
+            nav { padding: 15px 10px; justify-content: space-between; }
             .nav-btn { width: 48%; padding: 10px 5px; font-size: 0.85rem; text-align: center; }
-            .info-btn { position: relative; width: 48%; transform: none; right: 0; top: 0; margin-top: 5px; }
+            .info-btn { position: relative; width: 48%; transform: none; right: 0; top: 0; margin-top: 5px; font-size: 0.9rem; }
             .search-input, .filter-select { max-width: 100%; }
             .verdict-header { font-size: 1.5rem; letter-spacing: 2px; }
             .catalog-grid { grid-template-columns: 1fr; }
@@ -301,7 +301,7 @@
             <button class="nav-btn" onclick="switchMainPage('page-compare')">АНАЛИЗАТОР</button>
             <button class="nav-btn active" onclick="switchMainPage('page-catalog')">БАЗА РАКЕТ</button>
             <button class="nav-btn" onclick="switchMainPage('page-rating')">ТИР-ЛИСТ</button>
-            <button class="info-btn" style="width: auto; padding: 0 15px; font-size: 1rem; right: 75px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
+            <button class="info-btn" style="width: auto; padding: 0 15px;" onclick="switchMainPage('page-admin')">⚙️ КАБИНЕТ</button>
             <button class="info-btn" style="width: 40px;" onclick="openModal('ibe-modal')">?</button>
         </nav>
 
@@ -631,16 +631,16 @@
 
         // РАСЧЕТ ДИСТАНЦИОННОГО ПОТЕНЦИАЛА
         function getCQBScore(item) {
-            let score = (item.start_speed * 0.5) + (item.hp * 0.5);
-            if (item.min_range > 0) score -= 1000; // Мертвая зона убивает ближний бой
-            score -= (item.accel_time * 20);
+            let score = (item.start_speed * 2.0) + (item.hp * 1.0);
+            if (item.min_range > 0) score -= 2000; 
+            score -= (item.accel_time * 50);
             return score;
         }
 
         function getLRScore(item) {
-            let score = (item.max_speed * 0.5) + (item.hp * 0.5);
-            if (item.anti_jamming === 1) score += 100;
-            if (item.cluster === 1 || item.fragmentation_damage > 0) score += 50;
+            let score = (item.max_speed * 1.5) + (item.hp * 1.5);
+            if (item.anti_jamming === 1) score += 300;
+            if (item.cluster === 1 || item.fragmentation_damage > 0) score += 150;
             return score;
         }
 
@@ -856,21 +856,23 @@
             }
 
             if (item.min_range > 0) {
-                cons.push(`Мертвая зона ${item.min_range} км (невозможно обороняться в упор)`);
-                range = `ДАЛЬНЯЯ (Критически уязвима в ближнем бою из-за мертвой зоны ${item.min_range} км)`;
+                range = `<b>ТОЛЬКО ДАЛЬНЯЯ:</b> Имеет мертвую зону ${item.min_range} км, абсолютно беззащитна вблизи.`;
                 isWarning = true;
-            } else if (item.anti_jamming === 1) {
-                range = "ДАЛЬНЯЯ / СРЕДНЯЯ (Эффективна на дистанции за счет защиты от РЭБ)";
-            } else if (item.start_speed >= 200) {
-                range = "БЛИЖНЯЯ (Кинжальный бой из-за укрытий, ПВО не успеет свестись)";
+            } else if (item.max_speed >= 480 && item.start_speed < 180) {
+                range = `<b>ДАЛЬНЯЯ ДИСТАНЦИЯ:</b> Маршевая скорость ${item.max_speed} уз. и прочность позволяют эффективно пробивать ПВО издалека.`;
+            } else if (item.start_speed >= 180 && item.accel_time <= 2.5) {
+                range = `<b>БЛИЖНЯЯ ДИСТАНЦИЯ:</b> Резкий старт ${item.start_speed} уз. дает мгновенный урон из-за укрытий.`;
+            } else if (item.start_speed < 100 && item.max_speed < 450) {
+                range = `<b>СРЕДНЯЯ ДИСТАНЦИЯ:</b> Из-за долгого разгона легко сбивается ПВО на больших расстояниях.`;
             } else {
-                range = "СРЕДНЯЯ (Требуется поддержка союзного огня)";
+                range = `<b>УНИВЕРСАЛЬНАЯ:</b> Сбалансированные показатели скорости для любых дистанций.`;
             }
 
             let html = `<div class="analysis-col">
                 <div class="col-title">${item.name}</div>
                 <div>${pros.map(p => `<div class="pro-item">${p}</div>`).join('')}</div>
                 <div style="margin-top:10px;">${cons.map(c => `<div class="con-item">${c}</div>`).join('')}</div>
+                <div class="range-block ${isWarning ? 'warning' : ''}" style="margin-top: 20px;">${range}</div>
             </div>`;
             return html;
         }
@@ -933,12 +935,16 @@
                 summaryText = `<span style="color:var(--secondary); font-size: 1.2rem; display:block; margin-bottom: 5px;">ТАКТИЧЕСКОЕ ПРЕВОСХОДСТВО: ${winner.name}</span><span style="color:#fff;">В текущей мете данная ракета объективно сильнее за счет ${reason} (Рейтинг: ${winner.rating} vs ${loser.rating} из 1000).</span>`;
             }
 
-            // Добавляем анализ дистанций
-            let cqbReason = cqbWinner.min_range === 0 ? `комбинации начальной скорости (${cqbWinner.start_speed} уз.) и прочности, не оставляющих шансов ПВО` : "более высоких показателей выживаемости";
-            if (e1.min_range > 0 && e2.min_range === 0) { cqbWinner = e2; cqbReason = "отсутствия мертвой зоны"; }
-            if (e2.min_range > 0 && e1.min_range === 0) { cqbWinner = e1; cqbReason = "отсутствия мертвой зоны"; }
+            let cqbReason = cqbWinner.min_range === 0 ? `высокой начальной скорости (${cqbWinner.start_speed} уз.) и отсутствия мертвой зоны` : "лучшим показателям живучести";
+            if (e1.min_range > 0 && e2.min_range === 0) { cqbWinner = e2; cqbReason = "отсутствия мертвой зоны у конкурента"; }
+            if (e2.min_range > 0 && e1.min_range === 0) { cqbWinner = e1; cqbReason = "отсутствия мертвой зоны у конкурента"; }
 
-            let lrReason = lrWinner.anti_jamming === 1 ? "абсолютной защиты от ловушек и отличной выживаемости" : `высокой маршевой скорости (${lrWinner.max_speed} уз.) и запаса прочности`;
+            let lrReason = "";
+            if (lrWinner.anti_jamming === 1) {
+                lrReason = "защиты от РЭБ (неотводимость)";
+            } else {
+                lrReason = `комбинации высокой скорости (${lrWinner.max_speed} уз.) и прочности (${lrWinner.hp} HP)`;
+            }
 
             let rangeAnalysisHTML = `
                 <div style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 4px;">
